@@ -1,81 +1,147 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using CareerOpportunities;
 
 namespace CareerOpportunities
 {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+   
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+
+        Texture2D PlayerTexture;
+        Vector2 PlayerPosition;
+        float PlayerVerticalVelocity;
+        float PlayerHorizontalVelocity;
+
+        Level.Render Map;
+
+        bool canMoveVertical;
+        int CurrentVerticalLine;
+        int PreviousVerticalLine;
+
+        int[] Lines;
+
+        Texture2D Background;
+        Texture2D Box;
+
+        int scale;
         
         public Game1()
         {
+            scale = 3;
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 240 * scale;
+            graphics.PreferredBackBufferHeight = 135 * scale;
             Content.RootDirectory = "Content";
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            CurrentVerticalLine = 0;
+            PreviousVerticalLine = 1;
+            PlayerVerticalVelocity = (22 * scale) / 6.5f;
+            PlayerHorizontalVelocity = 5;
+            int linePosition = (32 * scale);
+            Lines = new int[] {
+                graphics.PreferredBackBufferHeight - linePosition  + (-5 * scale),
+                graphics.PreferredBackBufferHeight - (linePosition *2) + (5 * scale),
+                graphics.PreferredBackBufferHeight - (linePosition * 3) + (11 * scale),
+                graphics.PreferredBackBufferHeight - (linePosition * 4) + (24 * scale),
+            };
 
+            canMoveVertical = true;
+            PlayerPosition = new Vector2(0, Lines[CurrentVerticalLine]);
+            
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            spriteBatch   = new SpriteBatch(GraphicsDevice);
+            Background    = Content.Load<Texture2D>("prototype/esteira");
+            Box = Content.Load<Texture2D>("prototype/box");
+            PlayerTexture = Content.Load<Texture2D>("prototype/Jim");
 
-            // TODO: use this.Content to load your game content here
+            Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map.setBoxTexture(Box);
+            Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// game-specific content.
-        /// </summary>
+        
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
         }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            if (PlayerPosition.Y == Lines[CurrentVerticalLine]) canMoveVertical = true;
+            else
+            {
+                if ((CurrentVerticalLine < PreviousVerticalLine && Lines[CurrentVerticalLine] < PlayerPosition.Y) || (CurrentVerticalLine > PreviousVerticalLine && Lines[CurrentVerticalLine] > PlayerPosition.Y))
+                {
+                    PlayerPosition = new Vector2(PlayerPosition.X, Lines[CurrentVerticalLine]);
+                }
+                else
+                {
+                    if (PlayerPosition.Y < Lines[CurrentVerticalLine])
+                    {
+                        PlayerPosition = new Vector2(PlayerPosition.X, PlayerPosition.Y + PlayerVerticalVelocity);
+                    }
+                    else if (PlayerPosition.Y > Lines[CurrentVerticalLine])
+                    {
+                        PlayerPosition = new Vector2(PlayerPosition.X, PlayerPosition.Y - PlayerVerticalVelocity);
+                    }
+                }
+                
+            }
+
+            if (canMoveVertical)
+            {
+                PreviousVerticalLine = CurrentVerticalLine;
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
+                {
+                    CurrentVerticalLine += 1;
+                    canMoveVertical = false;
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
+                {
+                    CurrentVerticalLine -= 1;
+                    canMoveVertical = false;
+                }
+            }
+            
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                PlayerPosition = new Vector2(PlayerPosition.X + PlayerHorizontalVelocity, PlayerPosition.Y);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                PlayerPosition = new Vector2(PlayerPosition.X - PlayerHorizontalVelocity, PlayerPosition.Y);
+            }
+
+            Map.Update(1);
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+
+            spriteBatch.Draw(Background, new Vector2(0,0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            Map.Draw(spriteBatch);
+            spriteBatch.Draw(PlayerTexture, PlayerPosition, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
