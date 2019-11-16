@@ -21,7 +21,6 @@ namespace CareerOpportunities.Level
         int tileWidth = 34;
 
         Color BoxColor = Color.Red;
-
         int[] LinesBox;
 
         public Render(int scale, int BufferHeight, int start)
@@ -79,7 +78,7 @@ namespace CareerOpportunities.Level
                 {
                     if (this.MapColors[x, y] == this.BoxColor)
                     {
-                        termsList.Add(new Vector2((x) * (this.scale * 25), y));
+                        termsList.Add(new Vector2(x * (this.scale * 25), y));
                     }
                 }
             }
@@ -87,16 +86,37 @@ namespace CareerOpportunities.Level
             this.positionBoxs = termsList.ToArray();
         }
 
+        public bool Collision(Rectangle body, int line)
+        {
+            bool any_collision = false;
+
+            for (int x = 0; x < this.TileMap.Width; x++)
+            {
+                for (int y = 0; y < this.TileMap.Height; y++)
+                {
+                    if (this.MapColors[x, y] == this.BoxColor) {
+                        float x_position = (x * (this.tileWidth - 1)) * this.scale;
+
+                        bool x_overlaps = (body.X < x_position) && (body.X + body.Width > x_position);
+                        bool y_overlaps = line == y;
+
+                        if (x_overlaps && y_overlaps) any_collision = true;
+                    }
+                }
+            }
+
+            return any_collision;
+        }
         public void Update(int velocity)
         {
-            this.currentPositionX -= velocity;
+            this.currentPositionX -= (velocity * this.scale);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             for(int i = 0; i < this.positionBoxs.Length; i++)
             {
-                Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX * this.scale), this.LinesBox[(int)this.positionBoxs[i].Y]);
+                Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
                 spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
         }

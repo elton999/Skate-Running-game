@@ -10,20 +10,9 @@ namespace CareerOpportunities
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
-        Texture2D PlayerTexture;
-        Vector2 PlayerPosition;
-        float PlayerVerticalVelocity;
-        float PlayerHorizontalVelocity;
-
+        
         Level.Render Map;
-
-        bool canMoveVertical;
-        int CurrentVerticalLine;
-        int PreviousVerticalLine;
-
-        int[] Lines;
-
+        PlayerController Player;
         Texture2D Background;
         Texture2D Box;
 
@@ -40,20 +29,7 @@ namespace CareerOpportunities
 
         protected override void Initialize()
         {
-            CurrentVerticalLine = 0;
-            PreviousVerticalLine = 1;
-            PlayerVerticalVelocity = (22 * scale) / 6.5f;
-            PlayerHorizontalVelocity = 5;
-            int linePosition = (32 * scale);
-            Lines = new int[] {
-                graphics.PreferredBackBufferHeight - linePosition  + (-5 * scale),
-                graphics.PreferredBackBufferHeight - (linePosition *2) + (5 * scale),
-                graphics.PreferredBackBufferHeight - (linePosition * 3) + (11 * scale),
-                graphics.PreferredBackBufferHeight - (linePosition * 4) + (24 * scale),
-            };
-
-            canMoveVertical = true;
-            PlayerPosition = new Vector2(0, Lines[CurrentVerticalLine]);
+            
             
             base.Initialize();
         }
@@ -62,11 +38,11 @@ namespace CareerOpportunities
         {
             spriteBatch   = new SpriteBatch(GraphicsDevice);
             Background    = Content.Load<Texture2D>("prototype/esteira");
-            Box = Content.Load<Texture2D>("prototype/box");
-            PlayerTexture = Content.Load<Texture2D>("prototype/Jim");
+
+            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight);
 
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
-            Map.setBoxTexture(Box);
+            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
         }
 
@@ -80,53 +56,8 @@ namespace CareerOpportunities
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (PlayerPosition.Y == Lines[CurrentVerticalLine]) canMoveVertical = true;
-            else
-            {
-                if ((CurrentVerticalLine < PreviousVerticalLine && Lines[CurrentVerticalLine] < PlayerPosition.Y) || (CurrentVerticalLine > PreviousVerticalLine && Lines[CurrentVerticalLine] > PlayerPosition.Y))
-                {
-                    PlayerPosition = new Vector2(PlayerPosition.X, Lines[CurrentVerticalLine]);
-                }
-                else
-                {
-                    if (PlayerPosition.Y < Lines[CurrentVerticalLine])
-                    {
-                        PlayerPosition = new Vector2(PlayerPosition.X, PlayerPosition.Y + PlayerVerticalVelocity);
-                    }
-                    else if (PlayerPosition.Y > Lines[CurrentVerticalLine])
-                    {
-                        PlayerPosition = new Vector2(PlayerPosition.X, PlayerPosition.Y - PlayerVerticalVelocity);
-                    }
-                }
-                
-            }
-
-            if (canMoveVertical)
-            {
-                PreviousVerticalLine = CurrentVerticalLine;
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
-                {
-                    CurrentVerticalLine += 1;
-                    canMoveVertical = false;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
-                {
-                    CurrentVerticalLine -= 1;
-                    canMoveVertical = false;
-                }
-            }
-            
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-            {
-                PlayerPosition = new Vector2(PlayerPosition.X + PlayerHorizontalVelocity, PlayerPosition.Y);
-            }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                PlayerPosition = new Vector2(PlayerPosition.X - PlayerHorizontalVelocity, PlayerPosition.Y);
-            }
-
             Map.Update(1);
+            Player.Update();
 
             base.Update(gameTime);
         }
@@ -138,8 +69,9 @@ namespace CareerOpportunities
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
             spriteBatch.Draw(Background, new Vector2(0,0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+
             Map.Draw(spriteBatch);
-            spriteBatch.Draw(PlayerTexture, PlayerPosition, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            Player.Draw(spriteBatch);
 
             spriteBatch.End();
 
