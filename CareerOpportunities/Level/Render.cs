@@ -86,7 +86,7 @@ namespace CareerOpportunities.Level
             this.positionBoxs = termsList.ToArray();
         }
 
-        public bool Collision(Rectangle body, int line)
+        public bool Collision(Rectangle body, Vector2 position, int line)
         {
             bool any_collision = false;
 
@@ -95,16 +95,28 @@ namespace CareerOpportunities.Level
                 for (int y = 0; y < this.TileMap.Height; y++)
                 {
                     if (this.MapColors[x, y] == this.BoxColor) {
-                        float x_position = (x * (this.tileWidth - 1)) * this.scale;
+                        float x_position = ((x) * 25) * this.scale;
+                        float x_width = x_position + (40 * this.scale);
 
-                        bool x_overlaps = (body.X < x_position) && (body.X + body.Width > x_position);
+                        bool x_overlaps = (((body.X + position.X < x_position) && (body.X + position.X + body.Width > x_position) && (body.X + position.X + body.Width < x_width)) || 
+                                           ((body.X + position.X > x_position) && (body.X + position.X + body.Width < x_width)) ||
+                                           ((body.X + position.X > x_position) && (body.X + position.X < x_width) && (body.X + position.X + body.Width > x_width)));
                         bool y_overlaps = line == y;
 
-                        if (x_overlaps && y_overlaps) any_collision = true;
+                        if (x_overlaps && y_overlaps)
+                        {
+                            any_collision = true;
+                            Console.Write(line);
+                            Console.Write(y);
+                        }
+
                     }
                 }
             }
-
+            if (any_collision)
+            {
+                Console.Write("collision Porra!!!!\n");
+            }
             return any_collision;
         }
         public void Update(int velocity)

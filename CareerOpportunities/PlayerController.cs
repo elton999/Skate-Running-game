@@ -34,6 +34,7 @@ namespace CareerOpportunities
             this.PreviousVerticalLine = 1;
             this.PlayerVerticalVelocity = (22 * scale) / 6.5f;
             this.PlayerHorizontalVelocity = 5;
+           
 
             int linePosition = (32 * scale);
             Lines = new int[] {
@@ -45,6 +46,7 @@ namespace CareerOpportunities
 
             canMoveVertical = true;
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
+            this.Body = new Rectangle(new Point(16 * this.scale, 21 * this.scale), new Point(8 * this.scale, 0));
         }
 
 
@@ -74,8 +76,10 @@ namespace CareerOpportunities
             }
         }
 
-        public void Update()
+        public void Update(Level.Render map)
         {
+
+            map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
             this.PlayAnimation();
 
             if (canMoveVertical)
