@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using CareerOpportunities;
 
 namespace CareerOpportunities
 {
@@ -21,10 +20,11 @@ namespace CareerOpportunities
         
         public Game1()
         {
-            scale = 3;
+            scale = 6;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
+            //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             debug = true;
         }
@@ -41,10 +41,11 @@ namespace CareerOpportunities
             spriteBatch   = new SpriteBatch(GraphicsDevice);
             Background    = Content.Load<Texture2D>("prototype/esteira");
 
-            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight);
+            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
 
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
         }
 

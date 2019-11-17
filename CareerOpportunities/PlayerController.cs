@@ -21,11 +21,12 @@ namespace CareerOpportunities
         public int PlayerHorizontalVelocity;
 
         public int scale;
+        private int BufferWidth;
         private int[] Lines;
         private int PreviousVerticalLine;
 
 
-        public PlayerController (Texture2D sprite, int scale, int BufferHeight)
+        public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth)
         {
             this.sprite = sprite;
             this.scale = scale;
@@ -33,8 +34,8 @@ namespace CareerOpportunities
             this.CurrentVerticalLine = 0;
             this.PreviousVerticalLine = 1;
             this.PlayerVerticalVelocity = (22 * scale) / 6.5f;
-            this.PlayerHorizontalVelocity = 5;
-           
+            this.PlayerHorizontalVelocity = 3 * this.scale;
+            this.BufferWidth = BufferWidth;
 
             int linePosition = (32 * scale);
             Lines = new int[] {
@@ -81,6 +82,14 @@ namespace CareerOpportunities
 
             //map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
             this.PlayAnimation();
+            int pull = 2;
+
+            map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
+            if (this.Position.X - (pull * this.scale) > 0 && !map.Collision(
+                this.Body,
+                new Vector2(this.Position.X - (pull * this.scale), this.Position.Y),
+                this.CurrentVerticalLine
+                )) this.Position = new Vector2(this.Position.X - (pull * this.scale), this.Position.Y);
 
             if (canMoveVertical)
             {
@@ -106,11 +115,11 @@ namespace CareerOpportunities
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
-                Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.scale * 64)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
-                Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+                if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
             }
 
         }

@@ -11,16 +11,19 @@ namespace CareerOpportunities.Level
         // {R:172 G:50 B:50 A:255} 
         Texture2D BoxTexture;
         Texture2D TileMap;
+        Texture2D CoinTexture;
 
         int start;
         int currentPositionX;
         Color[,] MapColors;
         Vector2[] positionBoxs;
+        Color[] SpritesColors;
         int scale;
         int BufferHeight;
         int tileWidth = 34;
 
         Color BoxColor = Color.Red;
+        Color CoinColor = Color.Yellow;
         int[] LinesBox;
 
         public Render(int scale, int BufferHeight, int start)
@@ -41,6 +44,11 @@ namespace CareerOpportunities.Level
         public void setBoxTexture(Texture2D box)
         {
             this.BoxTexture = box;
+        }
+
+        public void setCoinTexture(Texture2D coin)
+        {
+            this.CoinTexture = coin;
         }
 
         public void setTileMap(Texture2D map)
@@ -72,17 +80,23 @@ namespace CareerOpportunities.Level
         private void PositionTile()
         {
             List<Vector2> termsList = new List<Vector2>();
+            List<Color> termsListColors = new List<Color>();
             for (int x = this.TileMap.Width - 1; x >= 0; x--)
             {
                 for (int y = this.TileMap.Height - 1; y >= 0; y--)
                 {
                     if (this.MapColors[x, y] == this.BoxColor)
                     {
-                        termsList.Add(new Vector2(x * (this.scale * 25), y));
+                        termsList.Add(new Vector2(x, y));
+                        termsListColors.Add(this.BoxColor);
+                    } else if (this.MapColors[x, y] == this.CoinColor)
+                    {
+                        termsList.Add(new Vector2(x, y));
+                        termsListColors.Add(this.CoinColor);
                     }
                 }
             }
-
+            this.SpritesColors = termsListColors.ToArray();
             this.positionBoxs = termsList.ToArray();
         }
 
@@ -94,7 +108,7 @@ namespace CareerOpportunities.Level
             {
                 for (int y = 0; y < this.TileMap.Height; y++)
                 {
-                    if (this.MapColors[x, y] == this.BoxColor) {
+                    if (this.MapColors[x, y] != Color.Black) {
                         float x_position = ((x) * 25) * this.scale + this.currentPositionX;
                         float x_width = x_position + (40 * this.scale);
 
@@ -105,7 +119,8 @@ namespace CareerOpportunities.Level
 
                         if (x_overlaps && y_overlaps)
                         {
-                            any_collision = true;
+                            if(this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
+                            if(this.MapColors[x, y] == this.BoxColor) any_collision = true;
                         }
 
                     }
@@ -113,6 +128,24 @@ namespace CareerOpportunities.Level
             }
             return any_collision;
         }
+
+        public void CollisionItem(Vector2 position)
+        {
+            Console.WriteLine("ok");
+            for (int i = 0; i < this.positionBoxs.Length; i++)
+            {
+                if (this.positionBoxs[i] == position)
+                {
+                   
+                    if (this.CoinColor == this.SpritesColors[i])
+                    {
+                        
+                        this.SpritesColors[i] = Color.Black;
+                    }
+                }
+            }
+        }
+
         public void Update(int velocity)
         {
             this.currentPositionX -= (velocity * this.scale);
@@ -122,12 +155,7 @@ namespace CareerOpportunities.Level
         {
             for(int i = 0; i < this.positionBoxs.Length; i++)
             {
-                if (layer > (int)this.positionBoxs[i].Y)
-                {
-                    Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
-                    spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
-                }
-                   
+                if (layer > (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
             }
         }
 
@@ -135,11 +163,19 @@ namespace CareerOpportunities.Level
         {
             for (int i = 0; i < this.positionBoxs.Length; i++)
             {
-                if (layer <= (int)this.positionBoxs[i].Y)
-                {
-                    Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
-                    spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
-                }
+                if (layer <= (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
+            }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, int i)
+        {
+            Texture2D sprite = this.BoxTexture;
+            if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
+
+            if (SpritesColors[i] != Color.Black)
+            {
+                Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
         }
 
