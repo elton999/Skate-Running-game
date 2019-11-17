@@ -43,7 +43,7 @@ namespace CareerOpportunities
 
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight);
 
-            Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, 0);//graphics.PreferredBackBufferWidth);
+            Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
         }
@@ -58,7 +58,7 @@ namespace CareerOpportunities
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Map.Update(0);
+            Map.Update(1);
             Player.Update(Map);
 
             base.Update(gameTime);
@@ -72,8 +72,9 @@ namespace CareerOpportunities
 
             spriteBatch.Draw(Background, new Vector2(0,0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
 
-            Map.Draw(spriteBatch);
+            Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
             Player.Draw(spriteBatch);
+            Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
 
             spriteBatch.End();
 

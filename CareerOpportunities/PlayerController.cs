@@ -79,7 +79,7 @@ namespace CareerOpportunities
         public void Update(Level.Render map)
         {
 
-            map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
+            //map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
             this.PlayAnimation();
 
             if (canMoveVertical)
@@ -88,13 +88,19 @@ namespace CareerOpportunities
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
                 {
-                    CurrentVerticalLine += 1;
-                    canMoveVertical = false;
+                    if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                    {
+                        CurrentVerticalLine += 1;
+                        canMoveVertical = false;
+                    }
                 }
                 if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
                 {
-                    CurrentVerticalLine -= 1;
-                    canMoveVertical = false;
+                    if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
+                    {
+                        CurrentVerticalLine -= 1;
+                        canMoveVertical = false;
+                    }
                 }
             }
 

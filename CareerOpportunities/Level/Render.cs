@@ -95,7 +95,7 @@ namespace CareerOpportunities.Level
                 for (int y = 0; y < this.TileMap.Height; y++)
                 {
                     if (this.MapColors[x, y] == this.BoxColor) {
-                        float x_position = ((x) * 25) * this.scale;
+                        float x_position = ((x) * 25) * this.scale + this.currentPositionX;
                         float x_width = x_position + (40 * this.scale);
 
                         bool x_overlaps = (((body.X + position.X < x_position) && (body.X + position.X + body.Width > x_position) && (body.X + position.X + body.Width < x_width)) || 
@@ -106,16 +106,10 @@ namespace CareerOpportunities.Level
                         if (x_overlaps && y_overlaps)
                         {
                             any_collision = true;
-                            Console.Write(line);
-                            Console.Write(y);
                         }
 
                     }
                 }
-            }
-            if (any_collision)
-            {
-                Console.Write("collision Porra!!!!\n");
             }
             return any_collision;
         }
@@ -124,12 +118,28 @@ namespace CareerOpportunities.Level
             this.currentPositionX -= (velocity * this.scale);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Layer0(SpriteBatch spriteBatch, int layer)
         {
             for(int i = 0; i < this.positionBoxs.Length; i++)
             {
-                Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
-                spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                if (layer > (int)this.positionBoxs[i].Y)
+                {
+                    Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
+                    spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                }
+                   
+            }
+        }
+
+        public void Layer1(SpriteBatch spriteBatch, int layer)
+        {
+            for (int i = 0; i < this.positionBoxs.Length; i++)
+            {
+                if (layer <= (int)this.positionBoxs[i].Y)
+                {
+                    Vector2 position = new Vector2(this.positionBoxs[i].X + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
+                    spriteBatch.Draw(this.BoxTexture, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                }
             }
         }
 
