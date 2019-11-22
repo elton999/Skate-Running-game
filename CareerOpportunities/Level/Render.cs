@@ -18,6 +18,7 @@ namespace CareerOpportunities.Level
         Color[,] MapColors;
         Vector2[] positionBoxs;
         Color[] SpritesColors;
+        public Vector2 CollisionPosition;
         int scale;
         int BufferHeight;
         int tileWidth = 34;
@@ -119,8 +120,9 @@ namespace CareerOpportunities.Level
 
                         if (x_overlaps && y_overlaps)
                         {
-                            if(this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
-                            if(this.MapColors[x, y] == this.BoxColor) any_collision = true;
+                            if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
+                            this.CollisionPosition = new Vector2(x, y);
+                            if (this.MapColors[x, y] == this.BoxColor) any_collision = true;
                         }
 
                     }
@@ -131,24 +133,19 @@ namespace CareerOpportunities.Level
 
         public void CollisionItem(Vector2 position)
         {
-            Console.WriteLine("ok");
             for (int i = 0; i < this.positionBoxs.Length; i++)
             {
-                if (this.positionBoxs[i] == position)
-                {
-                   
-                    if (this.CoinColor == this.SpritesColors[i])
-                    {
-                        
-                        this.SpritesColors[i] = Color.Black;
-                    }
+                if (this.positionBoxs[i] == position){
+                    this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
+                    this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
                 }
             }
         }
 
-        public void Update(int velocity)
+        public void Update(GameTime gameTime, int velocity)
         {
-            this.currentPositionX -= (velocity * this.scale);
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.currentPositionX -= (int)(velocity * delta * this.scale);
         }
 
         public void Layer0(SpriteBatch spriteBatch, int layer)

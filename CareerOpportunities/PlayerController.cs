@@ -9,18 +9,13 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities
 {
-    public class PlayerController
+    public class PlayerController : GameObject
     {
-        public Texture2D sprite;
-
-        public Vector2 Position;
-        public Rectangle Body;
         public bool canMoveVertical;
         public int CurrentVerticalLine;
         public float PlayerVerticalVelocity;
         public int PlayerHorizontalVelocity;
 
-        public int scale;
         private int BufferWidth;
         private int[] Lines;
         private int PreviousVerticalLine;
@@ -28,13 +23,13 @@ namespace CareerOpportunities
 
         public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth)
         {
-            this.sprite = sprite;
-            this.scale = scale;
+            this.Sprite = sprite;
+            this.Scale = scale;
 
             this.CurrentVerticalLine = 0;
             this.PreviousVerticalLine = 1;
             this.PlayerVerticalVelocity = (22 * scale) / 6.5f;
-            this.PlayerHorizontalVelocity = 3 * this.scale;
+            this.PlayerHorizontalVelocity = 3 * this.Scale;
             this.BufferWidth = BufferWidth;
 
             int linePosition = (32 * scale);
@@ -47,7 +42,7 @@ namespace CareerOpportunities
 
             canMoveVertical = true;
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
-            this.Body = new Rectangle(new Point(16 * this.scale, 21 * this.scale), new Point(8 * this.scale, 0));
+            this.Body = new Rectangle(new Point(16 * this.Scale, 21 * this.Scale), new Point(8 * this.Scale, 0));
         }
 
 
@@ -77,19 +72,20 @@ namespace CareerOpportunities
             }
         }
 
-        public void Update(Level.Render map)
+        public void Update(GameTime gameTime, Level.Render map)
         {
-
-            //map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
             this.PlayAnimation();
-            int pull = 2;
+            float pull = 100f;
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
 
-            map.Collision(this.Body, this.Position, this.CurrentVerticalLine);
-            if (this.Position.X - (pull * this.scale) > 0 && !map.Collision(
+            if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine)) map.CollisionItem(map.CollisionPosition);
+
+            if (this.Position.X - (pull * this.Scale * delta) > 0 && !map.Collision(
                 this.Body,
-                new Vector2(this.Position.X - (pull * this.scale), this.Position.Y),
+                new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
                 this.CurrentVerticalLine
-                )) this.Position = new Vector2(this.Position.X - (pull * this.scale), this.Position.Y);
+                )) this.Position = new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y);
 
             if (canMoveVertical)
             {
@@ -113,20 +109,20 @@ namespace CareerOpportunities
                 }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
             {
-                if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.scale * 64)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 64)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            {
-                if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
-            }
+            // if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            // {
+            //    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+            // }
 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(this.sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
         }
 
     }

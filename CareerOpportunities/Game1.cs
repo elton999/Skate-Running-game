@@ -13,6 +13,7 @@ namespace CareerOpportunities
         Level.Render Map;
         PlayerController Player;
         Texture2D Background;
+        HeartManagement hearts;
 
         bool debug;
 
@@ -40,10 +41,10 @@ namespace CareerOpportunities
         {
             spriteBatch   = new SpriteBatch(GraphicsDevice);
             Background    = Content.Load<Texture2D>("prototype/esteira");
-
-            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
-
-            Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            hearts        = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
+            hearts.Scale = scale;
+            Player        = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map           = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
@@ -59,8 +60,8 @@ namespace CareerOpportunities
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Map.Update(1);
-            Player.Update(Map);
+            Map.Update(gameTime, 60);
+            Player.Update(gameTime, Map);
 
             base.Update(gameTime);
         }
@@ -76,6 +77,9 @@ namespace CareerOpportunities
             Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
             Player.Draw(spriteBatch);
             Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
+
+            //HUD
+            hearts.Draw(spriteBatch);
 
             spriteBatch.End();
 
