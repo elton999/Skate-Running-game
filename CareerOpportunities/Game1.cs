@@ -60,8 +60,8 @@ namespace CareerOpportunities
         
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
 
             if (this.LoadingLevel)
             {
@@ -90,8 +90,16 @@ namespace CareerOpportunities
                 if (Map.Finished()) this.status = GameStatus.WIN;
             }
 
-            if (this.isMainMenuReady() && this.status == GameStatus.MENU) MainMenu.Update(gameTime);
-
+            if (this.isMainMenuReady() && this.status == GameStatus.MENU)
+            {
+                MainMenu.Update(gameTime);
+                if (MainMenu.ItemSelected == MenuManagement.MenuItens.START)
+                {
+                    this.status = GameStatus.PLAY;
+                    this.LoadingLevel = true;
+                }
+                if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT) Exit();
+            }
             base.Update(gameTime);
         }
 

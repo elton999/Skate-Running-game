@@ -54,6 +54,11 @@ namespace CareerOpportunities
                 }
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            {
+                this.ItemSelected = this.ItemOver;
+            }
+
             if (Keyboard.GetState().IsKeyUp(Keys.Down) && Keyboard.GetState().IsKeyUp(Keys.Up)) released = true;
         }
 
