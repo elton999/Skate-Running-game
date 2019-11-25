@@ -14,6 +14,7 @@ namespace CareerOpportunities
         public Vector2 Position;
         public Rectangle Body;
         public Texture2D Sprite;
+        public Color SpriteColor;
         public int Scale;
 
     }

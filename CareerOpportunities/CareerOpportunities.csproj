@@ -46,10 +46,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Game1.cs" />
-    <Compile Include="GameManagement.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="HeartManagement.cs" />
     <Compile Include="Level\Render.cs" />
+    <Compile Include="MenuManagement.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

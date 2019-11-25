@@ -20,6 +20,8 @@ namespace CareerOpportunities
         private int[] Lines;
         private int PreviousVerticalLine;
 
+        private bool removeITem;
+
 
         public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth)
         {
@@ -72,51 +74,68 @@ namespace CareerOpportunities
             }
         }
 
-        public void Update(GameTime gameTime, Level.Render map)
+        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart)
         {
             this.PlayAnimation();
             float pull = 100f;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.removeITem = false;
             // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
 
-            if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine)) map.CollisionItem(map.CollisionPosition);
+            if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
+            {
+                map.CollisionItem(map.CollisionPosition);
+                map.StopFor(35);
+                this.removeITem = true;
+            }
 
-            if (this.Position.X - (pull * this.Scale * delta) > 0 && !map.Collision(
+            if (map.isStoped())
+            {
+                if (this.Position.X - (pull * this.Scale * delta) > BufferWidth / 2 && !map.Collision(
                 this.Body,
                 new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
                 this.CurrentVerticalLine
                 )) this.Position = new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y);
-
-            if (canMoveVertical)
-            {
-                PreviousVerticalLine = CurrentVerticalLine;
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
+                else
                 {
-                    if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                    if (this.Position.X + (pull * this.Scale * delta) < BufferWidth / 2) this.Position = new Vector2(this.Position.X + ((pull / 2) * this.Scale * delta), this.Position.Y);
+                }
+
+                if (canMoveVertical)
+                {
+                    PreviousVerticalLine = CurrentVerticalLine;
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
                     {
-                        CurrentVerticalLine += 1;
-                        canMoveVertical = false;
+                        if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                        {
+                            CurrentVerticalLine += 1;
+                            canMoveVertical = false;
+                        }
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
+                    {
+                        if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
+                        {
+                            CurrentVerticalLine -= 1;
+                            canMoveVertical = false;
+                        }
                     }
                 }
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
                 {
-                    if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
-                    {
-                        CurrentVerticalLine -= 1;
-                        canMoveVertical = false;
-                    }
+                    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
                 }
             }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+            else
             {
-                if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 64)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                if (this.removeITem) heart.remove(1);
             }
-            // if (Keyboard.GetState().IsKeyDown(Keys.Left))
-            // {
-            //    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
-            // }
 
         }
 

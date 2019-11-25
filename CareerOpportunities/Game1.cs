@@ -9,45 +9,48 @@ namespace CareerOpportunities
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
-        Level.Render Map;
-        PlayerController Player;
         Texture2D Background;
-        HeartManagement hearts;
+        Texture2D Character;
+
+        public int Level;
+        public enum GameStatus { WIN, LOSE, DIE, PLAY, PAUSE, MENU }
+        public GameStatus status;
+
+        public bool LoadingLevel;
+        public bool LoadingMenu;
+
+        MenuManagement MainMenu;
+        HeartManagement Hearts;
+        PlayerController Player;
+        Level.Render Map;
 
         bool debug;
+        
 
         int scale;
         
         public Game1()
         {
-            scale = 6;
+            scale = 3;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
-            //graphics.ToggleFullScreen();
+            // graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
+            this.LoadingLevel = false;
+            this.LoadingMenu = true;
             debug = true;
         }
 
         protected override void Initialize()
         {
-            
-            
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            this.status   = GameStatus.MENU;
             spriteBatch   = new SpriteBatch(GraphicsDevice);
-            Background    = Content.Load<Texture2D>("prototype/esteira");
-            hearts        = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
-            hearts.Scale = scale;
-            Player        = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
-            Map           = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
-            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
-            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"));
-            Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
         }
 
         
@@ -60,8 +63,34 @@ namespace CareerOpportunities
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            Map.Update(gameTime, 60);
-            Player.Update(gameTime, Map);
+            if (this.LoadingLevel)
+            {
+                this.LoadingLevel = false;
+                this.LoadLevel();
+            }
+
+            if (this.LoadingMenu)
+            {
+                this.LoadingMenu = false;
+                this.LoadMenu();
+            }
+
+            if (this.isLevelReady())
+            {
+                if (this.status == GameStatus.PLAY)
+                {
+                    Map.Update(gameTime, 100);
+                    Player.Update(gameTime, Map, Hearts);
+                    if (Hearts.NumberOfhearts == 0)
+                    {
+                        this.LoadingLevel = true;
+                        this.status = GameStatus.LOSE;
+                    }
+                }
+                if (Map.Finished()) this.status = GameStatus.WIN;
+            }
+
+            if (this.isMainMenuReady() && this.status == GameStatus.MENU) MainMenu.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -72,18 +101,70 @@ namespace CareerOpportunities
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
 
-            spriteBatch.Draw(Background, new Vector2(0,0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-
-            Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
-            Player.Draw(spriteBatch);
-            Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
-
-            //HUD
-            hearts.Draw(spriteBatch);
-
+            this.DrawPlay();
+            this.DrawMainMenu();
+            
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+
+        public void DrawPlay()
+        {
+            if (this.isLevelReady() && this.status == GameStatus.PLAY)
+            {
+                spriteBatch.Draw(Background, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
+                Player.Draw(spriteBatch);
+                Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
+                // HUD
+                Hearts.Draw(spriteBatch);
+                spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            }
+        }
+
+        public void LoadLevel()
+        {
+            Character = Content.Load<Texture2D>("sprites/jim_hud");
+            Background = Content.Load<Texture2D>("prototype/esteira");
+            Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
+            Hearts.Scale = scale;
+            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"));
+            Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
+
+            // start game
+            this.status = GameStatus.PLAY;
+        }
+
+        public void LoadMenu()
+        {
+            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.scale);
+            this.status = GameStatus.MENU;
+        }
+
+        public bool isLevelReady()
+        {
+            if (Background != null && Hearts != null && Player != null && Map != null) return true;
+            return false;
+        }
+
+        public void DrawMainMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.MENU)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                this.MainMenu.Draw(spriteBatch);
+            }
+        }
+
+        public bool isMainMenuReady()
+        {
+            if (this.MainMenu != null) return true;
+            return false;
         }
     }
 }

@@ -14,6 +14,9 @@ namespace CareerOpportunities
         public int NumberOfhearts = 3;
         public int PaddingLeft = 2;
 
+        bool startRemoveItem;
+        bool removeItem;
+
 
         public HeartManagement(Texture2D sprite)
         {
@@ -40,7 +43,7 @@ namespace CareerOpportunities
             for (int i = 0; i < this.NumberOfhearts; i++)
             {
                 int position_x = ((this.PaddingLeft + this.Body.Width) * i) * this.Scale;
-                position_x = (int)this.Position.X * this.Scale + position_x;
+                position_x = ((int)this.Position.X * this.Scale + position_x) + (30 * this.Scale);
 
                 Vector2 position = new Vector2(position_x, this.Position.Y * this.Scale);
 

@@ -27,6 +27,9 @@ namespace CareerOpportunities.Level
         Color CoinColor = Color.Yellow;
         int[] LinesBox;
 
+        int stopFramesNum = 0;
+        int CurrentStopFramesNum = 1;
+
         public Render(int scale, int BufferHeight, int start)
         {
             this.scale = scale;
@@ -56,6 +59,18 @@ namespace CareerOpportunities.Level
         {
             this.TileMap = map;
             this.readMap();
+        }
+
+        public void StopFor(int frames = 15)
+        {
+            stopFramesNum = frames;
+            CurrentStopFramesNum = 0;
+        }
+
+        public bool isStoped()
+        {
+            if (CurrentStopFramesNum > stopFramesNum) return true;
+            else return false;
         }
 
         public void readMap()
@@ -142,10 +157,20 @@ namespace CareerOpportunities.Level
             }
         }
 
+        public bool Finished()
+        {
+            if (-this.currentPositionX + (this.start * this.scale) > (this.TileMap.Width * 32) * this.scale) return true;
+            return false;
+        }
+
         public void Update(GameTime gameTime, int velocity)
         {
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.currentPositionX -= (int)(velocity * delta * this.scale);
+            if ( CurrentStopFramesNum > stopFramesNum )
+            {
+                float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                this.currentPositionX -= (int)(velocity * delta * this.scale);
+            }
+            else CurrentStopFramesNum += 1;
         }
 
         public void Layer0(SpriteBatch spriteBatch, int layer)
