@@ -19,10 +19,15 @@ namespace CareerOpportunities
         public bool LoadingLevel;
         public bool LoadingMenu;
 
+        bool escReleased;
+
         MenuManagement MainMenu;
         HeartManagement Hearts;
         PlayerController Player;
         Level.Render Map;
+
+        PauseMenuManagement PauseMenu;
+        PauseMenuManagement GameOverMenu;
 
         bool debug;
         
@@ -31,7 +36,7 @@ namespace CareerOpportunities
         
         public Game1()
         {
-            scale = 3;
+            scale = 6;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
@@ -39,6 +44,7 @@ namespace CareerOpportunities
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
+            this.escReleased = true;
             debug = true;
         }
 
@@ -86,19 +92,47 @@ namespace CareerOpportunities
                         this.LoadingLevel = true;
                         this.status = GameStatus.LOSE;
                     }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Escape) && this.escReleased)
+                    {
+                        this.status = GameStatus.PAUSE;
+                        this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
+                        this.escReleased = false;
+                    }
+                    if (Keyboard.GetState().IsKeyUp(Keys.Escape)) this.escReleased = true;
                 }
+
                 if (Map.Finished()) this.status = GameStatus.WIN;
             }
 
-            if (this.isMainMenuReady() && this.status == GameStatus.MENU)
+            if (this.isMainMenuReady())
             {
-                MainMenu.Update(gameTime);
-                if (MainMenu.ItemSelected == MenuManagement.MenuItens.START)
+                if (this.status == GameStatus.PAUSE)
                 {
-                    this.status = GameStatus.PLAY;
-                    this.LoadingLevel = true;
+                    
+                    this.PauseMenu.Update(gameTime);
+                    if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
+                    {
+                        this.status = GameStatus.PLAY;
+                        this.escReleased = true;
+                    }
+                    else if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
+                    {
+                        this.status = GameStatus.MENU;
+                        this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
+                    }
                 }
-                if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT) Exit();
+
+                if (this.status == GameStatus.MENU)
+                {
+                    MainMenu.Update(gameTime);
+                    if (MainMenu.ItemSelected == MenuManagement.MenuItens.START)
+                    {
+                        this.status = GameStatus.PLAY;
+                        this.LoadingLevel = true;
+                    }
+                    if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT) Exit();
+                }
             }
             base.Update(gameTime);
         }
@@ -111,7 +145,9 @@ namespace CareerOpportunities
 
             this.DrawPlay();
             this.DrawMainMenu();
-            
+            this.DrawPauseMenu();
+
+
             spriteBatch.End();
 
             base.Draw(gameTime);
@@ -151,6 +187,7 @@ namespace CareerOpportunities
         public void LoadMenu()
         {
             this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.scale);
+            this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.status = GameStatus.MENU;
         }
 
@@ -169,9 +206,18 @@ namespace CareerOpportunities
             }
         }
 
+        public void DrawPauseMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.PAUSE)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                this.PauseMenu.Draw(spriteBatch);
+            }
+        }
+
         public bool isMainMenuReady()
         {
-            if (this.MainMenu != null) return true;
+            if (this.MainMenu != null && this.PauseMenu != null) return true;
             return false;
         }
     }

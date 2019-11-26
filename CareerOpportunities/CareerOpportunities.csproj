@@ -50,6 +50,7 @@
     <Compile Include="HeartManagement.cs" />
     <Compile Include="Level\Render.cs" />
     <Compile Include="MenuManagement.cs" />
+    <Compile Include="PauseMenuManagement.cs" />
     <Compile Include="PlayerController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
