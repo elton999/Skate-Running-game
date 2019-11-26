@@ -36,7 +36,7 @@ namespace CareerOpportunities
         
         public Game1()
         {
-            scale = 6;
+            scale = 3;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
