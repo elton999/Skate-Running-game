@@ -40,7 +40,7 @@ namespace CareerOpportunities
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
-            // graphics.ToggleFullScreen();
+            graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
