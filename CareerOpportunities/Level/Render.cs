@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities.Level
 {
-    public class Render
+    public class Render : GameObject
     {
         // {R:172 G:50 B:50 A:255} 
         Texture2D BoxTexture;
@@ -50,9 +50,11 @@ namespace CareerOpportunities.Level
             this.BoxTexture = box;
         }
 
-        public void setCoinTexture(Texture2D coin)
+        public void setCoinTexture(Texture2D coin, string jsonFile)
         {
             this.CoinTexture = coin;
+            this.setJsonFile(jsonFile);
+            this.setSprite(this.CoinTexture);
         }
 
         public void setTileMap(Texture2D map)
@@ -165,6 +167,7 @@ namespace CareerOpportunities.Level
 
         public void Update(GameTime gameTime, int velocity)
         {
+            this.play(gameTime, "round");
             if ( CurrentStopFramesNum > stopFramesNum )
             {
                 float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -192,12 +195,18 @@ namespace CareerOpportunities.Level
         public void Draw(SpriteBatch spriteBatch, int i)
         {
             Texture2D sprite = this.BoxTexture;
-            if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
+            //if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
 
-            if (SpritesColors[i] != Color.Black)
+            Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
+
+            if (SpritesColors[i] == Color.Red)
             {
-                Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+            }
+
+            if (SpritesColors[i] == this.CoinColor)
+            {
+                this.DrawAnimation(spriteBatch, position, scale);
             }
         }
 
