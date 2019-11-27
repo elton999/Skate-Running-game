@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities
 {
-    public class GameObject
+    public class GameObject : Animation
     {
         public Vector2 Position;
         public Rectangle Body;

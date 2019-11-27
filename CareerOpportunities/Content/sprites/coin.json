@@ -1,5 +1,6 @@
-{ "frames": {
-   "coin 0.aseprite": {
+{ "frames": [
+   {
+    "filename": "coin 0.aseprite",
     "frame": { "x": 0, "y": 0, "w": 34, "h": 32 },
     "rotated": false,
     "trimmed": false,
@@ -7,7 +8,8 @@
     "sourceSize": { "w": 34, "h": 32 },
     "duration": 100
    },
-   "coin 1.aseprite": {
+   {
+    "filename": "coin 1.aseprite",
     "frame": { "x": 34, "y": 0, "w": 34, "h": 32 },
     "rotated": false,
     "trimmed": false,
@@ -15,7 +17,8 @@
     "sourceSize": { "w": 34, "h": 32 },
     "duration": 100
    },
-   "coin 2.aseprite": {
+   {
+    "filename": "coin 2.aseprite",
     "frame": { "x": 68, "y": 0, "w": 34, "h": 32 },
     "rotated": false,
     "trimmed": false,
@@ -23,7 +26,8 @@
     "sourceSize": { "w": 34, "h": 32 },
     "duration": 100
    },
-   "coin 3.aseprite": {
+   {
+    "filename": "coin 3.aseprite",
     "frame": { "x": 102, "y": 0, "w": 34, "h": 32 },
     "rotated": false,
     "trimmed": false,
@@ -31,21 +35,16 @@
     "sourceSize": { "w": 34, "h": 32 },
     "duration": 100
    }
- },
+ ],
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.16.2-x64",
-  "image": "coin-animation.png",
+  "image": "coin.png",
   "format": "RGBA8888",
   "size": { "w": 136, "h": 32 },
   "scale": "1",
   "frameTags": [
-  ],
-  "layers": [
-   { "name": "shadow", "opacity": 255, "blendMode": "normal" },
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
-  ],
-  "slices": [
+   { "name": "round", "from": 0, "to": 3, "direction": "forward" }
   ]
  }
 }
