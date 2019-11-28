@@ -195,7 +195,7 @@ namespace CareerOpportunities.Level
         public void Draw(SpriteBatch spriteBatch, int i)
         {
             Texture2D sprite = this.BoxTexture;
-            //if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
+            if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
 
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
 

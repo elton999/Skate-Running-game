@@ -1,6 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Reflection;
+using System.IO;
+
 
 namespace CareerOpportunities
 {
@@ -68,7 +72,6 @@ namespace CareerOpportunities
         {
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
-
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
@@ -176,8 +179,9 @@ namespace CareerOpportunities
             Hearts.Scale = scale;
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map.jsonContent = null;
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
-            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), "Content/sprites/coin.json");
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +"/Content/sprites/coin.json");
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
 
             // start game
@@ -193,7 +197,9 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Background != null && Hearts != null && Player != null && Map != null) return true;
+            if (Background != null && Hearts != null && Player != null && Map != null){
+                if (Map.AnimationIsReady())return true;
+            }
             return false;
         }
 

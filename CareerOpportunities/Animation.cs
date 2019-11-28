@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
@@ -13,7 +14,9 @@ namespace CareerOpportunities
         private string jsonUrl;
         public JsonTextReader jsonContent;
         private JObject jsonJObject;
-        private dynamic json;
+        public dynamic json;
+        
+        public bool animation_is_ready = false;
 
         // json info
         private int a_from;
@@ -45,13 +48,24 @@ namespace CareerOpportunities
             this.sprite = sprite;
         }
 
-        private void LoadJson()
+        public bool AnimationIsReady(){
+            if (this.jsonContent != null && this.jsonJObject != null && this.json != null && this.sprite != null && this.animation_is_ready)
+            {
+                if (this.json.meta != null) return true;
+            }
+            return false;
+        }
+
+        private async void LoadJson()
         {
-            using (StreamReader stream = new StreamReader(jsonUrl))
+            using (StreamReader stream = new StreamReader(this.jsonUrl))
             {
                 jsonContent = new JsonTextReader(stream);
                 jsonJObject = JObject.Load(jsonContent);
                 this.json = (dynamic)jsonJObject;
+                if (this.json != null){
+                    animation_is_ready = true;
+                }
             }
         }
 
@@ -113,7 +127,7 @@ namespace CareerOpportunities
             spriteBatch.Draw(sprite, position, this.spriteSourceSize, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
         }
 
-        public void drawInfo(SpriteBatch spriteBatch, SpriteFont spriteFont)
+        public void DrawInfo(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             if (this.tag != null) spriteBatch.DrawString(spriteFont, "animation: "+this.tag, new Vector2(0,0), Color.White);
             spriteBatch.DrawString(spriteFont, "Current frame: " + (this.frameCurrent + this.a_from), new Vector2(0, 25), Color.White);
