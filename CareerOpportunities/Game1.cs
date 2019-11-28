@@ -34,7 +34,7 @@ namespace CareerOpportunities
         PauseMenuManagement GameOverMenu;
 
         bool debug;
-        
+        public string path;
 
         int scale;
         
@@ -49,6 +49,7 @@ namespace CareerOpportunities
             this.LoadingLevel = false;
             this.LoadingMenu = true;
             this.escReleased = true;
+            this.path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             debug = true;
         }
 
@@ -181,7 +182,7 @@ namespace CareerOpportunities
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
-            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) +"/Content/sprites/coin.json");
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), this.path +"/Content/sprites/coin.json");
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
 
             // start game

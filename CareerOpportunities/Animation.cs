@@ -15,8 +15,6 @@ namespace CareerOpportunities
         public JsonTextReader jsonContent;
         private JObject jsonJObject;
         public dynamic json;
-        
-        public bool animation_is_ready = false;
 
         // json info
         private int a_from;
@@ -49,23 +47,20 @@ namespace CareerOpportunities
         }
 
         public bool AnimationIsReady(){
-            if (this.jsonContent != null && this.jsonJObject != null && this.json != null && this.sprite != null && this.animation_is_ready)
+            if (this.jsonContent != null && this.jsonJObject != null && this.json != null && this.sprite != null)
             {
                 if (this.json.meta != null) return true;
             }
             return false;
         }
 
-        private async void LoadJson()
+        private void LoadJson()
         {
             using (StreamReader stream = new StreamReader(this.jsonUrl))
             {
                 jsonContent = new JsonTextReader(stream);
                 jsonJObject = JObject.Load(jsonContent);
                 this.json = (dynamic)jsonJObject;
-                if (this.json != null){
-                    animation_is_ready = true;
-                }
             }
         }
 
