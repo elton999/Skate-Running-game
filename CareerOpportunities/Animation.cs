@@ -45,9 +45,17 @@ namespace CareerOpportunities
             this.sprite = sprite;
         }
 
+        public bool AnimationIsReady(){
+            if (this.jsonContent != null && this.jsonJObject != null && this.json != null && this.sprite != null)
+            {
+                if (this.json.meta != null) return true;
+            }
+            return false;
+        }
+
         private void LoadJson()
         {
-            using (StreamReader stream = new StreamReader(jsonUrl))
+            using (StreamReader stream = new StreamReader(this.jsonUrl))
             {
                 jsonContent = new JsonTextReader(stream);
                 jsonJObject = JObject.Load(jsonContent);
@@ -113,7 +121,7 @@ namespace CareerOpportunities
             spriteBatch.Draw(sprite, position, this.spriteSourceSize, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
         }
 
-        public void drawInfo(SpriteBatch spriteBatch, SpriteFont spriteFont)
+        public void DrawInfo(SpriteBatch spriteBatch, SpriteFont spriteFont)
         {
             if (this.tag != null) spriteBatch.DrawString(spriteFont, "animation: "+this.tag, new Vector2(0,0), Color.White);
             spriteBatch.DrawString(spriteFont, "Current frame: " + (this.frameCurrent + this.a_from), new Vector2(0, 25), Color.White);
