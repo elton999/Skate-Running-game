@@ -123,14 +123,14 @@ namespace CareerOpportunities
                 }
 
                 // left and right
-                //if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
-                //{
-                //    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
-                //}
-                //if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                //{
-                //    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
-                //}
+                if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+                {
+                    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                }
+                if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                {
+                    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+                }
             }
             else
             {
