@@ -20,7 +20,7 @@ namespace CareerOpportunities
         Texture2D GameOverScreen;
 
         public int Level;
-        public enum GameStatus { WIN, LOSE, DIE, PLAY, PAUSE, MENU }
+        public enum GameStatus { WIN, LOSE, PLAY, PAUSE, MENU }
         public GameStatus status;
 
         public bool LoadingLevel;
@@ -120,8 +120,7 @@ namespace CareerOpportunities
             if (this.isMainMenuReady())
             {
                 if (this.status == GameStatus.PAUSE)
-                {
-                    
+                {   
                     this.PauseMenu.Update(gameTime);
                     if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
                     {
