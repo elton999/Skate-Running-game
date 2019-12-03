@@ -16,8 +16,11 @@ namespace CareerOpportunities
         Texture2D Background;
         Texture2D Character;
 
+        Texture2D loadingScreen;
+        Texture2D GameOverScreen;
+
         public int Level;
-        public enum GameStatus { WIN, LOSE, DIE, PLAY, PAUSE, MENU }
+        public enum GameStatus { WIN, LOSE, PLAY, PAUSE, MENU }
         public GameStatus status;
 
         public bool LoadingLevel;
@@ -62,6 +65,7 @@ namespace CareerOpportunities
         {
             this.status   = GameStatus.MENU;
             spriteBatch   = new SpriteBatch(GraphicsDevice);
+            loadingScreen = Content.Load<Texture2D>("sprites/loading");
         }
 
         
@@ -89,12 +93,14 @@ namespace CareerOpportunities
             {
                 if (this.status == GameStatus.PLAY)
                 {
-                    Map.Update(gameTime, 100);
+                    Map.Update(gameTime, 130);
                     Player.Update(gameTime, Map, Hearts);
                     if (Hearts.NumberOfhearts == 0)
                     {
-                        this.LoadingLevel = true;
+                        //this.LoadingLevel = true;
                         this.status = GameStatus.LOSE;
+                        this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
+                        this.escReleased = false;
                     }
 
                     if (Keyboard.GetState().IsKeyDown(Keys.Escape) && this.escReleased)
@@ -107,13 +113,14 @@ namespace CareerOpportunities
                 }
 
                 if (Map.Finished()) this.status = GameStatus.WIN;
+
+
             }
 
             if (this.isMainMenuReady())
             {
                 if (this.status == GameStatus.PAUSE)
-                {
-                    
+                {   
                     this.PauseMenu.Update(gameTime);
                     if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
                     {
@@ -121,6 +128,22 @@ namespace CareerOpportunities
                         this.escReleased = true;
                     }
                     else if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
+                    {
+                        this.status = GameStatus.MENU;
+                        this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
+                    }
+                }
+
+                if (this.status == GameStatus.LOSE)
+                {
+                    this.GameOverMenu.Update(gameTime);
+                    if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
+                    {
+                        this.status = GameStatus.PLAY;
+                        this.LoadingLevel = true;
+                        this.escReleased = true;
+                    }
+                    else if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
                     {
                         this.status = GameStatus.MENU;
                         this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
@@ -143,13 +166,17 @@ namespace CareerOpportunities
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+
+            if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY)) {
+                spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            }
 
             this.DrawPlay();
             this.DrawMainMenu();
             this.DrawPauseMenu();
+            this.DrawGameOverMenu();
 
 
             spriteBatch.End();
@@ -162,6 +189,7 @@ namespace CareerOpportunities
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
+                GraphicsDevice.Clear(Color.CornflowerBlue);
                 spriteBatch.Draw(Background, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
                 Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
                 Player.Draw(spriteBatch);
@@ -193,6 +221,9 @@ namespace CareerOpportunities
         {
             this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.scale);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
+            this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
+            this.GameOverMenu.gameOver = true;
+            this.GameOverScreen = Content.Load<Texture2D>("sprites/game_over");
             this.status = GameStatus.MENU;
         }
 
@@ -219,6 +250,16 @@ namespace CareerOpportunities
             {
                 GraphicsDevice.Clear(Color.Black);
                 this.PauseMenu.Draw(spriteBatch);
+            }
+        }
+
+        public void DrawGameOverMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.LOSE)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Draw(this.GameOverScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                this.GameOverMenu.Draw(spriteBatch);
             }
         }
 

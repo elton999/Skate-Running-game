@@ -25,6 +25,7 @@ namespace CareerOpportunities.Level
 
         Color BoxColor = Color.Red;
         Color CoinColor = Color.Yellow;
+        Color HeartsColor = Color.Blue;
         int[] LinesBox;
 
         int stopFramesNum = 0;
