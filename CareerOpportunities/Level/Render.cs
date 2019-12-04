@@ -150,7 +150,7 @@ namespace CareerOpportunities.Level
 
                         if (x_overlaps && y_overlaps)
                         {
-                            if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
+                            //if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
                             this.CollisionPosition = new Vector2(x, y);
                             if (this.MapColors[x, y] == this.BoxColor) any_collision = true;
                         }
@@ -164,12 +164,13 @@ namespace CareerOpportunities.Level
         public string CollisionItem(Vector2 position)
         {
             Color ReturnColor = this.MapColors[(int)position.X, (int)position.Y];
-            ReturnColor = this.MapColors[(int)position.X, (int)position.Y];
-            Console.WriteLine(ReturnColor);
-            Console.WriteLine(this.CoinColor);
-            Console.WriteLine("------------------------------");
-            if (ReturnColor == this.HeartsColor) return "heart";
-            if (ReturnColor == this.CoinColor) return "coin";
+            string ReturnItem = "";
+            if (this.BoxColor != ReturnColor && Color.Black != ReturnColor) {
+                if (ReturnColor == this.HeartsColor) ReturnItem = "heart";
+                if (ReturnColor == this.CoinColor) ReturnItem = "coin";
+                this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
+            }
+
 
             for (int i = 0; i < this.positionBoxs.Length; i++)
             {
@@ -177,10 +178,11 @@ namespace CareerOpportunities.Level
                     ReturnColor = this.SpritesColors[i];
                     this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
                     this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
-                    if (ReturnColor == this.BoxColor) return "box";
+                    if (ReturnColor == this.BoxColor) ReturnItem ="box";
                 }
             }
-            return "";
+
+            return ReturnItem;
         }
 
         public bool Finished()

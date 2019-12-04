@@ -84,7 +84,7 @@ namespace CareerOpportunities
             if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
             {
                 string MapItem = map.CollisionItem(map.CollisionPosition);
-                heart.remove(1); 
+                heart.remove(1);
                 map.StopFor(35);
             }
             else
@@ -96,7 +96,6 @@ namespace CareerOpportunities
                         heart.add(1);
                         break;
                 }
-
             }
 
             if (map.isStoped())
