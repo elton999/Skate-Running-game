@@ -15,6 +15,8 @@ namespace CareerOpportunities
         public MenuItens ItemOver;
         public MenuItens ItemSelected;
 
+        public string[] MenuItensString;
+
         bool released;
 
         public MenuManagement(Texture2D sprite, int scale)
@@ -24,7 +26,8 @@ namespace CareerOpportunities
             this.ItemOver = MenuItens.START;
             this.ItemSelected = MenuItens.NONE;
             this.Position = new Vector2(102*this.Scale, 72*this.Scale);
-            released = true;
+            this.released = true;
+            this.MenuItensString = new string[] { "START", "OPTIONS", "CREDITS", "EXIT" };
         }
 
 
@@ -67,13 +70,13 @@ namespace CareerOpportunities
         {
             for (int i = 0; i < this.Sprite.Width / 36; i++)
             {
-                Vector2 position = new Vector2(this.Position.X, this.Position.Y + ((i*9) * this.Scale));
-                this.Body = new Rectangle(new Point(i*36, 0), new Point(36, 6));
+                Vector2 position = new Vector2(this.Position.X, this.Position.Y + ((i * 9) * this.Scale));
+                this.Body = new Rectangle(new Point(i * 36, 0), new Point(36, 6));
 
                 this.SpriteColor = Color.Gray;
                 if ((MenuItens)i == this.ItemOver) this.SpriteColor = Color.White;
                 spriteBatch.Draw(this.Sprite, position, this.Body, this.SpriteColor, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
-                
+
             }
         }
     }
