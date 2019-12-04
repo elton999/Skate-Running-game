@@ -211,6 +211,7 @@ namespace CareerOpportunities
             Map.jsonContent = null;
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), this.path +"/Content/sprites/coin.json");
+            Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
 
             // start game
