@@ -83,9 +83,19 @@ namespace CareerOpportunities
 
             if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
             {
-                map.CollisionItem(map.CollisionPosition);
+                string MapItem = map.CollisionItem(map.CollisionPosition);
+                heart.remove(1);
                 map.StopFor(35);
-                this.removeITem = true;
+            }
+            else
+            {
+                string MapItem = map.CollisionItem(map.CollisionPosition, true);
+                switch (MapItem)
+                {
+                    case "heart":
+                        heart.add(1);
+                        break;
+                }
             }
 
             if (map.isStoped())
@@ -131,10 +141,6 @@ namespace CareerOpportunities
                 {
                     if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
                 }
-            }
-            else
-            {
-                if (this.removeITem) heart.remove(1);
             }
 
         }

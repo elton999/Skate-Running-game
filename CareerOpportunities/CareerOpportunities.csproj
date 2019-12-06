@@ -120,6 +120,8 @@
     </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="Content\File.spritefont" />
+    <None Include="Content\pressstart.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

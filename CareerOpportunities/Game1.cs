@@ -47,7 +47,7 @@ namespace CareerOpportunities
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
-            // graphics.ToggleFullScreen();
+            graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
@@ -211,6 +211,7 @@ namespace CareerOpportunities
             Map.jsonContent = null;
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), this.path +"/Content/sprites/coin.json");
+            Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
 
             // start game
@@ -219,7 +220,7 @@ namespace CareerOpportunities
 
         public void LoadMenu()
         {
-            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.scale);
+            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), Content.Load<SpriteFont>("pressstart"), this.scale);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.GameOverMenu.gameOver = true;

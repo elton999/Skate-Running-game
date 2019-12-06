@@ -13,6 +13,20 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin File.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:File.spritefont
+
+#begin pressstart.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:pressstart.spritefont
+
 #begin prototype/box.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -37,7 +51,7 @@
 /processorParam:TextureFormat=Color
 /build:prototype/esteira.png
 
-#begin prototype/hit-box.png
+#begin prototype/heart.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -47,7 +61,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/hit-box.png
+/build:prototype/heart.png
 
 #begin prototype/Jim.png
 /importer:TextureImporter

@@ -37,6 +37,11 @@ namespace CareerOpportunities
             this.NumberOfhearts -= num;
         }
 
+        public void add(int num)
+        {
+            this.NumberOfhearts += num;
+        }
+
 
         public void Draw(SpriteBatch spriteBatch)
         {

@@ -15,17 +15,20 @@ namespace CareerOpportunities
         public MenuItens ItemOver;
         public MenuItens ItemSelected;
 
+        public SpriteFont Font;
+
         public string[] MenuItensString;
 
         bool released;
 
-        public MenuManagement(Texture2D sprite, int scale)
+        public MenuManagement(Texture2D sprite, SpriteFont Font, int scale)
         {
             this.Sprite = sprite;
             this.Scale = scale;
             this.ItemOver = MenuItens.START;
             this.ItemSelected = MenuItens.NONE;
             this.Position = new Vector2(102*this.Scale, 72*this.Scale);
+            this.Font = Font;
             this.released = true;
             this.MenuItensString = new string[] { "START", "OPTIONS", "CREDITS", "EXIT" };
         }
@@ -75,7 +78,8 @@ namespace CareerOpportunities
 
                 this.SpriteColor = Color.Gray;
                 if ((MenuItens)i == this.ItemOver) this.SpriteColor = Color.White;
-                spriteBatch.Draw(this.Sprite, position, this.Body, this.SpriteColor, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+                //spriteBatch.Draw(this.Sprite, position, this.Body, this.SpriteColor, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+                spriteBatch.DrawString(this.Font, this.MenuItensString[i], position, this.SpriteColor);
 
             }
         }
