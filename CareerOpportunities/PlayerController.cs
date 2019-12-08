@@ -73,7 +73,7 @@ namespace CareerOpportunities
             }
         }
 
-        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart)
+        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins)
         {
             this.PlayAnimation();
             float pull = 100f;
@@ -94,6 +94,9 @@ namespace CareerOpportunities
                 {
                     case "heart":
                         heart.add(1);
+                        break;
+                    case "coin":
+                        Coins.add(1);
                         break;
                 }
             }

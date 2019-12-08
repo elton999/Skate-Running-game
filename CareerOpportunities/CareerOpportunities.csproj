@@ -47,6 +47,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="CoinManagement.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="HeartManagement.cs" />
@@ -120,7 +121,7 @@
     </None>
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="Content\File.spritefont" />
+    <None Include="Content\pressstart3.spritefont" />
     <None Include="Content\pressstart.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>

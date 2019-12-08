@@ -30,11 +30,14 @@ namespace CareerOpportunities
 
         MenuManagement MainMenu;
         HeartManagement Hearts;
+        CoinManagement Coins;
         PlayerController Player;
         Level.Render Map;
 
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
+
+        SpriteFont font3;
 
         bool debug;
         public string path;
@@ -47,7 +50,7 @@ namespace CareerOpportunities
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 240 * scale;
             graphics.PreferredBackBufferHeight = 135 * scale;
-            graphics.ToggleFullScreen();
+            //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
@@ -66,6 +69,7 @@ namespace CareerOpportunities
             this.status   = GameStatus.MENU;
             spriteBatch   = new SpriteBatch(GraphicsDevice);
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
+            this.font3 = Content.Load<SpriteFont>("pressstart3");
         }
 
         
@@ -94,7 +98,7 @@ namespace CareerOpportunities
                 if (this.status == GameStatus.PLAY)
                 {
                     Map.Update(gameTime, 130);
-                    Player.Update(gameTime, Map, Hearts);
+                    Player.Update(gameTime, Map, Hearts, Coins);
                     if (Hearts.NumberOfhearts == 0)
                     {
                         //this.LoadingLevel = true;
@@ -196,6 +200,7 @@ namespace CareerOpportunities
                 Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
                 // HUD
                 Hearts.Draw(spriteBatch);
+                Coins.Draw(spriteBatch);
                 spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
         }
@@ -206,6 +211,7 @@ namespace CareerOpportunities
             Background = Content.Load<Texture2D>("prototype/esteira");
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
             Hearts.Scale = scale;
+            Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
@@ -220,7 +226,7 @@ namespace CareerOpportunities
 
         public void LoadMenu()
         {
-            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), Content.Load<SpriteFont>("pressstart"), this.scale);
+            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.font3, this.scale);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.GameOverMenu.gameOver = true;
@@ -230,7 +236,7 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Background != null && Hearts != null && Player != null && Map != null){
+            if (Background != null && Hearts != null && Player != null && Map != null && Coins != null){
                 if (Map.AnimationIsReady())return true;
             }
             return false;

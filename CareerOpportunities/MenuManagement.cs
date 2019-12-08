@@ -30,7 +30,11 @@ namespace CareerOpportunities
             this.Position = new Vector2(102*this.Scale, 72*this.Scale);
             this.Font = Font;
             this.released = true;
-            this.MenuItensString = new string[] { "START", "OPTIONS", "CREDITS", "EXIT" };
+            this.MenuItensString = new string[] {
+                "START",
+                "OPTIONS",
+                "CREDITS",
+                "EXIT" };
         }
 
 
