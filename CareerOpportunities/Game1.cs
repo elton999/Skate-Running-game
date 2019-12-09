@@ -212,7 +212,7 @@ namespace CareerOpportunities
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
             Hearts.Scale = scale;
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
-            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));

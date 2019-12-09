@@ -13,20 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin pressstart.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:pressstart.spritefont;pressstart_8.spritefont
-
-#begin pressstart3.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:pressstart3.spritefont
-
 #begin prototype/box.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -62,6 +48,9 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:prototype/heart.png
+
+#begin prototype/jim.json
+/copy:prototype/jim.json
 
 #begin prototype/Jim.png
 /importer:TextureImporter

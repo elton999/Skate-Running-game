@@ -22,7 +22,7 @@ namespace CareerOpportunities
         private bool removeITem;
 
 
-        public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth)
+        public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth, string jsonFile)
         {
             this.Sprite = sprite;
             this.Scale = scale;
@@ -40,6 +40,9 @@ namespace CareerOpportunities
                 BufferHeight - (linePosition * 3) + (11 * scale),
                 BufferHeight - (linePosition * 4) + (24 * scale),
             };
+
+            this.setJsonFile(jsonFile);
+            this.setSprite(this.Sprite);
 
             canMoveVertical = true;
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
@@ -80,6 +83,8 @@ namespace CareerOpportunities
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.removeITem = false;
             // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
+
+            this.play(gameTime, "run");
 
             if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
             {
@@ -150,7 +155,8 @@ namespace CareerOpportunities
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+            //spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+            this.DrawAnimation(spriteBatch, this.Position, this.Scale);
         }
 
     }

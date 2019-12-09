@@ -123,6 +123,9 @@
     <None Include="app.manifest" />
     <None Include="Content\pressstart3.spritefont" />
     <None Include="Content\pressstart.spritefont" />
+    <None Include="Content\pressstart3.xnb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
