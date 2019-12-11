@@ -28,6 +28,8 @@ namespace CareerOpportunities
         private int frameCurrent;
         private int frameCount;
         private float maxFrame;
+
+        public bool lastFrame;
         
 
         public void setJsonFile(string jsonContent = null)
@@ -71,8 +73,9 @@ namespace CareerOpportunities
 
         public void play(GameTime gameTime, string tag)
         {
+            this.lastFrame = false;
 
-            if(tag != this.tag)
+            if (tag != this.tag)
             {
                 int i = 0;
                 while (i < this.json.meta.frameTags.Count)
@@ -104,7 +107,11 @@ namespace CareerOpportunities
 
                     this.spriteSourceSize = new Rectangle(map, size);
                     if (this.a_to != (this.frameCurrent + this.a_from)) this.frameCurrent++;
-                    else this.frameCurrent = 0;
+                    else
+                    {
+                        this.frameCurrent = 0;
+                        this.lastFrame = true;
+                    }
                 }
                 else
                 {

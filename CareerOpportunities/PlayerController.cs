@@ -21,6 +21,8 @@ namespace CareerOpportunities
 
         private bool removeITem;
 
+        private int runTimes;
+
 
         public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth, string jsonFile)
         {
@@ -47,6 +49,8 @@ namespace CareerOpportunities
             canMoveVertical = true;
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
             this.Body = new Rectangle(new Point(16 * this.Scale, 21 * this.Scale), new Point(8 * this.Scale, 0));
+
+            this.runTimes = 0;
         }
 
 
@@ -84,13 +88,23 @@ namespace CareerOpportunities
             this.removeITem = false;
             // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
 
-            this.play(gameTime, "run");
+            if (map.isStoped())
+            {
+                if (this.lastFrame) this.runTimes += 1;
+
+                if (this.runTimes < 3) this.play(gameTime, "run_idle");
+                else this.play(gameTime, "run");
+
+                if (this.runTimes == 4) this.runTimes = 0;
+            }
+            else this.play(gameTime, "hit");
+            
 
             if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
             {
                 string MapItem = map.CollisionItem(map.CollisionPosition);
                 heart.remove(1);
-                map.StopFor(35);
+                map.StopFor(60);
             }
             else
             {
