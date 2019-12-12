@@ -37,6 +37,8 @@ namespace CareerOpportunities
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
 
+        CameraManagement camera;
+
         SpriteFont font3;
 
         bool debug;
@@ -62,6 +64,7 @@ namespace CareerOpportunities
         protected override void Initialize()
         {
             base.Initialize();
+            camera = new CameraManagement();
         }
 
         protected override void LoadContent()
