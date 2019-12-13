@@ -80,7 +80,7 @@ namespace CareerOpportunities
             }
         }
 
-        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins)
+        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera)
         {
             this.PlayAnimation();
             float pull = 100f;
@@ -105,6 +105,7 @@ namespace CareerOpportunities
                 string MapItem = map.CollisionItem(map.CollisionPosition);
                 heart.remove(1);
                 map.StopFor(60);
+                camera.TimeShake = 12;
             }
             else
             {

@@ -37,6 +37,8 @@ namespace CareerOpportunities
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
 
+        CameraManagement camera;
+
         SpriteFont font3;
 
         bool debug;
@@ -62,6 +64,9 @@ namespace CareerOpportunities
         protected override void Initialize()
         {
             base.Initialize();
+            camera = new CameraManagement();
+            camera.TimeShake = 0;
+            camera.shakeMagnitude = 0.05f;
         }
 
         protected override void LoadContent()
@@ -81,6 +86,7 @@ namespace CareerOpportunities
         {
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
+            camera.Update(gameTime);
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
@@ -98,7 +104,7 @@ namespace CareerOpportunities
                 if (this.status == GameStatus.PLAY)
                 {
                     Map.Update(gameTime, 130);
-                    Player.Update(gameTime, Map, Hearts, Coins);
+                    Player.Update(gameTime, Map, Hearts, Coins, camera);
                     if (Hearts.NumberOfhearts == 0)
                     {
                         //this.LoadingLevel = true;
@@ -171,7 +177,7 @@ namespace CareerOpportunities
         protected override void Draw(GameTime gameTime)
         {
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(0,0,0));
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(camera.Position.X, camera.Position.Y, 0));
 
             if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY)) {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);

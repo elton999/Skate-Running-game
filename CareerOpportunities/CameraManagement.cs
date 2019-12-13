@@ -13,26 +13,45 @@ namespace CareerOpportunities
     {
 
         public float TimeShake;
-        public Vector2 maxShake;
+        private static readonly Random getrandom = new Random();
+        public Vector2 InitialPosition;
+        public Vector2 Position;
+        public float shakeMagnitude = 0.3f;
 
         public CameraManagement()
         {
+            this.Position = new Vector2(0, 0);
+            this.InitialPosition = new Vector2(0, 0);
         }
 
         public void Update(GameTime gameTime)
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            this.UpdateShake(delta);
         }
 
-        private void UpdateShake(int delta)
-        { 
-        
-        }
-
-        private bool IsShake()
+        private void UpdateShake(float delta)
         {
+            if (this.TimeShake > 0)
+            {
+                lock (getrandom)
+                {
+                    int randomX = getrandom.Next(5);
+                    int randomY = getrandom.Next(5);
 
-            return false;
+                    this.Position = new Vector2(
+                        randomX + this.InitialPosition.X * this.shakeMagnitude,
+                        randomY + this.InitialPosition.Y * this.shakeMagnitude
+                    );
+
+                    this.TimeShake -= 1;
+                }
+            }
+            else
+            {
+                this.Position = new Vector2(0,0);
+            }
+            
         }
     }
 }
