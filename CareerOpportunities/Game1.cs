@@ -171,7 +171,7 @@ namespace CareerOpportunities
         protected override void Draw(GameTime gameTime)
         {
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(0,0,0));
 
             if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY)) {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);

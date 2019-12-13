@@ -19,9 +19,9 @@ namespace CareerOpportunities
         {
         }
 
-        public void Update(GameTime gametime)
+        public void Update(GameTime gameTime)
         {
-
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         private void UpdateShake(int delta)
