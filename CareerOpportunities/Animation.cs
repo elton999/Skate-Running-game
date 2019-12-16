@@ -30,6 +30,8 @@ namespace CareerOpportunities
         private float maxFrame;
 
         public bool lastFrame;
+
+        public float sizeMutiply = 1f;
         
 
         public void setJsonFile(string jsonContent = null)
@@ -102,8 +104,8 @@ namespace CareerOpportunities
                     frame             = (this.frameCurrent + this.a_from);
                     dynamic frameInfo = this.json.frames[frame];
 
-                    Point size = new Point((int)frameInfo.frame.h, (int)frameInfo.frame.w);
-                    Point map  = new Point((int)frameInfo.frame.x, (int)frameInfo.frame.y);
+                    Point size = new Point((int)(frameInfo.frame.h * this.sizeMutiply), (int)(frameInfo.frame.w * this.sizeMutiply));
+                    Point map  = new Point((int)(frameInfo.frame.x * this.sizeMutiply), (int)(frameInfo.frame.y * this.sizeMutiply));
 
                     this.spriteSourceSize = new Rectangle(map, size);
                     if (this.a_to != (this.frameCurrent + this.a_from)) this.frameCurrent++;
@@ -122,10 +124,10 @@ namespace CareerOpportunities
            
         }
 
-        public void DrawAnimation(SpriteBatch spriteBatch, Vector2 position, int scale)
+        public void DrawAnimation(SpriteBatch spriteBatch, Vector2 position, float scale)
         {
             // spriteBatch.Draw(this.sprite, position, this.spriteSourceSize, Color.White);
-            spriteBatch.Draw(sprite, position, this.spriteSourceSize, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(sprite, position, this.spriteSourceSize, Color.White, 0, new Vector2(0, 0), scale / this.sizeMutiply, SpriteEffects.None, 0f);
         }
 
         public void DrawInfo(SpriteBatch spriteBatch, SpriteFont spriteFont)

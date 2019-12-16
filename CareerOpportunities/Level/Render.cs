@@ -232,13 +232,17 @@ namespace CareerOpportunities.Level
 
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
 
-            if (SpritesColors[i] == Color.Red || SpritesColors[i] == this.HeartsColor)
+            if (SpritesColors[i] == Color.Red)
+            {
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), Color.White, 0, new Vector2(0, 0), this.scale/5f, SpriteEffects.None, 0f);
+            } else if (SpritesColors[i] == this.HeartsColor)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
 
             if (SpritesColors[i] == this.CoinColor)
             {
+                this.sizeMutiply = 5;
                 this.DrawAnimation(spriteBatch, position, scale);
             }
         }

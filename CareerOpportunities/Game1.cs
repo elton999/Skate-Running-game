@@ -221,8 +221,8 @@ namespace CareerOpportunities
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
-            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box"));
-            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation"), this.path +"/Content/sprites/coin.json");
+            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"));
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation-2"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
 

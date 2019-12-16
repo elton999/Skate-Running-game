@@ -13,7 +13,7 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin prototype/box.png
+#begin prototype/box_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -23,7 +23,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/box.png
+/build:prototype/box_2.png
 
 #begin prototype/esteira.png
 /importer:TextureImporter
@@ -91,7 +91,7 @@
 /processorParam:TextureFormat=Color
 /build:sprites/coin.png
 
-#begin sprites/coin-animation.png
+#begin sprites/coin-animation-2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -101,7 +101,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:sprites/coin-animation.png
+/build:sprites/coin-animation-2.png
 
 #begin sprites/coin-hud.png
 /importer:TextureImporter
