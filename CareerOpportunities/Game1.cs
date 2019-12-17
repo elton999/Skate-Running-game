@@ -13,7 +13,6 @@ namespace CareerOpportunities
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Background;
         Texture2D Character;
 
         Texture2D loadingScreen;
@@ -200,7 +199,7 @@ namespace CareerOpportunities
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
                 GraphicsDevice.Clear(Color.CornflowerBlue);
-                spriteBatch.Draw(Background, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                Map.DrawGround(spriteBatch);
                 Map.Layer1(spriteBatch, Player.CurrentVerticalLine);
                 Player.Draw(spriteBatch);
                 Map.Layer0(spriteBatch, Player.CurrentVerticalLine);
@@ -214,13 +213,13 @@ namespace CareerOpportunities
         public void LoadLevel()
         {
             Character = Content.Load<Texture2D>("sprites/jim_hud");
-            Background = Content.Load<Texture2D>("prototype/esteira");
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
             Hearts.Scale = scale;
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
+            Map.setGround(Content.Load<Texture2D>("prototype/esteira-sheet-2"));
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation-2"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
@@ -242,7 +241,7 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Background != null && Hearts != null && Player != null && Map != null && Coins != null){
+            if (Hearts != null && Player != null && Map != null && Coins != null){
                 if (Map.AnimationIsReady())return true;
             }
             return false;

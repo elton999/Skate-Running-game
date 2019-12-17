@@ -13,6 +13,9 @@ namespace CareerOpportunities.Level
         Texture2D TileMap;
         Texture2D CoinTexture;
         Texture2D HeartTexure;
+        Texture2D Ground;
+
+        Vector2[] PositionGround;
 
         int start;
         int currentPositionX;
@@ -39,12 +42,22 @@ namespace CareerOpportunities.Level
             this.currentPositionX = start;
             this.BufferHeight = BufferHeight;
 
+            this.PositionGround = new Vector2[] {
+                    new Vector2(0,0),
+                    new Vector2(start,0)
+            };
+
             this.LinesBox = new int[] {
                 this.BufferHeight - ((33 * scale)) + (scale),
                 this.BufferHeight - ((32 * scale) * 2) + (10 * scale),
                 this.BufferHeight - ((32 * scale) * 3) + (20 * scale),
                 this.BufferHeight - ((32 * scale) * 4) + (30 * scale),
             };
+        }
+
+        public void setGround(Texture2D Ground)
+        {
+            this.Ground = Ground;
         }
 
         public void setBoxTexture(Texture2D box)
@@ -203,9 +216,22 @@ namespace CareerOpportunities.Level
             if ( CurrentStopFramesNum > stopFramesNum )
             {
                 float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                this.currentPositionX -= (int)(velocity * delta * this.scale);
+                int velocityCurrent = (int)(velocity * delta * this.scale);
+                this.currentPositionX -= velocityCurrent;
+
+                for (int i = 0; i < this.PositionGround.Length; i++) {
+                    if (this.PositionGround[i].X <= -(start - velocityCurrent)) this.PositionGround[i] = new Vector2(start, 0);
+                    else this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
+                }
             }
             else CurrentStopFramesNum += 1;
+        }
+
+
+        public void DrawGround(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(Ground, this.PositionGround[0], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
+            spriteBatch.Draw(Ground, this.PositionGround[1], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
         }
 
         public void Layer0(SpriteBatch spriteBatch, int layer)
