@@ -233,8 +233,10 @@ namespace CareerOpportunities
         {
             this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.font3, this.scale);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
+            this.PauseMenu.Font = this.font3;
             this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.GameOverMenu.gameOver = true;
+            this.GameOverMenu.Font = this.font3;
             this.GameOverScreen = Content.Load<Texture2D>("sprites/game_over");
             this.status = GameStatus.MENU;
         }
