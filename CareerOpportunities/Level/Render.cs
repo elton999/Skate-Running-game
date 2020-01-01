@@ -10,6 +10,7 @@ namespace CareerOpportunities.Level
     {
         // {R:172 G:50 B:50 A:255} 
         Texture2D BoxTexture;
+        Texture2D BoxShadow;
         Texture2D TileMap;
         Texture2D CoinTexture;
         Texture2D HeartTexure;
@@ -63,6 +64,11 @@ namespace CareerOpportunities.Level
         public void setBoxTexture(Texture2D box)
         {
             this.BoxTexture = box;
+        }
+
+        public void setBoxShadow(Texture2D boxShadow)
+        {
+            this.BoxShadow = boxShadow;
         }
 
         public void setHeartTexture(Texture2D heart)
@@ -236,7 +242,12 @@ namespace CareerOpportunities.Level
 
         public void Layer0(SpriteBatch spriteBatch, int layer)
         {
-            for(int i = 0; i < this.positionBoxs.Length; i++)
+            for (int i = 0; i < this.positionBoxs.Length; i++)
+            {
+                if (layer > (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+            }
+
+            for (int i = 0; i < this.positionBoxs.Length; i++)
             {
                 if (layer > (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
             }
@@ -246,7 +257,22 @@ namespace CareerOpportunities.Level
         {
             for (int i = 0; i < this.positionBoxs.Length; i++)
             {
+                if (layer <= (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+            }
+            for (int i = 0; i < this.positionBoxs.Length; i++)
+            {
                 if (layer <= (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
+            }
+        }
+
+
+        public void DrawBoxShadow(SpriteBatch spriteBatch, int i)
+        {
+            Texture2D sprite = this.BoxShadow;
+            Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
+            if (SpritesColors[i] == Color.Red)
+            {
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
             }
         }
 
