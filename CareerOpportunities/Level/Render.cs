@@ -111,9 +111,9 @@ namespace CareerOpportunities.Level
 
                 for (int x = 0; x < this.TileMap.Width; x++)
                 {
-                    for (int y = 0; y < this.TileMap.Height; y++)
+                    for (int y = this.TileMap.Height - 1; y >= 0 ; y--)
                     {
-                        this.MapColors[x, y] = colors1D[x + y * this.TileMap.Width];
+                        this.MapColors[x, this.TileMap.Height - 1 - y] = colors1D[x + y * this.TileMap.Width];
                     }
                 }
             }
@@ -125,7 +125,7 @@ namespace CareerOpportunities.Level
         {
             List<Vector2> termsList = new List<Vector2>();
             List<Color> termsListColors = new List<Color>();
-            for (int x = this.TileMap.Width - 1; x >= 0; x--)
+            for (int x = 0; x < this.TileMap.Width; x++)
             {
                 for (int y = this.TileMap.Height - 1; y >= 0; y--)
                 {
@@ -153,7 +153,6 @@ namespace CareerOpportunities.Level
         public bool Collision(Rectangle body, Vector2 position, int line)
         {
             bool any_collision = false;
-
             for (int x = 0; x < this.TileMap.Width; x++)
             {
                 for (int y = 0; y < this.TileMap.Height; y++)
@@ -240,31 +239,30 @@ namespace CareerOpportunities.Level
             spriteBatch.Draw(Ground, this.PositionGround[1], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
         }
 
-        public void Layer0(SpriteBatch spriteBatch, int layer)
+        public void Layers(SpriteBatch spriteBatch, int layer, bool front)
         {
-            for (int i = 0; i < this.positionBoxs.Length; i++)
+            if (front)
             {
-                if (layer > (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+                for (int i_layer = layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch);
             }
-
-            for (int i = 0; i < this.positionBoxs.Length; i++)
+            else
             {
-                if (layer > (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
+                for (int i_layer = 3; i_layer >= layer; i_layer--) this.drawLayer(i_layer, spriteBatch);
             }
         }
 
-        public void Layer1(SpriteBatch spriteBatch, int layer)
+        private void drawLayer(int i_layer, SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < this.positionBoxs.Length; i++)
+            for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
             {
-                if (layer <= (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+                if (i_layer == (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
             }
-            for (int i = 0; i < this.positionBoxs.Length; i++)
+
+            for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
             {
-                if (layer <= (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
+                if (i_layer == (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
             }
         }
-
 
         public void DrawBoxShadow(SpriteBatch spriteBatch, int i)
         {
@@ -272,7 +270,7 @@ namespace CareerOpportunities.Level
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
             if (SpritesColors[i] == Color.Red)
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
+               spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
             }
         }
 
