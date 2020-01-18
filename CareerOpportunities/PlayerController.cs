@@ -18,8 +18,11 @@ namespace CareerOpportunities
         private int BufferWidth;
         private int[] Lines;
         private int PreviousVerticalLine;
+        
+        private bool isGrounded = true;
+        private float JumpTime;
+        private float JumpTimeCurrent = 0;
 
-        private bool removeITem;
 
         private int runTimes;
 
@@ -31,7 +34,7 @@ namespace CareerOpportunities
 
             this.CurrentVerticalLine = 0;
             this.PreviousVerticalLine = 1;
-            this.PlayerVerticalVelocity = (22 * scale) / 6.5f;
+            this.PlayerVerticalVelocity = (22 * scale) / 5.5f;
             this.PlayerHorizontalVelocity = 3 * this.Scale;
             this.BufferWidth = BufferWidth;
 
@@ -41,6 +44,7 @@ namespace CareerOpportunities
                 BufferHeight - (linePosition *2) + (5 * scale),
                 BufferHeight - (linePosition * 3) + (11 * scale),
                 BufferHeight - (linePosition * 4) + (24 * scale),
+                BufferHeight - (linePosition * 5) + (35 * scale),
             };
 
             this.setJsonFile(jsonFile);
@@ -54,39 +58,33 @@ namespace CareerOpportunities
         }
 
 
-        public void PlayAnimation()
+        public void PlayAnimation(Level.Render map, GameTime gameTime)
         {
-            if (Position.Y == Lines[CurrentVerticalLine]) canMoveVertical = true;
-            else
+            if (this.isGrounded)
             {
-                if (
-                    (CurrentVerticalLine < PreviousVerticalLine && Lines[CurrentVerticalLine] < Position.Y) ||
-                    (CurrentVerticalLine > PreviousVerticalLine && Lines[CurrentVerticalLine] > Position.Y))
-                {
-                    Position = new Vector2(Position.X, Lines[CurrentVerticalLine]);
-                }
+                if (Position.Y == Lines[CurrentVerticalLine]) canMoveVertical = true;
                 else
                 {
-                    if (Position.Y < Lines[CurrentVerticalLine])
+                    if (
+                        (CurrentVerticalLine < PreviousVerticalLine && Lines[CurrentVerticalLine] < Position.Y) ||
+                        (CurrentVerticalLine > PreviousVerticalLine && Lines[CurrentVerticalLine] > Position.Y))
                     {
-                        Position = new Vector2(Position.X, Position.Y + PlayerVerticalVelocity);
+                        Position = new Vector2(Position.X, Lines[CurrentVerticalLine]);
                     }
-                    else if (Position.Y > Lines[CurrentVerticalLine])
+                    else
                     {
-                        Position = new Vector2(Position.X, Position.Y - PlayerVerticalVelocity);
+                        if (Position.Y < Lines[CurrentVerticalLine])
+                        {
+                            Position = new Vector2(Position.X, Position.Y + PlayerVerticalVelocity);
+                        }
+                        else if (Position.Y > Lines[CurrentVerticalLine])
+                        {
+                            Position = new Vector2(Position.X, Position.Y - PlayerVerticalVelocity);
+                        }
                     }
                 }
-
             }
-        }
 
-        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera)
-        {
-            this.PlayAnimation();
-            float pull = 100f;
-            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            this.removeITem = false;
-            // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
 
             if (map.isStoped())
             {
@@ -98,74 +96,112 @@ namespace CareerOpportunities
                 if (this.runTimes == 4) this.runTimes = 0;
             }
             else this.play(gameTime, "hit");
-            
+        }
 
-            if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
+        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera)
+        {
+            float pull = 100f;
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (this.isGrounded)
             {
-                string MapItem = map.CollisionItem(map.CollisionPosition);
-                heart.remove(1);
-                map.StopFor(60);
-                camera.TimeShake = 12;
-            }
-            else
-            {
-                string MapItem = map.CollisionItem(map.CollisionPosition, true);
-                switch (MapItem)
+                // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
+                if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
                 {
-                    case "heart":
-                        heart.add(1);
-                        break;
-                    case "coin":
-                        Coins.add(1);
-                        break;
+                    string MapItem = map.CollisionItem(map.CollisionPosition, false);
+                    heart.remove(1);
+                    map.StopFor(60);
+                    camera.TimeShake = 12;
                 }
-            }
-
-            if (map.isStoped())
-            {
-                if (this.Position.X - (pull * this.Scale * delta) > BufferWidth / 2 && !map.Collision(
-                this.Body,
-                new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
-                this.CurrentVerticalLine
-                )) this.Position = new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y);
                 else
                 {
-                    if (this.Position.X + (pull * this.Scale * delta) < BufferWidth / 2) this.Position = new Vector2(this.Position.X + ((pull / 2) * this.Scale * delta), this.Position.Y);
-                }
-
-                if (canMoveVertical)
-                {
-                    PreviousVerticalLine = CurrentVerticalLine;
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 3)
+                    string MapItem = map.CollisionItem(map.CollisionPosition, true);
+                    switch (MapItem)
                     {
-                        if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
-                        {
-                            CurrentVerticalLine += 1;
-                            canMoveVertical = false;
-                        }
-                    }
-                    if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
-                    {
-                        if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
-                        {
-                            CurrentVerticalLine -= 1;
-                            canMoveVertical = false;
-                        }
+                        case "heart":
+                            heart.add(1);
+                            break;
+                        case "coin":
+                            Coins.add(1);
+                            break;
+                        case "ramp":
+                            this.isGrounded = false;
+                            map.CollisionPosition = new Vector2(0, 0);
+                            break;
                     }
                 }
 
-                // left and right
-                if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+                if (map.isStoped())
                 {
-                    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                {
-                    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+                    if (this.Position.X - (pull * this.Scale * delta) > BufferWidth / 2 && !map.Collision(
+                    this.Body,
+                    new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
+                    this.CurrentVerticalLine
+                    )) this.Position = new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y);
+                    else if (this.Position.X + (pull * this.Scale * delta) < BufferWidth / 2) this.Position = new Vector2(this.Position.X + ((pull / 2) * this.Scale * delta), this.Position.Y);
+
+                    if (canMoveVertical)
+                    {
+                        PreviousVerticalLine = CurrentVerticalLine;
+
+                        if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 4)
+                        {
+                            if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                            {
+                                CurrentVerticalLine += 1;
+                                canMoveVertical = false;
+                            }
+                        }
+                        if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
+                        {
+                            if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
+                            {
+                                CurrentVerticalLine -= 1;
+                                canMoveVertical = false;
+                            }
+                        }
+                    }
+
+                    // left and right
+                    if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+                    {
+                        if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                    }
+                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    {
+                        if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+                    }
                 }
             }
+            
+            
+            this.PlayAnimation(map, gameTime);
+            this.Jump(gameTime, delta, pull);
+        }
 
+
+        public void Jump( GameTime gameTime, float delta, float pull)
+        {
+            if (!this.isGrounded)
+            {
+                if (this.JumpTimeCurrent <= this.JumpTime && this.Position.Y > Lines[CurrentVerticalLine + 1]) this.Position = new Vector2(this.Position.X, this.Position.Y - (pull * this.Scale * delta));
+                else
+                {
+                    this.JumpTime = 0.2f*60f;
+                    if (this.JumpTimeCurrent <= this.JumpTime) this.JumpTimeCurrent++;
+                    else
+                    {
+                        if (this.Position.Y < Lines[CurrentVerticalLine]) this.Position = new Vector2(this.Position.X, this.Position.Y + ((pull / 2 ) * this.Scale * delta));
+                        else
+                        {
+                            this.Position = new Vector2(this.Position.X, Lines[CurrentVerticalLine]);
+                            
+                            this.isGrounded = true;
+                            this.JumpTimeCurrent = 0;
+                        }
+                    }
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)

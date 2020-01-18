@@ -88,7 +88,7 @@
 /processorParam:TextureFormat=Color
 /build:prototype/Jim.png
 
-#begin prototype/prototype_level.png
+#begin prototype/level_1t.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -98,7 +98,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/prototype_level.png
+/build:prototype/level_1t.png
+
+#begin prototype/rampa.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/rampa.png
 
 #begin sprites/coin.json
 /copy:sprites/coin.json

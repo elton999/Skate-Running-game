@@ -85,7 +85,7 @@ namespace CareerOpportunities
         {
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
-            camera.Update(gameTime);
+
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
@@ -102,6 +102,8 @@ namespace CareerOpportunities
             {
                 if (this.status == GameStatus.PLAY)
                 {
+                    Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+                    camera.Update(gameTime, Player.Position, screemSize);
                     Map.Update(gameTime, 130);
                     Player.Update(gameTime, Map, Hearts, Coins, camera);
                     if (Hearts.NumberOfhearts == 0)
@@ -175,20 +177,28 @@ namespace CareerOpportunities
 
         protected override void Draw(GameTime gameTime)
         {
+            // Start Game
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
+            this.DrawPlay();
+            spriteBatch.End();
+            // end Game
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, Matrix.CreateTranslation(camera.Position.X, camera.Position.Y, 0));
+            // Menu and Game HUD
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
-            if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY)) {
+            if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY))
+            {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
+            //HUD
+            this.DrawHUDPlay();
 
-            this.DrawPlay();
             this.DrawMainMenu();
             this.DrawPauseMenu();
             this.DrawGameOverMenu();
 
-
             spriteBatch.End();
+            // end menu and HUD
 
             base.Draw(gameTime);
         }
@@ -203,13 +213,21 @@ namespace CareerOpportunities
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false);
                 Player.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
-                // HUD
+            }
+        }
+
+        public void DrawHUDPlay()
+        {
+            if (this.isLevelReady() && this.status == GameStatus.PLAY)
+            {
                 Hearts.Draw(spriteBatch);
                 Coins.Draw(spriteBatch);
                 spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
         }
 
+
+        // Load all assets to the level
         public void LoadLevel()
         {
             Character = Content.Load<Texture2D>("sprites/jim_hud");
@@ -224,7 +242,8 @@ namespace CareerOpportunities
             Map.setBoxShadow(Content.Load<Texture2D>("prototype/box_2_shadows"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation-2"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
-            Map.setTileMap(Content.Load<Texture2D>("prototype/prototype_level"));
+            Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
+            Map.setTileMap(Content.Load<Texture2D>("prototype/level_1t"));
 
             // start game
             this.status = GameStatus.PLAY;

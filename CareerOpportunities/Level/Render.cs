@@ -14,6 +14,7 @@ namespace CareerOpportunities.Level
         Texture2D TileMap;
         Texture2D CoinTexture;
         Texture2D HeartTexure;
+        Texture2D RampTexture;
         Texture2D Ground;
 
         Vector2[] PositionGround;
@@ -31,6 +32,7 @@ namespace CareerOpportunities.Level
         Color BoxColor = Color.Red;
         Color CoinColor = Color.Yellow;
         Color HeartsColor = Color.Blue;
+        Color RampColor = Color.Green;
         int[] LinesBox;
 
         int stopFramesNum = 0;
@@ -53,6 +55,7 @@ namespace CareerOpportunities.Level
                 this.BufferHeight - ((32 * scale) * 2) + (10 * scale),
                 this.BufferHeight - ((32 * scale) * 3) + (20 * scale),
                 this.BufferHeight - ((32 * scale) * 4) + (30 * scale),
+                this.BufferHeight - ((32 * scale) * 5) + (40 * scale),
             };
         }
 
@@ -74,6 +77,11 @@ namespace CareerOpportunities.Level
         public void setHeartTexture(Texture2D heart)
         {
             this.HeartTexure = heart;
+        }
+
+        public void setRampTexture(Texture2D ramp)
+        {
+            this.RampTexture = ramp;
         }
 
         public void setCoinTexture(Texture2D coin, string jsonFile)
@@ -134,15 +142,10 @@ namespace CareerOpportunities.Level
                         termsList.Add(new Vector2(x, y));
                         termsListColors.Add(this.BoxColor);
                     }
-                    else if (this.MapColors[x, y] == this.CoinColor)
+                    else if (this.MapColors[x, y] != Color.Black)
                     {
                         termsList.Add(new Vector2(x, y));
-                        termsListColors.Add(this.CoinColor);
-                    }
-                    else if (this.MapColors[x, y] == this.HeartsColor)
-                    {
-                        termsList.Add(new Vector2(x, y));
-                        termsListColors.Add(this.HeartsColor);
+                        termsListColors.Add(this.MapColors[x,y]);
                     }
                 }
             }
@@ -193,8 +196,12 @@ namespace CareerOpportunities.Level
                     {
                         if (ReturnColor == this.HeartsColor) ReturnItem = "heart";
                         if (ReturnColor == this.CoinColor) ReturnItem = "coin";
-                        this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
-                        this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
+                        if (ReturnColor == this.RampColor) ReturnItem = "ramp";
+                        if (this.RampColor != ReturnColor)
+                        {
+                            this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
+                            this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
+                        }
                     }
                     else if (!item)
                     {
@@ -243,11 +250,11 @@ namespace CareerOpportunities.Level
         {
             if (front)
             {
-                for (int i_layer = layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch);
+                for (int i_layer = layer != 0 ? layer - 1: layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch);
             }
             else
             {
-                for (int i_layer = 3; i_layer >= layer; i_layer--) this.drawLayer(i_layer, spriteBatch);
+                for (int i_layer = 4; i_layer >= layer; i_layer--) this.drawLayer(i_layer, spriteBatch);
             }
         }
 
@@ -279,6 +286,8 @@ namespace CareerOpportunities.Level
             Texture2D sprite = this.BoxTexture;
             if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
             if (SpritesColors[i] == this.HeartsColor) sprite = this.HeartTexure;
+            if (SpritesColors[i] == this.RampColor) sprite = this.RampTexture;
+
 
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
 
@@ -288,6 +297,9 @@ namespace CareerOpportunities.Level
             } else if (SpritesColors[i] == this.HeartsColor)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+            } else if (SpritesColors[i] == this.RampColor)
+            {
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
 
             if (SpritesColors[i] == this.CoinColor)
