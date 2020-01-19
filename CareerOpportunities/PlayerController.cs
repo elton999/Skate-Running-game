@@ -126,6 +126,7 @@ namespace CareerOpportunities
                             break;
                         case "ramp":
                             this.isGrounded = false;
+                            camera.StartZoomJump();
                             map.CollisionPosition = new Vector2(0, 0);
                             break;
                     }

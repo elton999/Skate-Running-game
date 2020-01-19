@@ -11,7 +11,7 @@ namespace CareerOpportunities
 {
     public class CameraManagement
     {
-
+        // Shake
         public float TimeShake;
         private static readonly Random getrandom = new Random();
         public Vector2 InitialPosition;
@@ -19,7 +19,15 @@ namespace CareerOpportunities
         private Vector2 Position;
         public Vector2 TargetPosition;
         public float shakeMagnitude = 0.3f;
+
+        // Zoom
         public float Zoom { get; set; }
+        public float maxZoom;
+        public float TimeZoom;
+        private float TimeZoomCurrent;
+        private bool ZoomIn;
+        private bool ZoomOut;
+
 
         public CameraManagement()
         {
@@ -35,6 +43,7 @@ namespace CareerOpportunities
             this.TargetPosition = targetPosition;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.UpdateShake(delta);
+            this.UpdateZoomJump(delta);
         }
 
         private void UpdateShake(float delta)
@@ -59,6 +68,37 @@ namespace CareerOpportunities
                 this.Position = new Vector2(0,0);
             }
             
+        }
+
+
+        public void StartZoomJump()
+        {
+            this.TimeZoom = 0.4f;
+            this.TimeZoomCurrent = this.TimeZoom;
+            this.ZoomIn = true;
+        }
+
+        private void UpdateZoomJump(float delta)
+        {
+            this.TimeZoomCurrent -= delta;
+            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.2f);
+
+            if (this.TimeZoomCurrent > 0)
+            {
+                if (this.ZoomIn) this.Zoom += (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
+                else if (this.ZoomOut) this.Zoom -= (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
+            }
+
+            if (this.TimeZoomCurrent <= 0)
+            {
+                if (this.ZoomIn)
+                {
+                    this.ZoomIn = false;
+                    this.ZoomOut = true;
+                    this.TimeZoomCurrent = this.TimeZoom;
+
+                } else if (this.ZoomOut) this.ZoomOut = false;
+            }
         }
 
         public Matrix transformMatrix()
