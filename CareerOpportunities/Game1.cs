@@ -64,8 +64,7 @@ namespace CareerOpportunities
         {
             base.Initialize();
             camera = new CameraManagement();
-            camera.TimeShake = 0;
-            camera.shakeMagnitude = 0.05f;
+            camera.scale = 3;
         }
 
         protected override void LoadContent()

@@ -11,6 +11,8 @@ namespace CareerOpportunities
 {
     public class CameraManagement
     {
+        public float scale;
+
         // Shake
         public float TimeShake;
         private static readonly Random getrandom = new Random();
@@ -18,7 +20,7 @@ namespace CareerOpportunities
         private Vector2 ScreemSize;
         private Vector2 Position;
         public Vector2 TargetPosition;
-        public float shakeMagnitude = 0.3f;
+        public float shakeMagnitude = 0.05f;
 
         // Zoom
         public float Zoom { get; set; }
@@ -73,7 +75,7 @@ namespace CareerOpportunities
 
         public void StartZoomJump()
         {
-            this.TimeZoom = 0.4f;
+            this.TimeZoom = 0.5f;
             this.TimeZoomCurrent = this.TimeZoom;
             this.ZoomIn = true;
         }
@@ -81,12 +83,14 @@ namespace CareerOpportunities
         private void UpdateZoomJump(float delta)
         {
             this.TimeZoomCurrent -= delta;
-            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.2f);
+            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.3f);
 
             if (this.TimeZoomCurrent > 0)
             {
                 if (this.ZoomIn) this.Zoom += (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
                 else if (this.ZoomOut) this.Zoom -= (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
+
+                this.Position = new Vector2(this.TargetPosition.X - (this.ScreemSize.X / 2), 0);
             }
 
             if (this.TimeZoomCurrent <= 0)
@@ -97,7 +101,12 @@ namespace CareerOpportunities
                     this.ZoomOut = true;
                     this.TimeZoomCurrent = this.TimeZoom;
 
-                } else if (this.ZoomOut) this.ZoomOut = false;
+                }
+                else if (this.ZoomOut)
+                {
+                    this.ZoomOut = false;
+                    this.Position = new Vector2(0, 0);
+                }
             }
         }
 
