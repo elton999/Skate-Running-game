@@ -63,10 +63,7 @@ namespace CareerOpportunities
                     this.TimeShake -= 1;
                 }
             }
-            else
-            {
-                this.Position = new Vector2(0,0);
-            }
+            else this.Position = new Vector2(0,0);
             
         }
 
