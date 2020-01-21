@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities
@@ -16,6 +10,6 @@ namespace CareerOpportunities
         public Texture2D Sprite;
         public Color SpriteColor;
         public int Scale;
-
+        public SpriteEffects spriteEffect = SpriteEffects.None;
     }
 }

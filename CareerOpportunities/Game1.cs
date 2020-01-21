@@ -53,7 +53,7 @@ namespace CareerOpportunities
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 288 * scale;
             graphics.PreferredBackBufferHeight = 162 * scale;
-            //graphics.ToggleFullScreen();
+            // graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
@@ -84,7 +84,7 @@ namespace CareerOpportunities
         
         protected override void Update(GameTime gameTime)
         {
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
             if (this.LoadingLevel)
             {
@@ -110,10 +110,13 @@ namespace CareerOpportunities
 
                     if (Hearts.NumberOfhearts == 0)
                     {
-                        //this.LoadingLevel = true;
-                        this.status = GameStatus.LOSE;
-                        this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
-                        this.escReleased = false;
+                        if (Map.isStoped()) {
+                            //this.LoadingLevel = true;
+                            this.status = GameStatus.LOSE;
+                            this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
+                            this.escReleased = false;
+                        }
+
                     }
 
                     if (Keyboard.GetState().IsKeyDown(Keys.Escape) && this.escReleased)
@@ -192,7 +195,7 @@ namespace CareerOpportunities
             {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
-            //HUD
+            // HUD
             this.DrawHUDPlay();
 
             this.DrawMainMenu();
