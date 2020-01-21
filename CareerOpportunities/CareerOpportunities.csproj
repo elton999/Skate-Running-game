@@ -58,6 +58,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CameraManagement.cs" />
+    <Compile Include="weapon\Bullet.cs" />
+    <Compile Include="weapon\Gun.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />

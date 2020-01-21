@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:prototype/box_2_shadows.png
 
+#begin prototype/bullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/bullet.png
+
 #begin prototype/esteira-prototype.png
 /importer:TextureImporter
 /processor:TextureProcessor

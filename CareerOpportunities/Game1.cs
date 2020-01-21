@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using CareerOpportunities.weapon;
 using System.Reflection;
 using System.IO;
 
@@ -14,6 +15,7 @@ namespace CareerOpportunities
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D Character;
+        Gun Weapon;
 
         Texture2D loadingScreen;
         Texture2D GameOverScreen;
@@ -103,7 +105,9 @@ namespace CareerOpportunities
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
                     camera.Update(gameTime, Player.Position, screemSize);
                     Map.Update(gameTime, 130);
-                    Player.Update(gameTime, Map, Hearts, Coins, camera);
+                    Player.Update(gameTime, Map, Hearts, Coins, camera, Weapon);
+                    Weapon.Update(gameTime);
+
                     if (Hearts.NumberOfhearts == 0)
                     {
                         //this.LoadingLevel = true;
@@ -211,6 +215,7 @@ namespace CareerOpportunities
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false);
                 Player.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
+                Weapon.Draw(spriteBatch);
             }
         }
 
@@ -242,6 +247,8 @@ namespace CareerOpportunities
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/level_1t"));
+            Weapon = new Gun(this.scale, Content.Load<Texture2D>("prototype/bullet"));
+            Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             // start game
             this.status = GameStatus.PLAY;

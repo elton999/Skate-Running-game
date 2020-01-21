@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using CareerOpportunities.weapon;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,6 +24,7 @@ namespace CareerOpportunities
         private float JumpTime;
         private float JumpTimeCurrent = 0;
 
+        private bool FireReleased = true;
 
         private int runTimes;
 
@@ -98,7 +100,7 @@ namespace CareerOpportunities
             else this.play(gameTime, "hit");
         }
 
-        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera)
+        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
         {
             float pull = 100f;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -172,6 +174,14 @@ namespace CareerOpportunities
                     {
                         if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
                     }
+
+                    if (Keyboard.GetState().IsKeyDown(Keys.Z) && this.FireReleased)
+                    {
+                        this.FireReleased = false;
+                        Weapon.Fire(this.Position);
+                    }
+
+                    if (Keyboard.GetState().IsKeyUp(Keys.Z)) this.FireReleased = true;
                 }
             }
             
