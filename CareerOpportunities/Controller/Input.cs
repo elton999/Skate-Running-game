@@ -36,7 +36,6 @@ namespace CareerOpportunities.Controller
             this.KeyButtonsStatus.Add(Keys.Left);
             this.KeyButtonsStatus.Add(Keys.Up);
             this.KeyButtonsStatus.Add(Keys.Down);
-            this.KeyButtonsStatus.Add(Keys.Right);
 
             this.KeyButtonsStatus.Add(Keys.Z);
             this.KeyButtonsStatus.Add(Keys.X);
