@@ -24,8 +24,6 @@ namespace CareerOpportunities
         private float JumpTime;
         private float JumpTimeCurrent = 0;
 
-        private bool FireReleased = true;
-
         private int runTimes;
 
 
@@ -100,14 +98,13 @@ namespace CareerOpportunities
             else this.play(gameTime, "hit");
         }
 
-        public void Update(GameTime gameTime, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
+        public void Update(GameTime gameTime, Controller.Input input, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
         {
             float pull = 100f;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (this.isGrounded)
             {
-                // Console.WriteLine(this.Position.X - (pull * this.scale * delta));
                 if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
                 {
                     string MapItem = map.CollisionItem(map.CollisionPosition, false);
@@ -147,7 +144,7 @@ namespace CareerOpportunities
                     {
                         PreviousVerticalLine = CurrentVerticalLine;
 
-                        if (Keyboard.GetState().IsKeyDown(Keys.Up) && CurrentVerticalLine < 4)
+                        if (input.KeyDown(Controller.Input.Button.UP) && CurrentVerticalLine < 4)
                         {
                             if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
                             {
@@ -155,7 +152,7 @@ namespace CareerOpportunities
                                 canMoveVertical = false;
                             }
                         }
-                        if (Keyboard.GetState().IsKeyDown(Keys.Down) && CurrentVerticalLine > 0)
+                        if (input.KeyDown(Controller.Input.Button.DOWN) && CurrentVerticalLine > 0)
                         {
                             if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
                             {
@@ -166,22 +163,19 @@ namespace CareerOpportunities
                     }
 
                     // left and right
-                    if (Keyboard.GetState().IsKeyDown(Keys.Right) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+                    if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
                     {
                         if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
                     }
-                    if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                    if (input.KeyDown(Controller.Input.Button.LEFT))
                     {
                         if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Z) && this.FireReleased)
+                    if (input.KeyPress(Controller.Input.Button.FIRE))
                     {
-                        this.FireReleased = false;
                         Weapon.Fire(this.Position);
                     }
-
-                    if (Keyboard.GetState().IsKeyUp(Keys.Z)) this.FireReleased = true;
                 }
             }
             

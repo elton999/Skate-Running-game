@@ -19,8 +19,6 @@ namespace CareerOpportunities
 
         public string[] MenuItensString;
 
-        bool released;
-
         public MenuManagement(Texture2D sprite, SpriteFont Font, int scale)
         {
             this.Sprite = sprite;
@@ -29,7 +27,6 @@ namespace CareerOpportunities
             this.ItemSelected = MenuItens.NONE;
             this.Position = new Vector2(102*this.Scale, 72*this.Scale);
             this.Font = Font;
-            this.released = true;
             this.MenuItensString = new string[] {
                 "START",
                 "OPTIONS",
@@ -38,9 +35,9 @@ namespace CareerOpportunities
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Controller.Input input)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) && this.released)
+            if (input.KeyPress(Controller.Input.Button.DOWN))
             {
                 if ((int)this.ItemOver < 3)
                 {
@@ -48,11 +45,10 @@ namespace CareerOpportunities
                     item += 1;
 
                     this.ItemOver = (MenuItens)item;
-                    released = false;
                 }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up) && this.released)
+            if (input.KeyPress(Controller.Input.Button.UP))
             {
                 if ((int)this.ItemOver > 0)
                 {
@@ -60,16 +56,15 @@ namespace CareerOpportunities
                     item -= 1;
 
                     this.ItemOver = (MenuItens)item;
-                    released = false;
                 }
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            if (input.KeyPress(Controller.Input.Button.CONFIRM))
             {
                 this.ItemSelected = this.ItemOver;
             }
 
-            if (Keyboard.GetState().IsKeyUp(Keys.Down) && Keyboard.GetState().IsKeyUp(Keys.Up)) released = true;
+            // if (Keyboard.GetState().IsKeyUp(Keys.Down) && Keyboard.GetState().IsKeyUp(Keys.Up)) released = true;
         }
 
 

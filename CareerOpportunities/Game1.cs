@@ -89,7 +89,6 @@ namespace CareerOpportunities
         {
             // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
-            System.Console.WriteLine(this.InputGK.KeyDown(Input.Button.FIRE));
 
             if (this.LoadingLevel)
             {
@@ -110,7 +109,7 @@ namespace CareerOpportunities
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
                     camera.Update(gameTime, Player.Position, screemSize);
                     Map.Update(gameTime, 130);
-                    Player.Update(gameTime, Map, Hearts, Coins, camera, Weapon);
+                    Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
                     Weapon.Update(gameTime);
 
                     if (Hearts.NumberOfhearts == 0)
@@ -124,13 +123,11 @@ namespace CareerOpportunities
 
                     }
 
-                    if (Keyboard.GetState().IsKeyDown(Keys.Escape) && this.escReleased)
+                    if (this.InputGK.KeyPress(Input.Button.ESC))
                     {
                         this.status = GameStatus.PAUSE;
                         this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
-                        this.escReleased = false;
                     }
-                    if (Keyboard.GetState().IsKeyUp(Keys.Escape)) this.escReleased = true;
                 }
 
                 if (Map.Finished()) this.status = GameStatus.WIN;
@@ -173,7 +170,7 @@ namespace CareerOpportunities
 
                 if (this.status == GameStatus.MENU)
                 {
-                    MainMenu.Update(gameTime);
+                    MainMenu.Update(gameTime, this.InputGK);
                     if (MainMenu.ItemSelected == MenuManagement.MenuItens.START)
                     {
                         this.status = GameStatus.PLAY;
