@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using CareerOpportunities.weapon;
+using CareerOpportunities.Controller;
 using System.Reflection;
 using System.IO;
 
@@ -16,6 +17,7 @@ namespace CareerOpportunities
         SpriteBatch spriteBatch;
         Texture2D Character;
         Gun Weapon;
+        Input InputGK;
 
         Texture2D loadingScreen;
         Texture2D GameOverScreen;
@@ -67,6 +69,7 @@ namespace CareerOpportunities
             base.Initialize();
             camera = new CameraManagement();
             camera.scale = 3;
+            this.InputGK = new Input();
         }
 
         protected override void LoadContent()
@@ -86,6 +89,8 @@ namespace CareerOpportunities
         {
             // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
+            System.Console.WriteLine(this.InputGK.KeyDown(Input.Button.FIRE));
+
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
