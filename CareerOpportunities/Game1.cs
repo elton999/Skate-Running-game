@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using CareerOpportunities.weapon;
 using CareerOpportunities.Controller;
@@ -28,8 +27,6 @@ namespace CareerOpportunities
 
         public bool LoadingLevel;
         public bool LoadingMenu;
-
-        bool escReleased;
 
         MenuManagement MainMenu;
         HeartManagement Hearts;
@@ -59,7 +56,6 @@ namespace CareerOpportunities
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
-            this.escReleased = true;
             this.path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             debug = true;
         }
@@ -87,9 +83,6 @@ namespace CareerOpportunities
         
         protected override void Update(GameTime gameTime)
         {
-            // if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //    Exit();
-
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
@@ -118,7 +111,6 @@ namespace CareerOpportunities
                             //this.LoadingLevel = true;
                             this.status = GameStatus.LOSE;
                             this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
-                            this.escReleased = false;
                         }
 
                     }
@@ -132,18 +124,16 @@ namespace CareerOpportunities
 
                 if (Map.Finished()) this.status = GameStatus.WIN;
 
-
             }
 
             if (this.isMainMenuReady())
             {
                 if (this.status == GameStatus.PAUSE)
                 {   
-                    this.PauseMenu.Update(gameTime);
+                    this.PauseMenu.Update(gameTime, this.InputGK);
                     if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
                     {
                         this.status = GameStatus.PLAY;
-                        this.escReleased = true;
                     }
                     else if (this.PauseMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
                     {
@@ -154,12 +144,11 @@ namespace CareerOpportunities
 
                 if (this.status == GameStatus.LOSE)
                 {
-                    this.GameOverMenu.Update(gameTime);
+                    this.GameOverMenu.Update(gameTime, this.InputGK);
                     if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.RESUME)
                     {
                         this.status = GameStatus.PLAY;
                         this.LoadingLevel = true;
-                        this.escReleased = true;
                     }
                     else if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
                     {
@@ -197,6 +186,7 @@ namespace CareerOpportunities
             {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
+
             // HUD
             this.DrawHUDPlay();
 
