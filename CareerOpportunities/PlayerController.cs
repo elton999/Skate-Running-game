@@ -41,6 +41,7 @@ namespace CareerOpportunities
                 BufferHeight - (linePosition * 3) + (11 * scale),
                 BufferHeight - (linePosition * 4) + (24 * scale),
                 BufferHeight - (linePosition * 5) + (35 * scale),
+                BufferHeight - (linePosition * 6) + (45 * scale),
             };
 
             this.setJsonFile(jsonFile);
