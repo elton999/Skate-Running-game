@@ -80,8 +80,7 @@ namespace CareerOpportunities
             {
                 if (this.ZoomIn) this.Zoom += (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
                 else if (this.ZoomOut) this.Zoom -= (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
-
-                this.Position = new Vector2(this.TargetPosition.X - (this.ScreemSize.X / 2), 0);
+                // this.Position = new Vector2(this.TargetPosition.X - (this.ScreemSize.X / 2), 0);
             }
 
             if (this.TimeZoomCurrent <= 0)

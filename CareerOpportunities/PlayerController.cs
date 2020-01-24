@@ -98,6 +98,7 @@ namespace CareerOpportunities
         public void Update(GameTime gameTime, Controller.Input input, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
         {
             float pull = 100f;
+            float JumpPull = pull;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (this.isGrounded)
@@ -122,6 +123,7 @@ namespace CareerOpportunities
                             break;
                         case "ramp":
                             this.isGrounded = false;
+                            JumpPull = pull;
                             camera.StartZoomJump();
                             map.CollisionPosition = new Vector2(0, 0);
                             break;
@@ -156,6 +158,15 @@ namespace CareerOpportunities
                                 CurrentVerticalLine -= 1;
                                 canMoveVertical = false;
                             }
+                        }
+
+                        // Jump
+                        if (input.KeyPress(Controller.Input.Button.JUMP) && this.isGrounded)
+                        {
+                            this.isGrounded = false;
+                            JumpPull = 140f;
+                            camera.StartZoomJump();
+                            map.CollisionPosition = new Vector2(0, 0);
                         }
                     }
 
@@ -197,7 +208,6 @@ namespace CareerOpportunities
                         else
                         {
                             this.Position = new Vector2(this.Position.X, Lines[CurrentVerticalLine]);
-                            
                             this.isGrounded = true;
                             this.JumpTimeCurrent = 0;
                         }
