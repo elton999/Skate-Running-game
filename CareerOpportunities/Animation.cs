@@ -50,7 +50,7 @@ namespace CareerOpportunities
         }
 
         public bool AnimationIsReady(){
-            if (this.jsonContent != null && this.jsonJObject != null && this.json != null && this.sprite != null)
+            if (this.json != null && this.sprite != null)
             {
                 if (this.json.meta != null) return true;
             }
@@ -64,6 +64,9 @@ namespace CareerOpportunities
                 jsonContent = new JsonTextReader(stream);
                 jsonJObject = JObject.Load(jsonContent);
                 this.json = (dynamic)jsonJObject;
+                // destroy
+                jsonContent = null;
+                jsonJObject = null;
             }
         }
 

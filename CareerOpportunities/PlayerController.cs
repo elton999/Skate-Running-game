@@ -10,7 +10,8 @@ namespace CareerOpportunities
         public bool canMoveVertical;
         public int CurrentVerticalLine;
         public float PlayerVerticalVelocity;
-        public int PlayerHorizontalVelocity;
+        public float PlayerHorizontalVelocity;
+        public float PlayerHorizontalAndVelocity;
 
         private int BufferWidth;
         private int[] Lines;
@@ -31,7 +32,8 @@ namespace CareerOpportunities
             this.CurrentVerticalLine = 0;
             this.PreviousVerticalLine = 1;
             this.PlayerVerticalVelocity = (22 * scale) / 5.5f;
-            this.PlayerHorizontalVelocity = 3 * this.Scale;
+            this.PlayerHorizontalVelocity = 2 * this.Scale;
+            this.PlayerHorizontalAndVelocity = 0.4f * this.Scale;
             this.BufferWidth = BufferWidth;
 
             int linePosition = (32 * scale);
@@ -85,14 +87,16 @@ namespace CareerOpportunities
 
             if (map.isStoped())
             {
-                if (this.lastFrame) this.runTimes += 1;
+                if (this.isGrounded)
+                {
+                    if (this.lastFrame) this.runTimes += 1;
 
-                if (this.runTimes < 3) this.play(gameTime, "run_idle");
-                else this.play(gameTime, "run");
+                    if (this.runTimes < 3) this.play(gameTime, "run_idle");
+                    else this.play(gameTime, "run");
 
-                if (this.runTimes == 4) this.runTimes = 0;
-            }
-            else this.play(gameTime, "hit");
+                    if (this.runTimes == 4) this.runTimes = 0;
+                } else this.play(gameTime, "jump");
+            } else this.play(gameTime, "hit");
         }
 
         public void Update(GameTime gameTime, Controller.Input input, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
@@ -142,23 +146,8 @@ namespace CareerOpportunities
                     if (canMoveVertical)
                     {
                         PreviousVerticalLine = CurrentVerticalLine;
-
-                        if (input.KeyDown(Controller.Input.Button.UP) && CurrentVerticalLine < 4)
-                        {
-                            if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
-                            {
-                                CurrentVerticalLine += 1;
-                                canMoveVertical = false;
-                            }
-                        }
-                        if (input.KeyDown(Controller.Input.Button.DOWN) && CurrentVerticalLine > 0)
-                        {
-                            if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
-                            {
-                                CurrentVerticalLine -= 1;
-                                canMoveVertical = false;
-                            }
-                        }
+                        // top and down
+                        this.HorizontalMove(input, map);
 
                         // Jump
                         if (input.KeyPress(Controller.Input.Button.JUMP) && this.isGrounded)
@@ -171,14 +160,7 @@ namespace CareerOpportunities
                     }
 
                     // left and right
-                    if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
-                    {
-                        if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
-                    }
-                    if (input.KeyDown(Controller.Input.Button.LEFT))
-                    {
-                        if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
-                    }
+                    this.VerticalMove(input, map);
 
                     if (input.KeyPress(Controller.Input.Button.FIRE))
                     {
@@ -187,11 +169,56 @@ namespace CareerOpportunities
                 }
             }
             
-            
             this.PlayAnimation(map, gameTime);
             this.Jump(gameTime, delta, pull);
         }
 
+        public void VerticalMove(Controller.Input input, Level.Render map)
+        {
+            if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+            {
+                if (input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP))
+                {
+                    if (Position.X + PlayerHorizontalAndVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalAndVelocity, Position.Y);
+                }
+                else
+                {
+                    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
+                }
+            }
+            if (input.KeyDown(Controller.Input.Button.LEFT))
+            {
+                if (input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP))
+                {
+                    if (Position.X - PlayerHorizontalAndVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalAndVelocity, Position.Y);
+                }
+                else
+                {
+                    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
+                }
+               
+            }
+        }
+
+        public void HorizontalMove(Controller.Input input, Level.Render map)
+        {
+            if (input.KeyDown(Controller.Input.Button.UP) && CurrentVerticalLine < 4)
+            {
+                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                {
+                    CurrentVerticalLine += 1;
+                    canMoveVertical = false;
+                }
+            }
+            if (input.KeyDown(Controller.Input.Button.DOWN) && CurrentVerticalLine > 0)
+            {
+                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
+                {
+                    CurrentVerticalLine -= 1;
+                    canMoveVertical = false;
+                }
+            }
+        }
 
         public void Jump( GameTime gameTime, float delta, float pull)
         {

@@ -169,6 +169,15 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
     "sourceSize": { "w": 32, "h": 32 },
     "duration": 100
+   },
+   {
+    "filename": "characters 19.aseprite",
+    "frame": { "x": 608, "y": 0, "w": 32, "h": 32 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 32, "h": 32 },
+    "sourceSize": { "w": 32, "h": 32 },
+    "duration": 100
    }
  ],
  "meta": {
@@ -176,13 +185,14 @@
   "version": "1.2.16.3-x64",
   "image": "Jim.png",
   "format": "RGBA8888",
-  "size": { "w": 608, "h": 32 },
+  "size": { "w": 640, "h": 32 },
   "scale": "1",
   "frameTags": [
    { "name": "Idle", "from": 0, "to": 0, "direction": "forward" },
    { "name": "run", "from": 1, "to": 14, "direction": "forward" },
    { "name": "run_idle", "from": 1, "to": 8, "direction": "forward" },
-   { "name": "hit", "from": 15, "to": 18, "direction": "forward" }
+   { "name": "hit", "from": 15, "to": 18, "direction": "forward" },
+   { "name": "jump", "from": 19, "to": 19, "direction": "forward" }
   ]
  }
 }
