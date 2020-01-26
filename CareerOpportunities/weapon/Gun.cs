@@ -17,13 +17,21 @@ namespace CareerOpportunities.weapon
             this.Sprite = Sprite;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, Level.Render map)
         {
             List<Bullet> list_bullet = new List<Bullet>();
+            this.Body = new Rectangle(new Point(0, 0), new Point(4, 3));
+            bool collision = false;
             for (int i = 0; i < this.bullets.Count; i++)
             {
                 this.bullets[i].Update(gameTime);
-                if (this.bullets[i].Position.X < this.Screem.X) list_bullet.Add(this.bullets[i]);
+                collision = map.Collision(this.Body, this.bullets[i].Position, map.LinePosition(this.bullets[i].Position.Y), false);
+                if (this.bullets[i].Position.X < this.Screem.X && !collision) list_bullet.Add(this.bullets[i]);
+                if (collision)
+                {
+                    map.CollisionItem(map.CollisionPosition, false);
+                    map.CollisionPosition = new Vector2(0, 0);
+                }
             }
             this.bullets = list_bullet;
         }

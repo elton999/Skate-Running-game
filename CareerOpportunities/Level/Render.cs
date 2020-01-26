@@ -153,7 +153,18 @@ namespace CareerOpportunities.Level
             this.positionBoxs = termsList.ToArray();
         }
 
-        public bool Collision(Rectangle body, Vector2 position, int line)
+        public int LinePosition(float Y)
+        {
+            int line = 0;
+            if (Y > this.LinesBox[4] && Y < this.LinesBox[3]) line = 4;
+            else if (Y > this.LinesBox[3] && Y < this.LinesBox[2]) line = 3;
+            else if (Y > this.LinesBox[2] && Y < this.LinesBox[1]) line = 2;
+            else if (Y > this.LinesBox[1] && Y < this.LinesBox[0]) line = 1;
+            else if (Y > this.LinesBox[0]) line = 0;
+            return line;
+        }
+
+        public bool Collision(Rectangle body, Vector2 position, int line, bool item = true)
         {
             bool any_collision = false;
             for (int x = 0; x < this.TileMap.Width; x++)
@@ -172,7 +183,8 @@ namespace CareerOpportunities.Level
                         if (x_overlaps && y_overlaps)
                         {
                             //if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
-                            this.CollisionPosition = new Vector2(x, y);
+                            if(!item && this.MapColors[x, y] == this.BoxColor) this.CollisionPosition = new Vector2(x, y);
+                            else if (item) this.CollisionPosition = new Vector2(x, y);
                             if (this.MapColors[x, y] == this.BoxColor) any_collision = true;
                         }
 
@@ -192,7 +204,7 @@ namespace CareerOpportunities.Level
             {
                 if (this.positionBoxs[i] == position)
                 {
-                    if (this.BoxColor != ReturnColor && Color.Black != ReturnColor)
+                    if (this.BoxColor != ReturnColor && Color.Black != ReturnColor && item)
                     {
                         if (ReturnColor == this.HeartsColor) ReturnItem = "heart";
                         if (ReturnColor == this.CoinColor) ReturnItem = "coin";

@@ -103,7 +103,7 @@ namespace CareerOpportunities
                     camera.Update(gameTime, Player.Position, screemSize);
                     Map.Update(gameTime, 130);
                     Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
-                    Weapon.Update(gameTime);
+                    Weapon.Update(gameTime, Map);
 
                     if (Hearts.NumberOfhearts == 0)
                     {
