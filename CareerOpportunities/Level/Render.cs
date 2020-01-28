@@ -8,7 +8,6 @@ namespace CareerOpportunities.Level
 {
     public class Render : GameObject
     {
-        // {R:172 G:50 B:50 A:255} 
         Texture2D BoxTexture;
         Texture2D BoxShadow;
         Texture2D TileMap;
