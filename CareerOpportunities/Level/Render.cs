@@ -155,13 +155,11 @@ namespace CareerOpportunities.Level
 
         public int LinePosition(float Y)
         {
-            int line = 0;
-            if (Y > this.LinesBox[4] && Y < this.LinesBox[3]) line = 4;
-            else if (Y > this.LinesBox[3] && Y < this.LinesBox[2]) line = 3;
-            else if (Y > this.LinesBox[2] && Y < this.LinesBox[1]) line = 2;
-            else if (Y > this.LinesBox[1] && Y < this.LinesBox[0]) line = 1;
-            else if (Y > this.LinesBox[0]) line = 0;
-            return line;
+            if (Y > this.LinesBox[4] && Y < this.LinesBox[3]) return 4;
+            else if (Y > this.LinesBox[3] && Y < this.LinesBox[2]) return 3;
+            else if (Y > this.LinesBox[2] && Y < this.LinesBox[1]) return 2;
+            else if (Y > this.LinesBox[1] && Y < this.LinesBox[0]) return 1;
+            else if (Y > this.LinesBox[0]) return 0;
         }
 
         public bool Collision(Rectangle body, Vector2 position, int line, bool item = true)
