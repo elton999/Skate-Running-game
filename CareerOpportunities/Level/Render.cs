@@ -17,22 +17,29 @@ namespace CareerOpportunities.Level
         Texture2D RampTexture;
         Texture2D Ground;
 
+        float TileMapWidth;
+
         Vector2[] PositionGround;
 
         int start;
         int currentPositionX;
-        Color[,] MapColors;
-        Vector2[] positionBoxs;
-        Color[] SpritesColors;
+        TypeOfItems[,] MapItems;
+        Vector2 [] positionBoxs;
+        TypeOfItems [] SpritesColors;
         public Vector2 CollisionPosition;
         int scale;
         int BufferHeight;
         int tileWidth = 34;
 
-        Color BoxColor = Color.Red;
-        Color CoinColor = Color.Yellow;
-        Color HeartsColor = Color.Blue;
-        Color RampColor = Color.Green;
+        public enum TypeOfItems { 
+            NONE,
+            BOX,
+            BOX_EFFECT,
+            COIN,
+            RAMP,
+            HEART,
+        };
+
         int[] LinesBox;
 
         int stopFramesNum = 0;
@@ -94,6 +101,7 @@ namespace CareerOpportunities.Level
         public void setTileMap(Texture2D map)
         {
             this.TileMap = map;
+            this.TileMapWidth = map.Width;
             this.readMap();
         }
 
@@ -109,19 +117,28 @@ namespace CareerOpportunities.Level
             else return false;
         }
 
+        public TypeOfItems ColorToType(Color color)
+        {
+            if (color == Color.Red) return Render.TypeOfItems.BOX;
+            else if (color == Color.Yellow) return Render.TypeOfItems.COIN;
+            else if (color == Color.Blue) return Render.TypeOfItems.HEART;
+            else if (color == Color.Green) return Render.TypeOfItems.RAMP;
+            else return Render.TypeOfItems.NONE;
+        }
+
         public void readMap()
         {
             if (TileMap != null)
             {
                 Color[] colors1D = new Color[this.TileMap.Width * this.TileMap.Height];
                 this.TileMap.GetData(colors1D);
-                this.MapColors = new Color[this.TileMap.Width, this.TileMap.Height];
+                this.MapItems = new Render.TypeOfItems[this.TileMap.Width, this.TileMap.Height];
 
                 for (int x = 0; x < this.TileMap.Width; x++)
                 {
                     for (int y = this.TileMap.Height - 1; y >= 0 ; y--)
                     {
-                        this.MapColors[x, this.TileMap.Height - 1 - y] = colors1D[x + y * this.TileMap.Width];
+                        this.MapItems[x, this.TileMap.Height - 1 - y] = this.ColorToType(colors1D[x + y * this.TileMap.Width]);
                     }
                 }
             }
@@ -132,25 +149,26 @@ namespace CareerOpportunities.Level
         private void PositionTile()
         {
             List<Vector2> termsList = new List<Vector2>();
-            List<Color> termsListColors = new List<Color>();
-            for (int x = 0; x < this.TileMap.Width; x++)
+            List<Render.TypeOfItems> termsListColors = new List<Render.TypeOfItems>();
+            for (int x = 0; x < this.TileMapWidth; x++)
             {
-                for (int y = this.TileMap.Height - 1; y >= 0; y--)
+                for (int y = 5 - 1; y >= 0; y--)
                 {
-                    if (this.MapColors[x, y] == this.BoxColor)
+                    if (this.MapItems[x, y] == Render.TypeOfItems.BOX)
                     {
                         termsList.Add(new Vector2(x, y));
-                        termsListColors.Add(this.BoxColor);
+                        termsListColors.Add(Render.TypeOfItems.BOX);
                     }
-                    else if (this.MapColors[x, y] != Color.Black)
+                    else if (this.MapItems[x, y] != Render.TypeOfItems.BOX)
                     {
                         termsList.Add(new Vector2(x, y));
-                        termsListColors.Add(this.MapColors[x,y]);
+                        termsListColors.Add(this.MapItems[x,y]);
                     }
                 }
             }
             this.SpritesColors = termsListColors.ToArray();
             this.positionBoxs = termsList.ToArray();
+            this.TileMap = null; // destroy
         }
 
         public int LinePosition(float Y)
@@ -165,11 +183,11 @@ namespace CareerOpportunities.Level
         public bool Collision(Rectangle body, Vector2 position, int line, bool item = true)
         {
             bool any_collision = false;
-            for (int x = 0; x < this.TileMap.Width; x++)
+            for (int x = 0; x < this.TileMapWidth; x++)
             {
-                for (int y = 0; y < this.TileMap.Height; y++)
+                for (int y = 0; y < 5; y++)
                 {
-                    if (this.MapColors[x, y] != Color.Black) {
+                    if (this.MapItems[x, y] != Render.TypeOfItems.NONE) {
                         float x_position = ((x) * 25) * this.scale + this.currentPositionX;
                         float x_width = x_position + (40 * this.scale);
 
@@ -181,9 +199,9 @@ namespace CareerOpportunities.Level
                         if (x_overlaps && y_overlaps)
                         {
                             //if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
-                            if(!item && this.MapColors[x, y] == this.BoxColor) this.CollisionPosition = new Vector2(x, y);
+                            if(!item && this.MapItems[x, y] == Render.TypeOfItems.BOX) this.CollisionPosition = new Vector2(x, y);
                             else if (item) this.CollisionPosition = new Vector2(x, y);
-                            if (this.MapColors[x, y] == this.BoxColor) any_collision = true;
+                            if (this.MapItems[x, y] == Render.TypeOfItems.BOX) any_collision = true;
                         }
 
                     }
@@ -194,7 +212,7 @@ namespace CareerOpportunities.Level
 
         public string CollisionItem(Vector2 position, bool item = false)
         {
-            Color ReturnColor = this.MapColors[(int)position.X, (int)position.Y];
+            Render.TypeOfItems ReturnColor = this.MapItems[(int)position.X, (int)position.Y];
             string ReturnItem = "";
             
 
@@ -202,22 +220,22 @@ namespace CareerOpportunities.Level
             {
                 if (this.positionBoxs[i] == position)
                 {
-                    if (this.BoxColor != ReturnColor && Color.Black != ReturnColor && item)
+                    if (Render.TypeOfItems.BOX != ReturnColor && Render.TypeOfItems.NONE != ReturnColor && item)
                     {
-                        if (ReturnColor == this.HeartsColor) ReturnItem = "heart";
-                        if (ReturnColor == this.CoinColor) ReturnItem = "coin";
-                        if (ReturnColor == this.RampColor) ReturnItem = "ramp";
-                        if (this.RampColor != ReturnColor)
+                        if (ReturnColor == Render.TypeOfItems.HEART) ReturnItem = "heart";
+                        if (ReturnColor == Render.TypeOfItems.COIN) ReturnItem = "coin";
+                        if (ReturnColor == Render.TypeOfItems.RAMP) ReturnItem = "ramp";
+                        if (Render.TypeOfItems.RAMP != ReturnColor)
                         {
-                            this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
-                            this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
+                            this.SpritesColors[i] = Render.TypeOfItems.NONE; // if (this.CoinColor == this.SpritesColors[i])
+                            this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.NONE;
                         }
                     }
                     else if (!item)
                     {
-                        if (ReturnColor == this.BoxColor) ReturnItem = "box";
-                        this.SpritesColors[i] = Color.Black; // if (this.CoinColor == this.SpritesColors[i])
-                        this.MapColors[(int)position.X, (int)position.Y] = Color.Black;
+                        if (ReturnColor == Render.TypeOfItems.BOX) ReturnItem = "box";
+                        this.SpritesColors[i] = Render.TypeOfItems.NONE; // if (this.CoinColor == this.SpritesColors[i])
+                        this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.NONE;
                     }
                    
                 }
@@ -228,7 +246,7 @@ namespace CareerOpportunities.Level
 
         public bool Finished()
         {
-            if (-this.currentPositionX + (this.start * this.scale) > (this.TileMap.Width * 32) * this.scale) return true;
+            if (-this.currentPositionX + (this.start * this.scale) > (this.TileMapWidth * 32) * this.scale) return true;
             return false;
         }
 
@@ -285,7 +303,7 @@ namespace CareerOpportunities.Level
         {
             Texture2D sprite = this.BoxShadow;
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
-            if (SpritesColors[i] == Color.Red)
+            if (SpritesColors[i] == Render.TypeOfItems.BOX)
             {
                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
             }
@@ -294,25 +312,25 @@ namespace CareerOpportunities.Level
         public void Draw(SpriteBatch spriteBatch, int i)
         {
             Texture2D sprite = this.BoxTexture;
-            if (SpritesColors[i] == this.CoinColor) sprite = this.CoinTexture;
-            if (SpritesColors[i] == this.HeartsColor) sprite = this.HeartTexure;
-            if (SpritesColors[i] == this.RampColor) sprite = this.RampTexture;
+            if (SpritesColors[i] == Render.TypeOfItems.COIN) sprite = this.CoinTexture;
+            if (SpritesColors[i] == Render.TypeOfItems.HEART) sprite = this.HeartTexure;
+            if (SpritesColors[i] == Render.TypeOfItems.RAMP) sprite = this.RampTexture;
 
 
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
 
-            if (SpritesColors[i] == Color.Red)
+            if (SpritesColors[i] == Render.TypeOfItems.BOX)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), Color.White, 0, new Vector2(0, 0), this.scale/5f, SpriteEffects.None, 0f);
-            } else if (SpritesColors[i] == this.HeartsColor)
+            } else if (SpritesColors[i] == Render.TypeOfItems.HEART)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
-            } else if (SpritesColors[i] == this.RampColor)
+            } else if (SpritesColors[i] == Render.TypeOfItems.RAMP)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
 
-            if (SpritesColors[i] == this.CoinColor)
+            if (SpritesColors[i] == Render.TypeOfItems.COIN)
             {
                 this.sizeMutiply = 5;
                 this.DrawAnimation(spriteBatch, position, scale);
