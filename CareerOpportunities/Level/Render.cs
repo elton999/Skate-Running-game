@@ -57,12 +57,14 @@ namespace CareerOpportunities.Level
                     new Vector2(start,0)
             };
 
+            // sprite height
+            int spriteHeight = 33 * scale;
             this.LinesBox = new int[] {
-                this.BufferHeight - ((33 * scale)) + (scale),
-                this.BufferHeight - ((32 * scale) * 2) + (10 * scale),
-                this.BufferHeight - ((32 * scale) * 3) + (20 * scale),
-                this.BufferHeight - ((32 * scale) * 4) + (30 * scale),
-                this.BufferHeight - ((32 * scale) * 5) + (40 * scale),
+                this.BufferHeight - (spriteHeight + scale),
+                this.BufferHeight - (spriteHeight * 2) + (10 * scale),
+                this.BufferHeight - (spriteHeight * 3) + (20 * scale),
+                this.BufferHeight - (spriteHeight * 4) + (30 * scale),
+                this.BufferHeight - (spriteHeight * 5) + (40 * scale),
             };
         }
 
