@@ -136,12 +136,13 @@ namespace CareerOpportunities
 
                 if (map.isStoped())
                 {
-                    if (this.Position.X - (pull * this.Scale * delta) > BufferWidth / 2 && !map.Collision(
+                    float limit = (BufferWidth / 2) - (100 * this.Scale);
+                    if (this.Position.X - (pull * this.Scale * delta) > limit && !map.Collision(
                     this.Body,
                     new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
                     this.CurrentVerticalLine
                     )) this.Position = new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y);
-                    else if (this.Position.X + (pull * this.Scale * delta) < BufferWidth / 2) this.Position = new Vector2(this.Position.X + ((pull / 2) * this.Scale * delta), this.Position.Y);
+                    else if (this.Position.X + (pull * this.Scale * delta) < limit) this.Position = new Vector2(this.Position.X + ((pull / 2) * this.Scale * delta), this.Position.Y);
 
                     if (canMoveVertical)
                     {
