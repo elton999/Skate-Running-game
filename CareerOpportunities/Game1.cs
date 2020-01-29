@@ -236,7 +236,7 @@ namespace CareerOpportunities
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
             Map.jsonContent = null;
             Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"));
-            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"));
+            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"));
             Map.setBoxShadow(Content.Load<Texture2D>("prototype/box_2_shadows"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation-2"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));

@@ -29,7 +29,7 @@ namespace CareerOpportunities.weapon
                 if (this.bullets[i].Position.X < this.Screem.X && !collision) list_bullet.Add(this.bullets[i]);
                 if (collision)
                 {
-                    map.CollisionItem(map.CollisionPosition, false);
+                    map.CollisionItem(map.CollisionPosition, false, true);
                     map.CollisionPosition = new Vector2(0, 0);
                 }
             }
