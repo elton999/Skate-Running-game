@@ -27,7 +27,9 @@ namespace CareerOpportunities
         {
             RUN,
             HIT,
-            JUMP,
+            BEFORE_JUMP,
+            JUMPING,
+            AFTER_JUMP,
             BEFORE_FIRE,
             AFTER_FIRE,
             
@@ -107,7 +109,9 @@ namespace CareerOpportunities
                     else this.play(gameTime, "run");
 
                     if (this.runTimes == 4) this.runTimes = 0;
-                } else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.BEFORE_FIRE) {
+                }
+                else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.BEFORE_FIRE)
+                {
                     if (this.lastFrame)
                     {
                         this.currentAnimation = PlayerController.stateAnimation.AFTER_FIRE;
@@ -115,12 +119,27 @@ namespace CareerOpportunities
                         Weapon.Fire(this.Position);
                     }
                     else this.play(gameTime, "start_fire");
-                } else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)
+                }
+                else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)
                 {
-                    if (this.lastFrame)this.currentAnimation = PlayerController.stateAnimation.RUN;
+                    if (this.lastFrame) this.currentAnimation = PlayerController.stateAnimation.RUN;
                     else this.play(gameTime, "after_fire");
                 }
-                else this.play(gameTime, "jump");
+                else if (this.currentAnimation == PlayerController.stateAnimation.AFTER_JUMP)
+                {
+                    if (this.lastFrame) this.currentAnimation = PlayerController.stateAnimation.RUN;
+                    else this.play(gameTime, "landing");
+                }
+                else if (this.currentAnimation == PlayerController.stateAnimation.JUMPING)
+                {
+                    if (this.isGrounded) this.currentAnimation = PlayerController.stateAnimation.AFTER_JUMP;
+                    else this.play(gameTime, "jumping");
+                }
+                else
+                {
+                    if (this.lastFrame) this.currentAnimation = PlayerController.stateAnimation.JUMPING;
+                    else this.play(gameTime, "start_jump");
+                }
             } else this.play(gameTime, "hit");
         }
 
