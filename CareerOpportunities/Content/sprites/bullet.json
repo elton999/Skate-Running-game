@@ -1,0 +1,88 @@
+{ "frames": [
+   {
+    "filename": "bullet 0.aseprite",
+    "frame": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 1.aseprite",
+    "frame": { "x": 18, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 2.aseprite",
+    "frame": { "x": 36, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 3.aseprite",
+    "frame": { "x": 54, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 4.aseprite",
+    "frame": { "x": 72, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 5.aseprite",
+    "frame": { "x": 90, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 6.aseprite",
+    "frame": { "x": 108, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   },
+   {
+    "filename": "bullet 7.aseprite",
+    "frame": { "x": 126, "y": 0, "w": 18, "h": 18 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 18, "h": 18 },
+    "sourceSize": { "w": 18, "h": 18 },
+    "duration": 100
+   }
+ ],
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.16.3-x64",
+  "image": "bullet.png",
+  "format": "RGBA8888",
+  "size": { "w": 144, "h": 18 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "full_animation", "from": 0, "to": 7, "direction": "forward" },
+   { "name": "idle", "from": 0, "to": 3, "direction": "forward" },
+   { "name": "collision", "from": 4, "to": 7, "direction": "forward" }
+  ]
+ }
+}

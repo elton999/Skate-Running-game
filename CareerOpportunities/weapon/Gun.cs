@@ -10,17 +10,18 @@ namespace CareerOpportunities.weapon
         private List<Bullet> bullets;
         public Vector2 Screem;
 
-        public Gun(int Scale, Texture2D Sprite)
+        public Gun(int Scale, Texture2D Sprite, string jsonFile)
         {
             this.bullets = new List<Bullet>();
             this.Scale = Scale;
-            this.Sprite = Sprite;
+            this.setSprite(Sprite);
+            this.setJsonFile(jsonFile);
         }
 
         public void Update(GameTime gameTime, Level.Render map)
         {
             List<Bullet> list_bullet = new List<Bullet>();
-            this.Body = new Rectangle(new Point(0, 0), new Point(4, 3));
+            this.Body = new Rectangle(new Point(0, 0), new Point(9, 9));
             bool collision = false;
             for (int i = 0; i < this.bullets.Count; i++)
             {
@@ -33,19 +34,21 @@ namespace CareerOpportunities.weapon
                     map.CollisionPosition = new Vector2(0, 0);
                 }
             }
+            this.play(gameTime, "idle");
             this.bullets = list_bullet;
         }
 
         public void Fire(Vector2 Position)
         {
-            this.bullets.Add(new Bullet(this.Sprite, this.Scale, Position));
+            this.bullets.Add(new Bullet(this.Sprite, this.Scale, new Vector2(Position.X, Position.Y - (10 * this.Scale))));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int i = 0; i < this.bullets.Count; i++)
             {
-                spriteBatch.Draw(this.bullets[i].Sprite, this.bullets[i].Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, this.bullets[i].spriteEffect, 0f);
+                this.DrawAnimation(spriteBatch, this.bullets[i].Position, this.Scale);
+                // spriteBatch.Draw(this.bullets[i].Sprite, this.bullets[i].Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, this.bullets[i].spriteEffect, 0f);
             }
         }
 

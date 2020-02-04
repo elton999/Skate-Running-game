@@ -23,6 +23,17 @@ namespace CareerOpportunities
 
         private int runTimes;
 
+        public enum stateAnimation
+        {
+            RUN,
+            HIT,
+            JUMP,
+            BEFORE_FIRE,
+            AFTER_FIRE,
+            
+        }
+        public stateAnimation currentAnimation;
+
 
         public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth, string jsonFile)
         {
@@ -53,11 +64,12 @@ namespace CareerOpportunities
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
             this.Body = new Rectangle(new Point(16 * this.Scale, 21 * this.Scale), new Point(8 * this.Scale, 0));
 
+            this.currentAnimation = PlayerController.stateAnimation.RUN;
             this.runTimes = 0;
         }
 
 
-        public void PlayAnimation(Level.Render map, GameTime gameTime)
+        public void PlayAnimation(Level.Render map, Gun Weapon, GameTime gameTime)
         {
             if (this.isGrounded)
             {
@@ -87,7 +99,7 @@ namespace CareerOpportunities
 
             if (map.isStoped())
             {
-                if (this.isGrounded)
+                if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.RUN)
                 {
                     if (this.lastFrame) this.runTimes += 1;
 
@@ -95,7 +107,20 @@ namespace CareerOpportunities
                     else this.play(gameTime, "run");
 
                     if (this.runTimes == 4) this.runTimes = 0;
-                } else this.play(gameTime, "jump");
+                } else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.BEFORE_FIRE) {
+                    if (this.lastFrame)
+                    {
+                        this.currentAnimation = PlayerController.stateAnimation.AFTER_FIRE;
+                        this.lastFrame = false;
+                        Weapon.Fire(this.Position);
+                    }
+                    else this.play(gameTime, "start_fire");
+                } else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)
+                {
+                    if (this.lastFrame)this.currentAnimation = PlayerController.stateAnimation.RUN;
+                    else this.play(gameTime, "after_fire");
+                }
+                else this.play(gameTime, "jump");
             } else this.play(gameTime, "hit");
         }
 
@@ -163,14 +188,11 @@ namespace CareerOpportunities
                     // left and right
                     this.VerticalMove(input, map);
 
-                    if (input.KeyPress(Controller.Input.Button.FIRE))
-                    {
-                        Weapon.Fire(this.Position);
-                    }
+                    if (input.KeyPress(Controller.Input.Button.FIRE) && this.currentAnimation == PlayerController.stateAnimation.RUN) this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
                 }
             }
             
-            this.PlayAnimation(map, gameTime);
+            this.PlayAnimation(map, Weapon, gameTime);
             this.Jump(gameTime, delta, pull);
         }
 
@@ -247,7 +269,8 @@ namespace CareerOpportunities
         public void Draw(SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
-            this.DrawAnimation(spriteBatch, this.Position, this.Scale);
+            Vector2 sprite_position = new Vector2(this.Position.X - (2 * this.Scale), this.Position.Y - (16 * this.Scale));
+            this.DrawAnimation(spriteBatch, sprite_position, this.Scale);
         }
 
     }

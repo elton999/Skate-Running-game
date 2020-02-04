@@ -49,18 +49,6 @@
 /processorParam:TextureFormat=Color
 /build:prototype/box_4_2.png
 
-#begin prototype/bullet.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prototype/bullet.png
-
 #begin prototype/esteira-prototype.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -135,6 +123,21 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:prototype/rampa.png
+
+#begin sprites/bullet.json
+/copy:sprites/bullet.json
+
+#begin sprites/bullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/bullet.png
 
 #begin sprites/coin.json
 /copy:sprites/coin.json

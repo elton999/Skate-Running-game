@@ -111,7 +111,10 @@ namespace CareerOpportunities
                     Point map  = new Point((int)(frameInfo.frame.x * this.sizeMutiply), (int)(frameInfo.frame.y * this.sizeMutiply));
 
                     this.spriteSourceSize = new Rectangle(map, size);
-                    if (this.a_to != (this.frameCurrent + this.a_from)) this.frameCurrent++;
+                    if (this.a_to != (this.frameCurrent + this.a_from))
+                    {
+                        this.frameCurrent++;
+                    }
                     else
                     {
                         this.frameCurrent = 0;

@@ -40,6 +40,7 @@ namespace CareerOpportunities
             string CollectedCoins = "000";
             if (numbCoins < 10) CollectedCoins = "00" + numbCoins.ToString();
             else if (numbCoins < 100) CollectedCoins = "0" + numbCoins.ToString();
+            else CollectedCoins = numbCoins.ToString();
 
             spriteBatch.Draw(this.Sprite, this.Position, this.Body, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
             spriteBatch.DrawString(this.font, CollectedCoins, new Vector2(this.Position.X + (9 * this.Scale), this.Position.Y), Color.White);

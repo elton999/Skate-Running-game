@@ -242,7 +242,7 @@ namespace CareerOpportunities
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/level_1t"));
-            Weapon = new Gun(this.scale, Content.Load<Texture2D>("prototype/bullet"));
+            Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             // start game
@@ -263,7 +263,7 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Hearts != null && Player != null && Map != null && Coins != null){
+            if (Hearts != null && Player != null && Map != null && Coins != null && Weapon != null && Weapon.AnimationIsReady()){
                 if (Map.AnimationIsReady())return true;
             }
             return false;

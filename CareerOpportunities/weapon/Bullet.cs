@@ -18,7 +18,7 @@ namespace CareerOpportunities.weapon
         {
             this.Sprite = Sprite;
             this.Scale = Scale;
-            this.Position = new Vector2(Position.X + (this.Scale * 10), Position.Y + (this.Scale * 15));
+            this.Position = new Vector2(Position.X + (this.Scale * (10 + 26)), Position.Y + (this.Scale * 15));
         }
 
         public void Update(GameTime gameTime)
