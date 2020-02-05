@@ -102,7 +102,8 @@ namespace CareerOpportunities
 
         public Matrix transformMatrix()
         {
-            return Matrix.CreateScale(Zoom, Zoom, 1.0f) * Matrix.CreateTranslation(this.Position.X, this.Position.Y, 0);
+            // Matrix.CreateRotationZ(-1.57f) vertical
+            return Matrix.CreateScale(Zoom, Zoom, 1.0f) * Matrix.CreateRotationZ(0f) * Matrix.CreateTranslation(this.Position.X, this.Position.Y * scale, 0);
         }
     }
 }

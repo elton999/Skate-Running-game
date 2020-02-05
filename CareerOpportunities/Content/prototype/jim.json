@@ -322,6 +322,15 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
+   },
+   {
+    "filename": "characters 36.aseprite",
+    "frame": { "x": 2304, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
    }
  ],
  "meta": {
@@ -329,7 +338,7 @@
   "version": "1.2.16.3-x64",
   "image": "Jim.png",
   "format": "RGBA8888",
-  "size": { "w": 2304, "h": 64 },
+  "size": { "w": 2368, "h": 64 },
   "scale": "1",
   "frameTags": [
    { "name": "Idle", "from": 0, "to": 6, "direction": "forward" },
@@ -339,10 +348,10 @@
    { "name": "run", "from": 7, "to": 20, "direction": "forward" },
    { "name": "run_idle", "from": 7, "to": 14, "direction": "forward" },
    { "name": "hit", "from": 21, "to": 24, "direction": "forward" },
-   { "name": "jump", "from": 25, "to": 35, "direction": "forward" },
-   { "name": "start_jump", "from": 25, "to": 29, "direction": "forward" },
-   { "name": "jumping", "from": 30, "to": 33, "direction": "forward" },
-   { "name": "landing", "from": 34, "to": 35, "direction": "forward" }
+   { "name": "jump", "from": 25, "to": 36, "direction": "forward" },
+   { "name": "start_jump", "from": 25, "to": 30, "direction": "forward" },
+   { "name": "jumping", "from": 31, "to": 34, "direction": "forward" },
+   { "name": "landing", "from": 35, "to": 36, "direction": "forward" }
   ]
  }
 }

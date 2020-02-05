@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using CareerOpportunities.weapon;
 using CareerOpportunities.Controller;
+using CareerOpportunities.Routine;
 using System.Reflection;
 using System.IO;
 
@@ -32,6 +33,7 @@ namespace CareerOpportunities
         HeartManagement Hearts;
         CoinManagement Coins;
         PlayerController Player;
+        Boss Boss;
         Level.Render Map;
 
         PauseMenuManagement PauseMenu;
@@ -83,6 +85,7 @@ namespace CareerOpportunities
         
         protected override void Update(GameTime gameTime)
         {
+
             if (this.LoadingLevel)
             {
                 this.LoadingLevel = false;
@@ -104,6 +107,7 @@ namespace CareerOpportunities
                     Map.Update(gameTime, 130);
                     Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
                     Weapon.Update(gameTime, Map);
+                    Boss.Update(gameTime);
 
                     if (Hearts.NumberOfhearts == 0)
                     {
@@ -209,6 +213,7 @@ namespace CareerOpportunities
                 Map.DrawGround(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false);
                 Player.Draw(spriteBatch);
+                Boss.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
                 Weapon.Draw(spriteBatch);
             }
@@ -242,6 +247,7 @@ namespace CareerOpportunities
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("prototype/level_1t"));
+            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
             Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
@@ -263,7 +269,7 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Hearts != null && Player != null && Map != null && Coins != null && Weapon != null && Weapon.AnimationIsReady()){
+            if (Hearts != null && Player != null && Map != null && Coins != null && Weapon != null && Weapon.AnimationIsReady() && Boss != null){
                 if (Map.AnimationIsReady())return true;
             }
             return false;
