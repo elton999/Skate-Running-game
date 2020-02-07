@@ -87,10 +87,11 @@ namespace CareerOpportunities
                 {
                     if (tag == (string)this.json.meta.frameTags[i].name)
                     {
-                        this.a_from    = (int)this.json.meta.frameTags[i].from;
-                        this.a_to      = (int)this.json.meta.frameTags[i].to;
-                        this.tag       = (string)this.json.meta.frameTags[i].name;
-                        this.direction = (string)this.json.meta.frameTags[i].direction;
+                        this.a_from       = (int)this.json.meta.frameTags[i].from;
+                        this.a_to         = (int)this.json.meta.frameTags[i].to;
+                        this.tag          = (string)this.json.meta.frameTags[i].name;
+                        this.direction    = (string)this.json.meta.frameTags[i].direction;
+                        this.frameCurrent = 0;
                         break;
                     }
                     i++;

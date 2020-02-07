@@ -74,7 +74,7 @@ namespace CareerOpportunities
         private void UpdateZoomJump(float delta)
         {
             this.TimeZoomCurrent -= delta;
-            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.3f);
+            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.1f);
 
             if (this.TimeZoomCurrent > 0)
             {

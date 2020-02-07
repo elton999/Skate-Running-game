@@ -341,7 +341,7 @@
   "size": { "w": 2368, "h": 64 },
   "scale": "1",
   "frameTags": [
-   { "name": "Idle", "from": 0, "to": 6, "direction": "forward" },
+   { "name": "Idle", "from": 0, "to": 1, "direction": "forward" },
    { "name": "fire_full", "from": 2, "to": 6, "direction": "forward" },
    { "name": "start_fire", "from": 2, "to": 3, "direction": "forward" },
    { "name": "after_fire", "from": 4, "to": 6, "direction": "forward" },

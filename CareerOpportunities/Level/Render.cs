@@ -31,6 +31,9 @@ namespace CareerOpportunities.Level
         int BufferHeight;
         int tileWidth = 34;
 
+        public int CurrentlyLevel;
+        public int LastLevel = 2;
+
         public enum TypeOfItems { 
             NONE,
             BOX,
@@ -118,6 +121,16 @@ namespace CareerOpportunities.Level
         {
             if (CurrentStopFramesNum > stopFramesNum) return true;
             else return false;
+        }
+
+        public void setLevel(int level)
+        {
+            this.CurrentlyLevel = level;
+        }
+
+        public int NextLevel()
+        {
+            return this.CurrentlyLevel + 1;
         }
 
         public TypeOfItems ColorToType(Color color)
@@ -260,7 +273,7 @@ namespace CareerOpportunities.Level
 
         public bool Finished()
         {
-            if (-this.currentPositionX + (this.start * this.scale) > (this.TileMapWidth * 32) * this.scale) return true;
+            if (-this.currentPositionX + (this.start * this.scale) > ((this.TileMapWidth * 30) + (100)) * this.scale) return true;
             return false;
         }
 

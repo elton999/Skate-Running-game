@@ -50,7 +50,8 @@ namespace CareerOpportunities
         
         public Game1()
         {
-            scale = 3;
+            this.scale = 3;
+            this.Level = 1;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 288 * scale;
             graphics.PreferredBackBufferHeight = 162 * scale;
@@ -103,11 +104,12 @@ namespace CareerOpportunities
                 if (this.status == GameStatus.PLAY)
                 {
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-                    camera.Update(gameTime, Player.Position, screemSize);
-                    Map.Update(gameTime, 130);
-                    Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
-                    Weapon.Update(gameTime, Map);
-                    Boss.Update(gameTime);
+                    this.camera.Update(gameTime, Player.Position, screemSize);
+                    this.Map.Update(gameTime, 130);
+                    this.Level = Map.CurrentlyLevel;
+                    this.Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
+                    this.Weapon.Update(gameTime, Map);
+                    this.Boss.Update(gameTime);
 
                     if (Hearts.NumberOfhearts == 0)
                     {
@@ -125,8 +127,13 @@ namespace CareerOpportunities
                         this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
                     }
                 }
-
-                if (Map.Finished()) this.status = GameStatus.WIN;
+                Console.WriteLine(Map.CurrentlyLevel);
+                if (Map.Finished())
+                {
+                    this.Level = Map.NextLevel();
+                    
+                    this.status = GameStatus.WIN;
+                }
 
             }
 
@@ -161,6 +168,12 @@ namespace CareerOpportunities
                     }
                 }
 
+                if (this.status == GameStatus.WIN)
+                {
+                    Map = null;
+                    this.LoadingLevel = true;
+                }
+
                 if (this.status == GameStatus.MENU)
                 {
                     MainMenu.Update(gameTime, this.InputGK);
@@ -178,15 +191,13 @@ namespace CareerOpportunities
         protected override void Draw(GameTime gameTime)
         {
             // Start Game
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
             this.DrawPlay();
-            spriteBatch.End();
             // end Game
 
             // Menu and Game HUD
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
 
-            if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY))
+            if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY) || (this.status == GameStatus.WIN) )
             {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
@@ -209,13 +220,16 @@ namespace CareerOpportunities
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
                 GraphicsDevice.Clear(Color.CornflowerBlue);
                 Map.DrawGround(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false);
                 Player.Draw(spriteBatch);
                 Boss.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
-                Weapon.Draw(spriteBatch);
+                spriteBatch.End();
+                
+                Weapon.Draw(spriteBatch, camera);
             }
         }
 
@@ -239,14 +253,15 @@ namespace CareerOpportunities
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth);
+            Map.setLevel(this.Level);
             Map.jsonContent = null;
             Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"));
             Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"));
             Map.setBoxShadow(Content.Load<Texture2D>("prototype/box_2_shadows"));
-            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin-animation-2"), this.path +"/Content/sprites/coin.json");
+            Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
-            Map.setTileMap(Content.Load<Texture2D>("prototype/level_1t"));
+            Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
             Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
