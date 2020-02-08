@@ -9,13 +9,15 @@ namespace CareerOpportunities.weapon
 
         private List<Bullet> bullets;
         public Vector2 Screem;
+        public Texture2D Light;
 
-        public Gun(int Scale, Texture2D Sprite, string jsonFile)
+        public Gun(int Scale, Texture2D Sprite, Texture2D Light, string jsonFile)
         {
             this.bullets = new List<Bullet>();
             this.Scale = Scale;
             this.setSprite(Sprite);
             this.setJsonFile(jsonFile);
+            this.Light = Light;
         }
 
         public void Update(GameTime gameTime, Level.Render map)
@@ -45,13 +47,17 @@ namespace CareerOpportunities.weapon
 
         public void Draw(SpriteBatch spriteBatch, CameraManagement camera)
         {
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
+            
             for (int i = 0; i < this.bullets.Count; i++)
             {
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
                 this.DrawAnimation(spriteBatch, this.bullets[i].Position, this.Scale);
-                // spriteBatch.Draw(this.bullets[i].Sprite, this.bullets[i].Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, this.bullets[i].spriteEffect, 0f);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
+                spriteBatch.Draw(this.Light, new Vector2( this.bullets[i].Position.X - (this.Scale*11), this.bullets[i].Position.Y - (this.Scale * 11)), null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+                spriteBatch.End();
             }
-            spriteBatch.End();
         }
 
     }

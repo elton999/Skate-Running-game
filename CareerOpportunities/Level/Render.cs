@@ -10,6 +10,10 @@ namespace CareerOpportunities.Level
     {
         Texture2D BoxTexture;
         Texture2D BoxTexture2;
+
+        Texture2D BoxTextureWhite;
+        Texture2D BoxTexture2White;
+
         Texture2D BoxShadow;
         Texture2D TileMap;
         Texture2D CoinTexture;
@@ -76,10 +80,14 @@ namespace CareerOpportunities.Level
             this.Ground = Ground;
         }
 
-        public void setBoxTexture(Texture2D box, Texture2D box2)
+        public void setBoxTexture(Texture2D box, Texture2D box2, Texture2D box3, Texture2D box4)
         {
             this.BoxTexture = box;
             this.BoxTexture2 = box2;
+
+            this.BoxTextureWhite = box3;
+            this.BoxTexture2White = box4;
+
         }
 
         public void setBoxShadow(Texture2D boxShadow)
@@ -301,28 +309,31 @@ namespace CareerOpportunities.Level
             spriteBatch.Draw(Ground, this.PositionGround[1], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
         }
 
-        public void Layers(SpriteBatch spriteBatch, int layer, bool front)
+        public void Layers(SpriteBatch spriteBatch, int layer, bool front, bool mask = false)
         {
             if (front)
             {
-                for (int i_layer = layer != 0 ? layer - 1: layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch);
+                for (int i_layer = layer != 0 ? layer - 1: layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch, mask);
             }
             else
             {
-                for (int i_layer = 4; i_layer >= layer; i_layer--) this.drawLayer(i_layer, spriteBatch);
+                for (int i_layer = 4; i_layer >= layer; i_layer--) this.drawLayer(i_layer, spriteBatch, mask);
             }
         }
 
-        private void drawLayer(int i_layer, SpriteBatch spriteBatch)
+        private void drawLayer(int i_layer, SpriteBatch spriteBatch, bool mask)
         {
-            for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
+            if (!mask)
             {
-                if (i_layer == (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+                for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
+                {
+                    if (i_layer == (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
+                }
             }
 
             for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
             {
-                if (i_layer == (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i);
+                if (i_layer == (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i, mask);
             }
         }
 
@@ -336,10 +347,15 @@ namespace CareerOpportunities.Level
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, int i)
+        public void Draw(SpriteBatch spriteBatch, int i, bool mask)
         {
             Texture2D sprite = this.BoxTexture;
-            if (SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT) sprite = this.BoxTexture2;
+            Color SpriteColorTexture = Color.White;
+
+            //if (mask) sprite = this.BoxTextureWhite;
+
+            if (SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT && !mask) sprite = this.BoxTexture2;
+            else if (SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT) sprite = this.BoxTexture2White;
             if (SpritesColors[i] == Render.TypeOfItems.COIN) sprite = this.CoinTexture;
             if (SpritesColors[i] == Render.TypeOfItems.HEART) sprite = this.HeartTexure;
             if (SpritesColors[i] == Render.TypeOfItems.RAMP) sprite = this.RampTexture;
@@ -349,16 +365,16 @@ namespace CareerOpportunities.Level
 
             if (SpritesColors[i] == Render.TypeOfItems.BOX || SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT)
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), Color.White, 0, new Vector2(0, 0), this.scale/5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale/5f, SpriteEffects.None, 0f);
             } else if (SpritesColors[i] == Render.TypeOfItems.HEART)
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             } else if (SpritesColors[i] == Render.TypeOfItems.RAMP)
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), Color.White, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
 
-            if (SpritesColors[i] == Render.TypeOfItems.COIN)
+            if (SpritesColors[i] == Render.TypeOfItems.COIN && !mask)
             {
                 this.sizeMutiply = 5;
                 this.DrawAnimation(spriteBatch, position, scale);

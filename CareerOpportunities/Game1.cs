@@ -43,6 +43,17 @@ namespace CareerOpportunities
 
         SpriteFont font3;
 
+        // Effect
+        private Effect ghostLightShader;
+        private Texture2D background;
+        private Texture2D lightmap;
+        private Texture2D ghost;
+        private RenderTarget2D lightmapLayer;
+        private RenderTarget2D sceneLightLayer;
+        private RenderTarget2D ghostLayer;
+        private RenderTarget2D ghostLightLayer;
+        private BlendState lightBlend;
+
         bool debug;
         public string path;
 
@@ -55,6 +66,7 @@ namespace CareerOpportunities
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 288 * scale;
             graphics.PreferredBackBufferHeight = 162 * scale;
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
             // graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
@@ -73,10 +85,22 @@ namespace CareerOpportunities
 
         protected override void LoadContent()
         {
-            this.status   = GameStatus.MENU;
             spriteBatch   = new SpriteBatch(GraphicsDevice);
+
+            this.status = GameStatus.MENU;
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
             this.font3 = Content.Load<SpriteFont>("pressstart3");
+
+            this.lightBlend = new BlendState
+            {
+                ColorSourceBlend = Blend.Zero,
+                ColorDestinationBlend = Blend.SourceColor
+            };
+
+            this.ghostLightLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.ghostLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.lightmapLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.sceneLightLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         }
 
         
@@ -127,11 +151,9 @@ namespace CareerOpportunities
                         this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
                     }
                 }
-                Console.WriteLine(Map.CurrentlyLevel);
                 if (Map.Finished())
                 {
-                    this.Level = Map.NextLevel();
-                    
+                    this.Level = Map.NextLevel();   
                     this.status = GameStatus.WIN;
                 }
 
@@ -220,15 +242,33 @@ namespace CareerOpportunities
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
+
+                //Effect
+                GraphicsDevice.SetRenderTarget(this.ghostLightLayer);
+                GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
+                Boss.Draw(spriteBatch);
+                Map.Layers(spriteBatch, Player.CurrentVerticalLine, true, false);
+                spriteBatch.End();
+
+                spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
+                Player.Draw(spriteBatch);
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
+
+                //final
+
+                // Render scene
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
                 GraphicsDevice.Clear(Color.CornflowerBlue);
                 Map.DrawGround(spriteBatch);
-                Map.Layers(spriteBatch, Player.CurrentVerticalLine, false);
+                Map.Layers(spriteBatch, Player.CurrentVerticalLine, false, false);
                 Player.Draw(spriteBatch);
-                Boss.Draw(spriteBatch);
-                Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
+                //Boss.Draw(spriteBatch);
+                //Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
+                spriteBatch.Draw((Texture2D)this.ghostLightLayer, Vector2.Zero, Color.White);
                 spriteBatch.End();
-                
+
                 Weapon.Draw(spriteBatch, camera);
             }
         }
@@ -256,14 +296,14 @@ namespace CareerOpportunities
             Map.setLevel(this.Level);
             Map.jsonContent = null;
             Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"));
-            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"));
+            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"), Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"));
             Map.setBoxShadow(Content.Load<Texture2D>("prototype/box_2_shadows"));
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"), this.path +"/Content/sprites/coin.json");
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
-            Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), this.path + "/Content/sprites/bullet.json");
+            Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), Content.Load<Texture2D>("Effects/light"), this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             // start game
