@@ -44,15 +44,9 @@ namespace CareerOpportunities
         SpriteFont font3;
 
         // Effect
-        private Effect ghostLightShader;
-        private Texture2D background;
-        private Texture2D lightmap;
-        private Texture2D ghost;
+        private RenderTarget2D backgroundLayer;
+        private RenderTarget2D PlayerLayer;
         private RenderTarget2D lightmapLayer;
-        private RenderTarget2D sceneLightLayer;
-        private RenderTarget2D ghostLayer;
-        private RenderTarget2D ghostLightLayer;
-        private BlendState lightBlend;
 
         bool debug;
         public string path;
@@ -67,6 +61,7 @@ namespace CareerOpportunities
             graphics.PreferredBackBufferWidth = 288 * scale;
             graphics.PreferredBackBufferHeight = 162 * scale;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            Window.AllowUserResizing = true;
             // graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
@@ -91,16 +86,7 @@ namespace CareerOpportunities
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
             this.font3 = Content.Load<SpriteFont>("pressstart3");
 
-            this.lightBlend = new BlendState
-            {
-                ColorSourceBlend = Blend.Zero,
-                ColorDestinationBlend = Blend.SourceColor
-            };
-
-            this.ghostLightLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.ghostLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.lightmapLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.sceneLightLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         }
 
         
@@ -135,7 +121,7 @@ namespace CareerOpportunities
                     this.Weapon.Update(gameTime, Map);
                     this.Boss.Update(gameTime);
 
-                    if (Hearts.NumberOfhearts == 0)
+                    if (Hearts.NumberOfhearts < 1)
                     {
                         if (Map.isStoped()) {
                             //this.LoadingLevel = true;
@@ -242,9 +228,8 @@ namespace CareerOpportunities
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
-
                 //Effect
-                GraphicsDevice.SetRenderTarget(this.ghostLightLayer);
+                GraphicsDevice.SetRenderTarget(this.lightmapLayer);
                 GraphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
                 Boss.Draw(spriteBatch);
@@ -266,7 +251,7 @@ namespace CareerOpportunities
                 Player.Draw(spriteBatch);
                 //Boss.Draw(spriteBatch);
                 //Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
-                spriteBatch.Draw((Texture2D)this.ghostLightLayer, Vector2.Zero, Color.White);
+                spriteBatch.Draw((Texture2D)this.lightmapLayer, Vector2.Zero, Color.White);
                 spriteBatch.End();
 
                 Weapon.Draw(spriteBatch, camera);
