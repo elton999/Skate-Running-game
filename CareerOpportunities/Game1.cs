@@ -58,8 +58,8 @@ namespace CareerOpportunities
             this.scale = 3;
             this.Level = 1;
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = 288 * scale;
-            graphics.PreferredBackBufferHeight = 162 * scale;
+            graphics.PreferredBackBufferWidth = 288 * this.scale;
+            graphics.PreferredBackBufferHeight = 162 * this.scale;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Window.AllowUserResizing = true;
             // graphics.ToggleFullScreen();

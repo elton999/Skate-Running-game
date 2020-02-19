@@ -331,6 +331,24 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
+   },
+   {
+    "filename": "characters 37.aseprite",
+    "frame": { "x": 2368, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
+   },
+   {
+    "filename": "characters 38.aseprite",
+    "frame": { "x": 2432, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
    }
  ],
  "meta": {
@@ -338,20 +356,21 @@
   "version": "1.2.16.3-x64",
   "image": "Jim.png",
   "format": "RGBA8888",
-  "size": { "w": 2368, "h": 64 },
+  "size": { "w": 2496, "h": 64 },
   "scale": "1",
   "frameTags": [
-   { "name": "Idle", "from": 0, "to": 1, "direction": "forward" },
-   { "name": "fire_full", "from": 2, "to": 6, "direction": "forward" },
-   { "name": "start_fire", "from": 2, "to": 3, "direction": "forward" },
-   { "name": "after_fire", "from": 4, "to": 6, "direction": "forward" },
-   { "name": "run", "from": 7, "to": 20, "direction": "forward" },
-   { "name": "run_idle", "from": 7, "to": 14, "direction": "forward" },
-   { "name": "hit", "from": 21, "to": 24, "direction": "forward" },
-   { "name": "jump", "from": 25, "to": 36, "direction": "forward" },
-   { "name": "start_jump", "from": 25, "to": 30, "direction": "forward" },
-   { "name": "jumping", "from": 31, "to": 34, "direction": "forward" },
-   { "name": "landing", "from": 35, "to": 36, "direction": "forward" }
+   { "name": "up", "from": 1, "to": 1, "direction": "forward" },
+   { "name": "down", "from": 2, "to": 2, "direction": "forward" },
+   { "name": "fire_full", "from": 4, "to": 8, "direction": "forward" },
+   { "name": "start_fire", "from": 4, "to": 4, "direction": "forward" },
+   { "name": "after_fire", "from": 5, "to": 8, "direction": "forward" },
+   { "name": "run", "from": 9, "to": 22, "direction": "forward" },
+   { "name": "run_idle", "from": 9, "to": 16, "direction": "forward" },
+   { "name": "hit", "from": 23, "to": 26, "direction": "forward" },
+   { "name": "jump", "from": 27, "to": 38, "direction": "forward" },
+   { "name": "start_jump", "from": 27, "to": 32, "direction": "forward" },
+   { "name": "jumping", "from": 33, "to": 36, "direction": "forward" },
+   { "name": "landing", "from": 37, "to": 38, "direction": "forward" }
   ]
  }
 }

@@ -32,6 +32,8 @@ namespace CareerOpportunities
             AFTER_JUMP,
             BEFORE_FIRE,
             AFTER_FIRE,
+            VERTICAL_UP,
+            VERTICAL_DOWN,
             
         }
         public stateAnimation currentAnimation;
@@ -52,9 +54,9 @@ namespace CareerOpportunities
             int linePosition = (32 * scale);
             Lines = new int[] {
                 BufferHeight - linePosition  + (-5 * scale),
-                BufferHeight - (linePosition *2) + (5 * scale),
-                BufferHeight - (linePosition * 3) + (11 * scale),
-                BufferHeight - (linePosition * 4) + (24 * scale),
+                BufferHeight - (linePosition * 2) + (5 * scale),
+                BufferHeight - (linePosition * 3) + (15 * scale),
+                BufferHeight - (linePosition * 4) + (25 * scale),
                 BufferHeight - (linePosition * 5) + (35 * scale),
                 BufferHeight - (linePosition * 6) + (45 * scale),
             };
@@ -75,7 +77,10 @@ namespace CareerOpportunities
         {
             if (this.isGrounded)
             {
-                if (Position.Y == Lines[CurrentVerticalLine]) canMoveVertical = true;
+                if (Position.Y == Lines[CurrentVerticalLine] && this.currentAnimation == PlayerController.stateAnimation.RUN)
+                {
+                    canMoveVertical = true;
+                }
                 else
                 {
                     if (
@@ -83,16 +88,19 @@ namespace CareerOpportunities
                         (CurrentVerticalLine > PreviousVerticalLine && Lines[CurrentVerticalLine] > Position.Y))
                     {
                         Position = new Vector2(Position.X, Lines[CurrentVerticalLine]);
+                        this.currentAnimation = PlayerController.stateAnimation.RUN;
                     }
                     else
                     {
                         if (Position.Y < Lines[CurrentVerticalLine])
                         {
                             Position = new Vector2(Position.X, Position.Y + PlayerVerticalVelocity);
+                            this.currentAnimation = PlayerController.stateAnimation.VERTICAL_DOWN;
                         }
                         else if (Position.Y > Lines[CurrentVerticalLine])
                         {
                             Position = new Vector2(Position.X, Position.Y - PlayerVerticalVelocity);
+                            this.currentAnimation = PlayerController.stateAnimation.VERTICAL_UP;
                         }
                     }
                 }
@@ -110,6 +118,8 @@ namespace CareerOpportunities
 
                     if (this.runTimes == 4) this.runTimes = 0;
                 }
+                else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.VERTICAL_UP) this.play(gameTime, "up");
+                else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.VERTICAL_DOWN) this.play(gameTime, "down");
                 else if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.BEFORE_FIRE)
                 {
                     if (this.lastFrame)
