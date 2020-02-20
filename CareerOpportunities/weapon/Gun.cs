@@ -53,10 +53,6 @@ namespace CareerOpportunities.weapon
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
                 this.DrawAnimation(spriteBatch, this.bullets[i].Position, this.Scale);
                 spriteBatch.End();
-
-                spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Additive, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
-                spriteBatch.Draw(this.Light, new Vector2( this.bullets[i].Position.X - (this.Scale*11), this.bullets[i].Position.Y - (this.Scale * 11)), null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
-                spriteBatch.End();
             }
         }
 

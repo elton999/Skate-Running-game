@@ -119,7 +119,7 @@ namespace CareerOpportunities
                     this.Level = Map.CurrentlyLevel;
                     this.Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
                     this.Weapon.Update(gameTime, Map);
-                    this.Boss.Update(gameTime);
+                    if(this.Boss != null) this.Boss.Update(gameTime);
 
                     if (Hearts.NumberOfhearts < 1)
                     {
@@ -232,7 +232,7 @@ namespace CareerOpportunities
                 GraphicsDevice.SetRenderTarget(this.lightmapLayer);
                 GraphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
-                Boss.Draw(spriteBatch);
+                if(this.Boss != null) Boss.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true, false);
                 spriteBatch.End();
 
@@ -287,7 +287,7 @@ namespace CareerOpportunities
             Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
-            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
+            //Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
             Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), Content.Load<Texture2D>("Effects/light"), this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
@@ -309,7 +309,7 @@ namespace CareerOpportunities
 
         public bool isLevelReady()
         {
-            if (Hearts != null && Player != null && Map != null && Coins != null && Weapon != null && Weapon.AnimationIsReady() && Boss != null){
+            if (Hearts != null && Player != null && Map != null && Coins != null && Weapon != null && Weapon.AnimationIsReady()){
                 if (Map.AnimationIsReady())return true;
             }
             return false;

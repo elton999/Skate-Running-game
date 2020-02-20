@@ -8,49 +8,13 @@ namespace CareerOpportunities.Level
 {
     public class Render : GameObject
     {
-        Texture2D BoxTexture;
-        Texture2D BoxTexture2;
-
-        Texture2D BoxTextureWhite;
-        Texture2D BoxTexture2White;
-
-        Texture2D BoxShadow;
-        Texture2D TileMap;
-        Texture2D CoinTexture;
-        Texture2D HeartTexure;
-        Texture2D RampTexture;
-        Texture2D Ground;
 
         float TileMapWidth;
 
         Vector2[] PositionGround;
-
-        int start;
-        int currentPositionX;
-        TypeOfItems[,] MapItems;
-        Vector2 [] positionBoxs;
-        TypeOfItems [] SpritesColors;
-        public Vector2 CollisionPosition;
+       
         int scale;
-        int BufferHeight;
-        int tileWidth = 34;
-
-        public int CurrentlyLevel;
-        public int LastLevel = 2;
-
-        public enum TypeOfItems { 
-            NONE,
-            BOX,
-            BOX_EFFECT,
-            COIN,
-            RAMP,
-            HEART,
-        };
-
-        int[] LinesBox;
-
-        int stopFramesNum = 0;
-        int CurrentStopFramesNum = 1;
+        
 
         public Render(int scale, int BufferHeight, int start)
         {
@@ -74,6 +38,20 @@ namespace CareerOpportunities.Level
                 this.BufferHeight - (spriteHeight * 5) + (40 * scale),
             };
         }
+
+
+        #region Set sprites
+
+        Texture2D BoxTexture;
+        Texture2D BoxTexture2;
+        Texture2D BoxTextureWhite;
+        Texture2D BoxTexture2White;
+        Texture2D BoxShadow;
+        Texture2D CoinTexture;
+        Texture2D HeartTexure;
+        Texture2D RampTexture;
+        Texture2D Ground;
+
 
         public void setGround(Texture2D Ground)
         {
@@ -111,34 +89,31 @@ namespace CareerOpportunities.Level
             this.setJsonFile(jsonFile);
             this.setSprite(this.CoinTexture);
         }
+        #endregion
+
+        #region TeleMap
+        
+        Texture2D TileMap;
+        TypeOfItems[,] MapItems;
+        Vector2[] positionBoxs;
+        TypeOfItems[] SpritesColors;
+
+        public enum TypeOfItems
+        {
+            NONE,
+            BOX,
+            BOX_EFFECT,
+            COIN,
+            RAMP,
+            HEART,
+        };
+
 
         public void setTileMap(Texture2D map)
         {
             this.TileMap = map;
             this.TileMapWidth = map.Width;
             this.readMap();
-        }
-
-        public void StopFor(int frames = 15)
-        {
-            stopFramesNum = frames;
-            CurrentStopFramesNum = 0;
-        }
-
-        public bool isStoped()
-        {
-            if (CurrentStopFramesNum > stopFramesNum) return true;
-            else return false;
-        }
-
-        public void setLevel(int level)
-        {
-            this.CurrentlyLevel = level;
-        }
-
-        public int NextLevel()
-        {
-            return this.CurrentlyLevel + 1;
         }
 
         public TypeOfItems ColorToType(Color color)
@@ -195,17 +170,11 @@ namespace CareerOpportunities.Level
             this.positionBoxs = termsList.ToArray();
             this.TileMap = null; // destroy
         }
+        #endregion
 
-        public int LinePosition(float Y)
-        {
-            int line = 0;
-            if (Y > this.LinesBox[4] && Y < this.LinesBox[3]) line = 4;
-            else if (Y > this.LinesBox[3] && Y < this.LinesBox[2]) line = 3;
-            else if (Y > this.LinesBox[2] && Y < this.LinesBox[1]) line = 2;
-            else if (Y > this.LinesBox[1] && Y < this.LinesBox[0]) line = 1;
-            else if (Y > this.LinesBox[0]) line = 0;
-            return line;
-        }
+        #region Collision
+
+        public Vector2 CollisionPosition;
 
         public bool Collision(Rectangle body, Vector2 position, int line, bool item = true)
         {
@@ -279,11 +248,63 @@ namespace CareerOpportunities.Level
             return ReturnItem;
         }
 
+        #endregion
+
+        #region Level Management
+
+        int BufferHeight;
+        int tileWidth = 34;
+
+        public int CurrentlyLevel;
+        public int LastLevel = 2;
+
+        int[] LinesBox;
+
+        int stopFramesNum = 0;
+        int CurrentStopFramesNum = 1;
+
+        int start;
+        int currentPositionX;
+
+        public void StopFor(int frames = 15)
+        {
+            stopFramesNum = frames;
+            CurrentStopFramesNum = 0;
+        }
+
+        public bool isStoped()
+        {
+            if (CurrentStopFramesNum > stopFramesNum) return true;
+            else return false;
+        }
+
+        public void setLevel(int level)
+        {
+            this.CurrentlyLevel = level;
+        }
+
+        public int NextLevel()
+        {
+            return this.CurrentlyLevel + 1;
+        }
+
+        public int LinePosition(float Y)
+        {
+            int line = 0;
+            if (Y > this.LinesBox[4] && Y < this.LinesBox[3]) line = 4;
+            else if (Y > this.LinesBox[3] && Y < this.LinesBox[2]) line = 3;
+            else if (Y > this.LinesBox[2] && Y < this.LinesBox[1]) line = 2;
+            else if (Y > this.LinesBox[1] && Y < this.LinesBox[0]) line = 1;
+            else if (Y > this.LinesBox[0]) line = 0;
+            return line;
+        }
+
         public bool Finished()
         {
             if (-this.currentPositionX + (this.start * this.scale) > ((this.TileMapWidth * 30) + (100)) * this.scale) return true;
             return false;
         }
+        #endregion
 
         public void Update(GameTime gameTime, int velocity)
         {
@@ -303,6 +324,7 @@ namespace CareerOpportunities.Level
         }
 
 
+        #region Draw
         public void DrawGround(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Ground, this.PositionGround[0], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
@@ -313,7 +335,7 @@ namespace CareerOpportunities.Level
         {
             if (front)
             {
-                for (int i_layer = layer != 0 ? layer - 1: layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch, mask);
+                for (int i_layer = layer != 0 ? layer - 1 : layer; i_layer >= 0; i_layer--) this.drawLayer(i_layer, spriteBatch, mask);
             }
             else
             {
@@ -343,7 +365,7 @@ namespace CareerOpportunities.Level
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
             if (SpritesColors[i] == Render.TypeOfItems.BOX)
             {
-               spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
             }
         }
 
@@ -365,11 +387,13 @@ namespace CareerOpportunities.Level
 
             if (SpritesColors[i] == Render.TypeOfItems.BOX || SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT)
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale/5f, SpriteEffects.None, 0f);
-            } else if (SpritesColors[i] == Render.TypeOfItems.HEART)
+                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
+            }
+            else if (SpritesColors[i] == Render.TypeOfItems.HEART)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
-            } else if (SpritesColors[i] == Render.TypeOfItems.RAMP)
+            }
+            else if (SpritesColors[i] == Render.TypeOfItems.RAMP)
             {
                 spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
             }
@@ -380,7 +404,6 @@ namespace CareerOpportunities.Level
                 this.DrawAnimation(spriteBatch, position, scale);
             }
         }
-
-
+        #endregion
     }
 }

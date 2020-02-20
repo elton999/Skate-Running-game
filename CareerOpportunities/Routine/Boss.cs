@@ -27,9 +27,6 @@ namespace CareerOpportunities.Routine
         public void Reset()
         {
             this.timer = 0;
-            this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.UP, 8.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.LEFT, 13.0f));
             this.Position = new Vector2(-35 * this.Scale, 112 * this.Scale);
         }
 
@@ -65,6 +62,24 @@ namespace CareerOpportunities.Routine
         {
             spriteBatch.Draw(this.Sprite, this.Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
         }
+
+        #region level 3
+        protected void addRoutineLevel3 ()
+        {
+            this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.UP, 8.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT, 13.0f));
+        }
+        #endregion
+
+        #region level 7
+        protected void addRoutineLevel7()
+        {
+            this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.UP, 8.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT, 13.0f));
+        }
+        #endregion
         
     }
 }
