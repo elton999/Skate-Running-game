@@ -15,8 +15,6 @@ namespace CareerOpportunities
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Texture2D Character;
-        Gun Weapon;
         Input InputGK;
 
         Texture2D loadingScreen;
@@ -29,24 +27,12 @@ namespace CareerOpportunities
         public bool LoadingLevel;
         public bool LoadingMenu;
 
-        MenuManagement MainMenu;
-        HeartManagement Hearts;
-        CoinManagement Coins;
-        PlayerController Player;
-        Boss Boss;
-        Level.Render Map;
-
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
 
         CameraManagement camera;
 
         SpriteFont font3;
-
-        // Effect
-        private RenderTarget2D backgroundLayer;
-        private RenderTarget2D PlayerLayer;
-        private RenderTarget2D lightmapLayer;
 
         bool debug;
         public string path;
@@ -86,14 +72,19 @@ namespace CareerOpportunities
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
             this.font3 = Content.Load<SpriteFont>("pressstart3");
 
+            this.backgroundLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.PlayerLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.lightmapLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+
+            this.HUDlayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         }
 
         
         protected override void UnloadContent()
         {
         }
-        
+
+        #region Update
         protected override void Update(GameTime gameTime)
         {
 
@@ -195,40 +186,47 @@ namespace CareerOpportunities
             }
             base.Update(gameTime);
         }
+        #endregion
 
+        #region Draw Player
         protected override void Draw(GameTime gameTime)
         {
             // Start Game
             this.DrawPlay();
             // end Game
 
-            // Menu and Game HUD
+            // Loading
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
-
             if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY) || (this.status == GameStatus.WIN) )
             {
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
+            spriteBatch.End();
+            // end loading
 
-            // HUD
-            this.DrawHUDPlay();
-
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
             this.DrawMainMenu();
             this.DrawPauseMenu();
             this.DrawGameOverMenu();
-
             spriteBatch.End();
-            // end menu and HUD
+
+           
 
             base.Draw(gameTime);
         }
 
 
+        #region Draw Player Layers
+        // layers
+        private RenderTarget2D backgroundLayer;
+        private RenderTarget2D PlayerLayer;
+        private RenderTarget2D lightmapLayer;
+
         public void DrawPlay()
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
-                //Effect
+                //Effect layer
                 GraphicsDevice.SetRenderTarget(this.lightmapLayer);
                 GraphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
@@ -241,33 +239,105 @@ namespace CareerOpportunities
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
-                //final
-
-                // Render scene
-                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
-                GraphicsDevice.Clear(Color.CornflowerBlue);
+                // Render background layer
+                GraphicsDevice.SetRenderTarget(this.backgroundLayer);
+                GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
                 Map.DrawGround(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false, false);
                 Player.Draw(spriteBatch);
-                //Boss.Draw(spriteBatch);
-                //Map.Layers(spriteBatch, Player.CurrentVerticalLine, true);
-                spriteBatch.Draw((Texture2D)this.lightmapLayer, Vector2.Zero, Color.White);
                 spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
 
-                Weapon.Draw(spriteBatch, camera);
+
+                this.DrawHUDPlay();
+
+                this.DrawAllLayers();
+                
             }
         }
+        #endregion
+
+        #region Draw HUD Layer
+        private RenderTarget2D HUDlayer;
 
         public void DrawHUDPlay()
         {
             if (this.isLevelReady() && this.status == GameStatus.PLAY)
             {
+                GraphicsDevice.SetRenderTarget(this.HUDlayer);
+                GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
                 Hearts.Draw(spriteBatch);
                 Coins.Draw(spriteBatch);
                 spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
+            }
+        }
+        #endregion
+
+        public void DrawAllLayers()
+        {
+            // render all layers
+            GraphicsDevice.Clear(Color.Black);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
+            spriteBatch.Draw((Texture2D)this.backgroundLayer, Vector2.Zero, Color.White);
+            spriteBatch.Draw((Texture2D)this.lightmapLayer, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
+            spriteBatch.Draw((Texture2D)this.HUDlayer, Vector2.Zero, Color.White);
+            spriteBatch.End();
+
+            Weapon.Draw(spriteBatch, camera);
+
+
+        }
+
+        #endregion
+
+        #region Draw Menu
+        public void DrawMainMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.MENU)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                this.MainMenu.Draw(spriteBatch);
             }
         }
 
+        public void DrawPauseMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.PAUSE)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                this.PauseMenu.Draw(spriteBatch);
+            }
+        }
+
+        public void DrawGameOverMenu()
+        {
+            if (this.isMainMenuReady() && this.status == GameStatus.LOSE)
+            {
+                GraphicsDevice.Clear(Color.Black);
+                spriteBatch.Draw(this.GameOverScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                this.GameOverMenu.Draw(spriteBatch);
+            }
+        }
+
+        #endregion
+
+        #region Load Content
+
+        Texture2D Character;
+        MenuManagement MainMenu;
+        HeartManagement Hearts;
+        CoinManagement Coins;
+        PlayerController Player;
+        Boss Boss;
+        Level.Render Map;
+        Gun Weapon;
 
         // Load all assets to the level
         public void LoadLevel()
@@ -315,38 +385,12 @@ namespace CareerOpportunities
             return false;
         }
 
-        public void DrawMainMenu()
-        {
-            if (this.isMainMenuReady() && this.status == GameStatus.MENU)
-            {
-                GraphicsDevice.Clear(Color.Black);
-                this.MainMenu.Draw(spriteBatch);
-            }
-        }
-
-        public void DrawPauseMenu()
-        {
-            if (this.isMainMenuReady() && this.status == GameStatus.PAUSE)
-            {
-                GraphicsDevice.Clear(Color.Black);
-                this.PauseMenu.Draw(spriteBatch);
-            }
-        }
-
-        public void DrawGameOverMenu()
-        {
-            if (this.isMainMenuReady() && this.status == GameStatus.LOSE)
-            {
-                GraphicsDevice.Clear(Color.Black);
-                spriteBatch.Draw(this.GameOverScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-                this.GameOverMenu.Draw(spriteBatch);
-            }
-        }
-
         public bool isMainMenuReady()
         {
             if (this.MainMenu != null && this.PauseMenu != null) return true;
             return false;
         }
+        #endregion
+
     }
 }
