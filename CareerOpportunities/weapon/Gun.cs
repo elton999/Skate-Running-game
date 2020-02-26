@@ -45,14 +45,12 @@ namespace CareerOpportunities.weapon
             this.bullets.Add(new Bullet(this.Sprite, this.Scale, new Vector2(Position.X, Position.Y - (10 * this.Scale))));
         }
 
-        public void Draw(SpriteBatch spriteBatch, CameraManagement camera)
+        public void Draw(SpriteBatch spriteBatch)
         {
             
             for (int i = 0; i < this.bullets.Count; i++)
             {
-                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
                 this.DrawAnimation(spriteBatch, this.bullets[i].Position, this.Scale);
-                spriteBatch.End();
             }
         }
 

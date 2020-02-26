@@ -323,7 +323,6 @@ namespace CareerOpportunities.Level
             else CurrentStopFramesNum += 1;
         }
 
-
         #region Draw
         public void DrawGround(SpriteBatch spriteBatch)
         {

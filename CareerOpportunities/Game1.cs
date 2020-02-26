@@ -48,7 +48,7 @@ namespace CareerOpportunities
             graphics.PreferredBackBufferHeight = 162 * this.scale;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             Window.AllowUserResizing = true;
-            // graphics.ToggleFullScreen();
+            //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
             this.LoadingMenu = true;
@@ -75,6 +75,9 @@ namespace CareerOpportunities
             this.backgroundLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.PlayerLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.lightmapLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.weaponLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+
+            this.allLayers = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
 
             this.HUDlayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         }
@@ -210,17 +213,16 @@ namespace CareerOpportunities
             this.DrawGameOverMenu();
             spriteBatch.End();
 
-           
-
             base.Draw(gameTime);
         }
-
 
         #region Draw Player Layers
         // layers
         private RenderTarget2D backgroundLayer;
         private RenderTarget2D PlayerLayer;
         private RenderTarget2D lightmapLayer;
+        private RenderTarget2D weaponLayer;
+        private RenderTarget2D allLayers;
 
         public void DrawPlay()
         {
@@ -249,6 +251,23 @@ namespace CareerOpportunities
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
+                // Render weapon layer
+                GraphicsDevice.SetRenderTarget(this.weaponLayer);
+                GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
+                Weapon.Draw(spriteBatch);
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
+
+                // Join all layers
+                GraphicsDevice.SetRenderTarget(this.allLayers);
+                GraphicsDevice.Clear(Color.Transparent);
+                spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
+                spriteBatch.Draw((Texture2D)this.backgroundLayer, Vector2.Zero, Color.White);
+                spriteBatch.Draw((Texture2D)this.lightmapLayer, Vector2.Zero, Color.White);
+                spriteBatch.Draw((Texture2D)this.weaponLayer, Vector2.Zero, Color.White);
+                spriteBatch.End();
+                GraphicsDevice.SetRenderTarget(null);
 
                 this.DrawHUDPlay();
 
@@ -279,20 +298,20 @@ namespace CareerOpportunities
 
         public void DrawAllLayers()
         {
+            float widthCenter = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width / 2;
+            float heightCenter = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height / 2;
+            // Vector2 PositionScreem = new Vector2(widthCenter - (this.backgroundLayer.Width / 2), heightCenter - (this.backgroundLayer.Height / 2));
+            Vector2 PositionScreem = Vector2.Zero;
+
             // render all layers
             GraphicsDevice.Clear(Color.Black);
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, camera.transformMatrix());
-            spriteBatch.Draw((Texture2D)this.backgroundLayer, Vector2.Zero, Color.White);
-            spriteBatch.Draw((Texture2D)this.lightmapLayer, Vector2.Zero, Color.White);
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null);
+            spriteBatch.Draw((Texture2D)this.allLayers, PositionScreem, Color.White);
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
-            spriteBatch.Draw((Texture2D)this.HUDlayer, Vector2.Zero, Color.White);
+            spriteBatch.Draw((Texture2D)this.HUDlayer, PositionScreem, Color.White);
             spriteBatch.End();
-
-            Weapon.Draw(spriteBatch, camera);
-
-
         }
 
         #endregion
