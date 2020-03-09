@@ -17,7 +17,7 @@ namespace CareerOpportunities
         private int[] Lines;
         private int PreviousVerticalLine;
         
-        private bool isGrounded = true;
+        public  bool isGrounded = true;
         private float JumpTime;
         private float JumpTimeCurrent = 0;
 
@@ -217,7 +217,10 @@ namespace CareerOpportunities
                     // left and right
                     this.VerticalMove(input, map);
 
-                    if (input.KeyPress(Controller.Input.Button.FIRE) && this.currentAnimation == PlayerController.stateAnimation.RUN) this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
+                    if (input.KeyPress(Controller.Input.Button.FIRE) && (this.currentAnimation == PlayerController.stateAnimation.RUN || this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)) {
+                        this.lastFrame = false;
+                        this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
+                    }
                 }
             }
             

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using CareerOpportunities.weapon;
 using CareerOpportunities.Controller;
 using CareerOpportunities.Routine;
@@ -109,7 +108,7 @@ namespace CareerOpportunities
                 {
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
                     this.camera.Update(gameTime, Player.Position, screemSize);
-                    this.Map.Update(gameTime, 130);
+                    this.Map.Update(gameTime, Player);
                     this.Level = Map.CurrentlyLevel;
                     this.Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
                     this.Weapon.Update(gameTime, Map);
