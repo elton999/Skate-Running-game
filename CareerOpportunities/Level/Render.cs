@@ -306,33 +306,40 @@ namespace CareerOpportunities.Level
             return false;
         }
         #endregion
-
+        
         int velocity = 0;
+        public Hud.Countdown countdown;
 
         public void Update(GameTime gameTime, PlayerController Player)
         {
+
+            this.play(gameTime, "round");
             if (Player.isGrounded) this.velocity = 145;
             else this.velocity = 130;
 
-            this.play(gameTime, "round");
-            if ( CurrentStopFramesNum > stopFramesNum )
+            if (!countdown.isCountdown)
             {
-                float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
-                int velocityCurrent = (int)(velocity * delta * this.scale);
-                // int velocityCurrent = (int)(2 * this.scale);
-                this.currentPositionX -= velocityCurrent;
+                if (CurrentStopFramesNum > stopFramesNum)
+                {
+                    float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    int velocityCurrent = (int)(velocity * delta * this.scale);
+                    // int velocityCurrent = (int)(2 * this.scale);
+                    this.currentPositionX -= velocityCurrent;
 
-                for (int i = 0; i < this.PositionGround.Length; i++) {
-                    if (this.PositionGround[i].X <= -(start))
+                    for (int i = 0; i < this.PositionGround.Length; i++)
                     {
-                        if (i == 0) this.PositionGround[i] = new Vector2(this.PositionGround[this.PositionGround.Length - 1].X + start, 0);
-                        else if (i == this.PositionGround.Length - 1) this.PositionGround[i] = new Vector2(this.PositionGround[i - 1].X + start, 0);
-                        else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + start - velocityCurrent, 0);
+                        if (this.PositionGround[i].X <= -(start))
+                        {
+                            if (i == 0) this.PositionGround[i] = new Vector2(this.PositionGround[this.PositionGround.Length - 1].X + start, 0);
+                            else if (i == this.PositionGround.Length - 1) this.PositionGround[i] = new Vector2(this.PositionGround[i - 1].X + start, 0);
+                            else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + start - velocityCurrent, 0);
+                        }
+                        else this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
                     }
-                    else this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
                 }
+                else CurrentStopFramesNum += 1;
             }
-            else CurrentStopFramesNum += 1;
+            
         }
 
         #region Draw

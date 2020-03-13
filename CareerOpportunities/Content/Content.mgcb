@@ -49,6 +49,18 @@
 /processorParam:TextureFormat=Color
 /build:Maps/level_2.png
 
+#begin Maps/level_3.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/level_3.png
+
 #begin Maps/level_4.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -237,6 +249,21 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/heart.png
+
+#begin sprites/hud_count.json
+/copy:sprites/hud_count.json
+
+#begin sprites/hud_count.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/hud_count.png
 
 #begin sprites/jim_hud.png
 /importer:TextureImporter

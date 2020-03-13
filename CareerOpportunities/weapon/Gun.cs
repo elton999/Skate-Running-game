@@ -10,11 +10,13 @@ namespace CareerOpportunities.weapon
         private List<Bullet> bullets;
         public Vector2 Screem;
         public Texture2D Light;
+        public CameraManagement camera;
 
-        public Gun(int Scale, Texture2D Sprite, Texture2D Light, string jsonFile)
+        public Gun(int Scale, Texture2D Sprite, Texture2D Light, CameraManagement camera, string jsonFile)
         {
             this.bullets = new List<Bullet>();
             this.Scale = Scale;
+            this.camera = camera;
             this.setSprite(Sprite);
             this.setJsonFile(jsonFile);
             this.Light = Light;
@@ -28,12 +30,13 @@ namespace CareerOpportunities.weapon
             for (int i = 0; i < this.bullets.Count; i++)
             {
                 this.bullets[i].Update(gameTime);
-                collision = map.Collision(this.Body, new Vector2( this.bullets[i].Position.X, this.bullets[i].Position.Y ), map.LinePosition(this.bullets[i].Position.Y + (this.Scale * 5)), false);
+                collision = map.Collision(this.Body, new Vector2( this.bullets[i].Position.X, this.bullets[i].Position.Y ), map.LinePosition(this.bullets[i].Position.Y + (this.Scale * 7)), false);
                 if (this.bullets[i].Position.X < this.Screem.X && !collision) list_bullet.Add(this.bullets[i]);
                 if (collision)
                 {
                     map.CollisionItem(map.CollisionPosition, false, true);
                     map.CollisionPosition = new Vector2(0, 0);
+                    camera.TimeShake = 5;
                 }
             }
             this.play(gameTime, "idle");

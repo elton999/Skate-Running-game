@@ -39,6 +39,8 @@ namespace CareerOpportunities
         public stateAnimation currentAnimation;
 
 
+        public Hud.Countdown countdown;
+
         public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth, string jsonFile)
         {
             this.Sprite = sprite;
@@ -166,7 +168,7 @@ namespace CareerOpportunities
                     string MapItem = map.CollisionItem(map.CollisionPosition, false);
                     heart.remove(1);
                     map.StopFor(60);
-                    camera.TimeShake = 12;
+                    camera.TimeShake = 15;
                 }
                 else
                 {
@@ -188,9 +190,9 @@ namespace CareerOpportunities
                     }
                 }
 
-                if (map.isStoped())
+                if (map.isStoped() || !countdown.isCountdown)
                 {
-                    float limit = (BufferWidth / 2) - (100 * this.Scale);
+                    float limit = (BufferWidth / 2) - (150 * this.Scale);
                     if (this.Position.X - (pull * this.Scale * delta) > limit && !map.Collision(
                     this.Body,
                     new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
