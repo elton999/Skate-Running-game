@@ -92,7 +92,7 @@ namespace CareerOpportunities.Level
         }
         #endregion
 
-        #region TeleMap
+        #region TileMap
         
         Texture2D TileMap;
         TypeOfItems[,] MapItems;
@@ -257,7 +257,7 @@ namespace CareerOpportunities.Level
         int tileWidth = 34;
 
         public int CurrentlyLevel;
-        public int LastLevel = 2;
+        public int LastLevel = 3;
 
         int[] LinesBox;
 
@@ -313,7 +313,7 @@ namespace CareerOpportunities.Level
         public void Update(GameTime gameTime, PlayerController Player)
         {
 
-            this.play(gameTime, "round");
+            this.play(gameTime, "round", AnimationDirection.LOOP);
             if (Player.isGrounded) this.velocity = 145;
             else this.velocity = 130;
 

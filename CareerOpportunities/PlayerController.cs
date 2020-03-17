@@ -46,7 +46,7 @@ namespace CareerOpportunities
             this.Sprite = sprite;
             this.Scale = scale;
 
-            this.CurrentVerticalLine = 0;
+            this.CurrentVerticalLine = 3;
             this.PreviousVerticalLine = 1;
             this.PlayerVerticalVelocity = (22 * scale) / 5.5f;
             this.PlayerHorizontalVelocity = 2 * this.Scale;
@@ -127,7 +127,6 @@ namespace CareerOpportunities
                     if (this.lastFrame)
                     {
                         this.currentAnimation = PlayerController.stateAnimation.AFTER_FIRE;
-                        this.lastFrame = false;
                         Weapon.Fire(this.Position);
                     }
                     else this.play(gameTime, "start_fire");
@@ -144,7 +143,10 @@ namespace CareerOpportunities
                 }
                 else if (this.currentAnimation == PlayerController.stateAnimation.JUMPING)
                 {
-                    if (this.isGrounded) this.currentAnimation = PlayerController.stateAnimation.AFTER_JUMP;
+                    if (this.isGrounded)
+                    {
+                        this.currentAnimation = PlayerController.stateAnimation.AFTER_JUMP;
+                    }
                     else this.play(gameTime, "jumping");
                 }
                 else
@@ -220,8 +222,7 @@ namespace CareerOpportunities
                     this.VerticalMove(input, map);
 
                     if (input.KeyPress(Controller.Input.Button.FIRE) && (this.currentAnimation == PlayerController.stateAnimation.RUN || this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)) {
-                        this.lastFrame = false;
-                        this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
+                       this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
                     }
                 }
             }

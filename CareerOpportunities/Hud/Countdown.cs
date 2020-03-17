@@ -9,17 +9,12 @@ namespace CareerOpportunities.Hud
     public class Countdown : GameObject
     {
 
-        private enum animationStates { COUNTDOWN, NONE };
+        private enum animationStates { COUNTDOWN, GO, NONE };
         private animationStates AnimationCurrent;
 
         public bool isCountdown
         {
             get => this.AnimationCurrent == animationStates.COUNTDOWN;
-            set
-            {
-                if (value) this.AnimationCurrent = animationStates.COUNTDOWN;
-                else this.AnimationCurrent = animationStates.NONE;
-            }
         }
 
 
@@ -27,8 +22,12 @@ namespace CareerOpportunities.Hud
         {
             if (this.AnimationCurrent == animationStates.COUNTDOWN)
             {
-                this.play(gameTime, "Count");
-                if (this.lastFrame) this.isCountdown = false;
+                if (this.lastFrame) this.AnimationCurrent = animationStates.GO;
+                else this.play(gameTime, "Count");
+            } else if (this.AnimationCurrent == animationStates.GO)
+            {
+                this.play(gameTime, "Go");
+                if (this.lastFrame) this.AnimationCurrent = animationStates.NONE;
             }
 
         }

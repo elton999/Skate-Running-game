@@ -39,7 +39,7 @@ namespace CareerOpportunities.weapon
                     camera.TimeShake = 5;
                 }
             }
-            this.play(gameTime, "idle");
+            this.play(gameTime, "idle", AnimationDirection.LOOP);
             this.bullets = list_bullet;
         }
 

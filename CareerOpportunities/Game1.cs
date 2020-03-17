@@ -45,7 +45,7 @@ namespace CareerOpportunities
         public Game1()
         {
             this.scale = 3;
-            this.Level = 1;
+            this.Level = 3;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 316 * this.scale;
             graphics.PreferredBackBufferHeight = 178 * this.scale;
@@ -125,7 +125,7 @@ namespace CareerOpportunities
                     this.Level = Map.CurrentlyLevel;
                     this.Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
                     this.Weapon.Update(gameTime, Map);
-                    if(this.Boss != null) this.Boss.Update(gameTime);
+                    if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime);
 
                     if (Hearts.NumberOfhearts < 1)
                     {
@@ -244,8 +244,8 @@ namespace CareerOpportunities
                 GraphicsDevice.SetRenderTarget(this.lightmapLayer);
                 GraphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
-                if(this.Boss != null) Boss.Draw(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, true, false);
+                if (this.Boss != null && this.Boss.isBossLevel(this.Level)) Boss.Draw(spriteBatch);
                 spriteBatch.End();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
@@ -400,7 +400,7 @@ namespace CareerOpportunities
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Map.countdown = this.Countdown;
-            //Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
+            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
             Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), Content.Load<Texture2D>("Effects/light"), this.camera, this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 

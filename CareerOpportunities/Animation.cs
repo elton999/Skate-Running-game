@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using Microsoft.Xna.Framework;
@@ -19,17 +20,8 @@ namespace CareerOpportunities
         private int a_from;
         private int a_to;
         private string tag;
-        private string direction;
-
-        // animation
-        private Texture2D sprite;
-        private Rectangle spriteSourceSize;
-        private int frame;
-        private int frameCurrent;
-        private int frameCount;
-        private float maxFrame;
-
-        public bool lastFrame;
+        
+        // public bool lastFrame;
 
         public float sizeMutiply = 1f;
         
@@ -67,6 +59,9 @@ namespace CareerOpportunities
                 // destroy
                 jsonContent = null;
                 jsonJObject = null;
+                stream.Dispose();
+                stream.DiscardBufferedData();
+                stream.Close();
             }
         }
 
@@ -76,10 +71,31 @@ namespace CareerOpportunities
             return (string)this.json.meta.frameTags[tag].name;
         }
 
-        public void play(GameTime gameTime, string tag)
-        {
-            this.lastFrame = false;
+        #region animations
+        // animation
+        private Texture2D sprite;
+        private Rectangle spriteSourceSize;
+        private int frame;
+        private int frameCurrent;
+        private float frameCount;
+        private List<float> maxFrame;
+        private AnimationDirection direction;
+        public enum AnimationDirection { FORWARD, LOOP, PING_PONG }
+        private bool checkedFirstframe;
 
+        public bool lastFrame
+        {
+            get {
+                if (this.maxFrame != null)
+                {
+                    if (this.maxFrame[this.maxFrame.Count -1] < this.frameCount && this.tag != null) return true;
+                }
+                return false;
+            }
+        }
+
+        public void play(GameTime gameTime, string tag, AnimationDirection aDirection = AnimationDirection.FORWARD)
+        {
             if (tag != this.tag)
             {
                 int i = 0;
@@ -90,46 +106,56 @@ namespace CareerOpportunities
                         this.a_from       = (int)this.json.meta.frameTags[i].from;
                         this.a_to         = (int)this.json.meta.frameTags[i].to;
                         this.tag          = (string)this.json.meta.frameTags[i].name;
-                        this.direction    = (string)this.json.meta.frameTags[i].direction;
+                        this.direction = aDirection;
                         this.frameCurrent = 0;
+                        this.frameCount = 0;
+                        this.maxFrame = new List<float>();
+                        this.checkedFirstframe = false;
                         break;
                     }
                     i++;
                 }
-            }
-            
-            this.maxFrame = ((float)(this.json.frames[this.frame].duration) / 1000f * 60f);
-            this.frameCount++;
 
-            if (this.frameCount >= this.maxFrame)
-            {
-                if ((this.frameCurrent + this.a_from) <= this.a_to)
+                i = 0;
+                while (i + this.a_from <= this.a_to)
                 {
-                    frame             = (this.frameCurrent + this.a_from);
-                    dynamic frameInfo = this.json.frames[frame];
+                    int i_frame = this.a_from + i;
+                    int last_frame = i - 1;
 
-                    Point size = new Point((int)(frameInfo.frame.h * this.sizeMutiply), (int)(frameInfo.frame.w * this.sizeMutiply));
-                    Point map  = new Point((int)(frameInfo.frame.x * this.sizeMutiply), (int)(frameInfo.frame.y * this.sizeMutiply));
+                    if (i > 0) this.maxFrame.Add(((float)this.json.frames[i_frame].duration) + this.maxFrame[last_frame]);
+                    else this.maxFrame.Add((float)this.json.frames[i_frame].duration);
 
-                    this.spriteSourceSize = new Rectangle(map, size);
-                    if (this.a_to != (this.frameCurrent + this.a_from))
-                    {
-                        this.frameCurrent++;
-                    }
-                    else
-                    {
-                        this.frameCurrent = 0;
-                        this.lastFrame = true;
-                    }
+                    i++;
                 }
-                else
+            }
+
+            float delta = (float)gameTime.ElapsedGameTime.Milliseconds;
+            //this.maxFrame = ((float)(this.json.frames[this.frame].duration) / 1000f);
+            this.frameCount += delta;
+
+            if (this.frameCount >= this.maxFrame[this.frameCurrent] || (this.frameCurrent == 0 && !checkedFirstframe))
+            {
+                if (this.a_to > (this.frameCurrent + this.a_from) && checkedFirstframe) this.frameCurrent++;
+                else if (this.direction == AnimationDirection.LOOP)
                 {
                     this.frameCurrent = 0;
+                    this.frameCount = 0;
+                    this.checkedFirstframe = false;
                 }
-                this.frameCount = 0;
+
+                frame = (int)(this.frameCurrent + this.a_from);
+                dynamic frameInfo = this.json.frames[frame];
+
+                Point size = new Point((int)(frameInfo.frame.h * this.sizeMutiply), (int)(frameInfo.frame.w * this.sizeMutiply));
+                Point map = new Point((int)(frameInfo.frame.x * this.sizeMutiply), (int)(frameInfo.frame.y * this.sizeMutiply));
+                this.spriteSourceSize = new Rectangle(map, size);
+
+                   
+                this.checkedFirstframe = true;
             }
            
         }
+        #endregion
 
         public void DrawAnimation(SpriteBatch spriteBatch, Vector2 position, float scale)
         {

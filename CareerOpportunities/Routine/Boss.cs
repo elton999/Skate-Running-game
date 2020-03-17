@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities.Routine
 {
-    public class Boss:GameObject
+    public class Boss : GameObject
     {
         public List<ActionController> movimentes = new List<ActionController>();
         public float timer;
@@ -22,6 +22,15 @@ namespace CareerOpportunities.Routine
             this.Sprite = Sprite;
             this.Scale = Scale;
             this.Reset();
+        }
+
+
+        int[] _BossLevels = { 3, 6 };
+
+        public bool isBossLevel(int level)
+        {
+            if (this._BossLevels.Contains(level)) return true;
+            return false;
         }
 
         public void Reset()

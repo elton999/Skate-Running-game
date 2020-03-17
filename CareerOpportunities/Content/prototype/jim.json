@@ -407,7 +407,7 @@
  ],
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.2.16.3-x64",
+  "version": "1.2.17-x64",
   "image": "Jim.png",
   "format": "RGBA8888",
   "size": { "w": 2880, "h": 64 },
