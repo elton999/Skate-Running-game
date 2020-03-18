@@ -11,6 +11,20 @@ namespace CareerOpportunities.Hud
 
         private enum animationStates { COUNTDOWN, GO, NONE };
         private animationStates AnimationCurrent;
+        private Game1 game;
+
+        public Countdown(Game1 game)
+        {
+            this.game = game;
+            this.Load();
+        }
+
+        private void Load()
+        {
+            setSprite(game.Content.Load<Texture2D>("sprites/hud_count"));
+            setJsonFile(game.path + "/Content/sprites/hud_count.json");
+            Scale = game.scale;
+        }
 
         public bool isCountdown
         {

@@ -37,7 +37,7 @@ namespace CareerOpportunities
         bool debug;
         public string path;
 
-        int scale;
+        public int scale;
 
         int screemGameHeight = 162;
         int screemGameWidth = 288;
@@ -123,7 +123,7 @@ namespace CareerOpportunities
                     this.camera.Update(gameTime, Player.Position, screemSize);
                     this.Map.Update(gameTime, Player);
                     this.Level = Map.CurrentlyLevel;
-                    this.Player.Update(gameTime, this.InputGK, Map, Hearts, Coins, camera, Weapon);
+                    this.Player.Update(gameTime, this.InputGK, camera);
                     this.Weapon.Update(gameTime, Map);
                     if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime);
 
@@ -365,16 +365,16 @@ namespace CareerOpportunities
 
         #region Load Content
 
-        Texture2D Character;
-        MenuManagement MainMenu;
-        HeartManagement Hearts;
-        Hud.Countdown Countdown;
+        public Texture2D Character;
+        public MenuManagement MainMenu;
+        public HeartManagement Hearts;
+        public Hud.Countdown Countdown;
 
-        CoinManagement Coins;
-        PlayerController Player;
-        Boss Boss;
-        Level.Render Map;
-        Gun Weapon;
+        public CoinManagement Coins;
+        public PlayerController Player;
+        public Boss Boss;
+        public Level.Render Map;
+        public Gun Weapon;
 
         // Load all assets to the level
         public void LoadLevel()
@@ -386,13 +386,9 @@ namespace CareerOpportunities
 
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
 
-            Countdown = new Countdown();
-            Countdown.Scale = scale;
-            Countdown.setSprite(Content.Load<Texture2D>("sprites/hud_count"));
-            Countdown.setJsonFile(this.path + "/Content/sprites/hud_count.json");
+            Countdown = new Countdown(this);
 
-            Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
-            Player.countdown = this.Countdown;
+            Player = new PlayerController(graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this);
 
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, this.screemGameWidth * this.scale);
             Map.setLevel(this.Level);

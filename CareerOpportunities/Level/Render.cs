@@ -107,6 +107,7 @@ namespace CareerOpportunities.Level
             COIN,
             RAMP,
             HEART,
+            HIT_BOX,
         };
 
 
@@ -124,6 +125,7 @@ namespace CareerOpportunities.Level
             else if (color == Color.Yellow) return Render.TypeOfItems.COIN;
             else if (color == Color.Blue) return Render.TypeOfItems.HEART;
             else if (color == Color.Green) return Render.TypeOfItems.RAMP;
+            else if (color == Color.Purple) return Render.TypeOfItems.HIT_BOX;
             else return Render.TypeOfItems.NONE;
         }
 
@@ -222,6 +224,7 @@ namespace CareerOpportunities.Level
                         if (ReturnColor == Render.TypeOfItems.HEART) ReturnItem = "heart";
                         if (ReturnColor == Render.TypeOfItems.COIN) ReturnItem = "coin";
                         if (ReturnColor == Render.TypeOfItems.RAMP) ReturnItem = "ramp";
+                        if (ReturnColor == Render.TypeOfItems.HIT_BOX) ReturnItem = "hit_box";
                         if (Render.TypeOfItems.RAMP != ReturnColor)
                         {
                             this.SpritesColors[i] = Render.TypeOfItems.NONE;

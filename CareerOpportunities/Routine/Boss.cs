@@ -45,17 +45,6 @@ namespace CareerOpportunities.Routine
 
         public void Update(GameTime gameTime)
         {
-            timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            for (int i = this.movimentes.Count - 1; i >= 0; i --)
-            {
-                if (timer >= this.movimentes[i].time)
-                {
-                    this.currently = this.movimentes[i].MoveTo;
-                    i = -1;
-                }
-            }
-
             this.Move();
         }
 
@@ -83,8 +72,12 @@ namespace CareerOpportunities.Routine
             }
         }
 
-        public void Move()
+
+        private int CurrentMoviment = 0;
+        protected void Move()
         {
+            this.currently = this.movimentes[CurrentMoviment].MoveTo;
+
             if (!Map.isStoped && !Countdown.isCountdown)
             {
                 if (this.currently != ActionController.move.NONE)
@@ -98,21 +91,31 @@ namespace CareerOpportunities.Routine
             }
         }
 
+        public void NextMovimente()
+        {
+           if (this.CurrentMoviment + 1 < this.movimentes.Count)
+           {
+                this.CurrentMoviment++;
+           }
+        }
+
         #region level 3
         protected void addRoutineLevel3 ()
         {
-            this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.UP,    8.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.LEFT,  13.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.NONE));
+            this.movimentes.Add(new ActionController(ActionController.move.RIGHT));
+            this.movimentes.Add(new ActionController(ActionController.move.UP));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT));
         }
         #endregion
 
         #region level 7
         protected void addRoutineLevel7()
         {
-            this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.UP,    8.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.LEFT,  13.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.NONE));
+            this.movimentes.Add(new ActionController(ActionController.move.RIGHT));
+            this.movimentes.Add(new ActionController(ActionController.move.UP));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT));
         }
         #endregion
         #endregion

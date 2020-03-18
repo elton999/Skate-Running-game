@@ -7,6 +7,9 @@ namespace CareerOpportunities
 {
     public class PlayerController : GameObject
     {
+
+        public Game1 game;
+
         public bool canMoveVertical;
         public int CurrentVerticalLine;
         public float PlayerVerticalVelocity;
@@ -41,29 +44,30 @@ namespace CareerOpportunities
 
         public Hud.Countdown countdown;
 
-        public PlayerController (Texture2D sprite, int scale, int BufferHeight, int BufferWidth, string jsonFile)
+        public PlayerController(int BufferHeight, int BufferWidth, Game1 game)
         {
-            this.Sprite = sprite;
-            this.Scale = scale;
+            this.game   = game;
+            this.Sprite = this.game.Content.Load<Texture2D>("prototype/Jim");
+            this.Scale  = game.scale;
 
             this.CurrentVerticalLine = 3;
             this.PreviousVerticalLine = 1;
-            this.PlayerVerticalVelocity = (22 * scale) / 5.5f;
+            this.PlayerVerticalVelocity = (22 * this.Scale) / 5.5f;
             this.PlayerHorizontalVelocity = 2 * this.Scale;
             this.PlayerHorizontalAndVelocity = 0.4f * this.Scale;
             this.BufferWidth = BufferWidth;
 
-            int linePosition = (32 * scale);
+            int linePosition = (32 * this.Scale);
             Lines = new int[] {
-                BufferHeight - linePosition  + (-5 * scale),
-                BufferHeight - (linePosition * 2) + (5 * scale),
-                BufferHeight - (linePosition * 3) + (15 * scale),
-                BufferHeight - (linePosition * 4) + (25 * scale),
-                BufferHeight - (linePosition * 5) + (35 * scale),
-                BufferHeight - (linePosition * 6) + (45 * scale),
+                BufferHeight - linePosition  + (-5 * this.Scale),
+                BufferHeight - (linePosition * 2) + (5 * this.Scale),
+                BufferHeight - (linePosition * 3) + (15 * this.Scale),
+                BufferHeight - (linePosition * 4) + (25 * this.Scale),
+                BufferHeight - (linePosition * 5) + (35 * this.Scale),
+                BufferHeight - (linePosition * 6) + (45 * this.Scale),
             };
 
-            this.setJsonFile(jsonFile);
+            this.setJsonFile(this.game.path + "/Content/prototype/jim.json");
             this.setSprite(this.Sprite);
 
             canMoveVertical = true;
@@ -75,7 +79,7 @@ namespace CareerOpportunities
         }
 
 
-        public void PlayAnimation(Level.Render map, Gun Weapon, GameTime gameTime)
+        public void PlayAnimation(GameTime gameTime)
         {
             if (this.isGrounded)
             {
@@ -109,7 +113,7 @@ namespace CareerOpportunities
             }
 
 
-            if (!map.isStoped)
+            if (!game.Map.isStoped)
             {
                 if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.RUN)
                 {
@@ -127,7 +131,7 @@ namespace CareerOpportunities
                     if (this.lastFrame)
                     {
                         this.currentAnimation = PlayerController.stateAnimation.AFTER_FIRE;
-                        Weapon.Fire(this.Position);
+                        game.Weapon.Fire(this.Position);
                     }
                     else this.play(gameTime, "start_fire");
                 }
@@ -157,7 +161,7 @@ namespace CareerOpportunities
             } else this.play(gameTime, "hit", AnimationDirection.LOOP);
         }
 
-        public void Update(GameTime gameTime, Controller.Input input, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
+        public void Update(GameTime gameTime, Controller.Input input, CameraManagement camera)
         {
             float pull = 100f;
             float JumpPull = pull;
@@ -165,37 +169,40 @@ namespace CareerOpportunities
 
             if (this.isGrounded)
             {
-                if (map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
+                if (game.Map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
                 {
-                    string MapItem = map.CollisionItem(map.CollisionPosition, false);
-                    heart.remove(1);
-                    map.StopFor(60);
+                    string MapItem = game.Map.CollisionItem(game.Map.CollisionPosition, false);
+                    game.Hearts.remove(1);
+                    game.Map.StopFor(60);
                     camera.TimeShake = 15;
                 }
                 else
                 {
-                    string MapItem = map.CollisionItem(map.CollisionPosition, true);
+                    string MapItem = game.Map.CollisionItem(game.Map.CollisionPosition, true);
                     switch (MapItem)
                     {
                         case "heart":
-                            heart.add(1);
+                            game.Hearts.add(1);
                             break;
                         case "coin":
-                            Coins.add(1);
+                            game.Coins.add(1);
                             break;
                         case "ramp":
                             this.isGrounded = false;
                             JumpPull = pull;
                             camera.StartZoomJump();
-                            map.CollisionPosition = new Vector2(0, 0);
+                            game.Map.CollisionPosition = new Vector2(0, 0);
+                            break;
+                        case "hit_box":
+                            game.Boss.NextMovimente();
                             break;
                     }
                 }
 
-                if (!map.isStoped && !countdown.isCountdown)
+                if (!game.Map.isStoped && !game.Countdown.isCountdown)
                 {
                     float limit = (BufferWidth / 2) - (150 * this.Scale);
-                    if (this.Position.X - (pull * this.Scale * delta) > limit && !map.Collision(
+                    if (this.Position.X - (pull * this.Scale * delta) > limit && !game.Map.Collision(
                     this.Body,
                     new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
                     this.CurrentVerticalLine
@@ -206,7 +213,7 @@ namespace CareerOpportunities
                     {
                         PreviousVerticalLine = CurrentVerticalLine;
                         // top and down
-                        this.HorizontalMove(input, map);
+                        this.HorizontalMove(input, game.Map);
 
                         // Jump
                         if (input.KeyPress(Controller.Input.Button.JUMP) && this.isGrounded)
@@ -214,12 +221,12 @@ namespace CareerOpportunities
                             this.isGrounded = false;
                             JumpPull = 140f;
                             camera.StartZoomJump();
-                            map.CollisionPosition = new Vector2(0, 0);
+                            game.Map.CollisionPosition = new Vector2(0, 0);
                         }
                     }
 
                     // left and right
-                    this.VerticalMove(input, map);
+                    this.VerticalMove(input, game.Map);
 
                     if (input.KeyPress(Controller.Input.Button.FIRE) && (this.currentAnimation == PlayerController.stateAnimation.RUN || this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)) {
                        this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
@@ -227,7 +234,7 @@ namespace CareerOpportunities
                 }
             }
             
-            this.PlayAnimation(map, Weapon, gameTime);
+            this.PlayAnimation(gameTime);
             this.Jump(gameTime, delta, pull);
         }
 

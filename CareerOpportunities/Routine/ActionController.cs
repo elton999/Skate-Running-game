@@ -12,13 +12,11 @@
             BOTTOM,
             CENTER_BOTTOM
         }
-        public float time;
         public move MoveTo;
 
-        public ActionController(move MoveTo, float time)
+        public ActionController(move MoveTo)
         {
             this.MoveTo = MoveTo;
-            this.time = time;
         }
     }
 }
