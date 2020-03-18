@@ -109,7 +109,7 @@ namespace CareerOpportunities
             }
 
 
-            if (map.isStoped())
+            if (!map.isStoped)
             {
                 if (this.isGrounded && this.currentAnimation == PlayerController.stateAnimation.RUN)
                 {
@@ -192,7 +192,7 @@ namespace CareerOpportunities
                     }
                 }
 
-                if (map.isStoped() && !countdown.isCountdown)
+                if (!map.isStoped && !countdown.isCountdown)
                 {
                     float limit = (BufferWidth / 2) - (150 * this.Scale);
                     if (this.Position.X - (pull * this.Scale * delta) > limit && !map.Collision(

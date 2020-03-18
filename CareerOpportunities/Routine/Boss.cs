@@ -17,11 +17,15 @@ namespace CareerOpportunities.Routine
         public int line;
         public float pull_x = 2;
 
-        public Boss(Texture2D Sprite, int Scale)
+        public Boss(Texture2D Sprite, Level.Render Map, Hud.Countdown Countdown, int Scale, int CurrentLevel)
         {
-            this.Sprite = Sprite;
-            this.Scale = Scale;
+            this.Sprite       = Sprite;
+            this.Scale        = Scale;
+            this.CurrentLevel = CurrentLevel;
+            this.Map          = Map;
+            this.Countdown    = Countdown;
             this.Reset();
+            this.SetRoutine();
         }
 
 
@@ -55,29 +59,51 @@ namespace CareerOpportunities.Routine
             this.Move();
         }
 
-        public void Move()
-        {
-            if (this.currently != ActionController.move.NONE)
-            {
-                if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 172) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
-                else if (this.currently == ActionController.move.LEFT && this.Position.X / this.Scale > -35) this.Position = new Vector2(this.Position.X - (this.Scale * this.pull_x), this.Position.Y);
-
-                else if (this.currently == ActionController.move.UP && this.Position.Y / this.Scale > 47) this.Position = new Vector2(this.Position.X, this.Position.Y - (this.Scale * this.pull_x));
-                else if (this.currently == ActionController.move.BOTTOM && this.Position.Y / this.Scale < 112) this.Position = new Vector2(this.Position.X, this.Position.Y + (this.Scale * this.pull_x));
-            }
-        }
-
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(this.Sprite, this.Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+        }
+
+
+        #region routines
+        private int CurrentLevel;
+        private Level.Render Map;
+        private Hud.Countdown Countdown;
+
+        private void SetRoutine()
+        {
+            switch (CurrentLevel)
+            {
+                case 3:
+                    this.addRoutineLevel3();
+                    break;
+                case 7:
+                    this.addRoutineLevel7();
+                    break;
+            }
+        }
+
+        public void Move()
+        {
+            if (!Map.isStoped && !Countdown.isCountdown)
+            {
+                if (this.currently != ActionController.move.NONE)
+                {
+                    if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 172) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
+                    else if (this.currently == ActionController.move.LEFT && this.Position.X / this.Scale > -35) this.Position = new Vector2(this.Position.X - (this.Scale * this.pull_x), this.Position.Y);
+
+                    else if (this.currently == ActionController.move.UP && this.Position.Y / this.Scale > 47) this.Position = new Vector2(this.Position.X, this.Position.Y - (this.Scale * this.pull_x));
+                    else if (this.currently == ActionController.move.BOTTOM && this.Position.Y / this.Scale < 112) this.Position = new Vector2(this.Position.X, this.Position.Y + (this.Scale * this.pull_x));
+                }
+            }
         }
 
         #region level 3
         protected void addRoutineLevel3 ()
         {
             this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.UP, 8.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.LEFT, 13.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.UP,    8.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT,  13.0f));
         }
         #endregion
 
@@ -85,10 +111,11 @@ namespace CareerOpportunities.Routine
         protected void addRoutineLevel7()
         {
             this.movimentes.Add(new ActionController(ActionController.move.RIGHT, 3.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.UP, 8.0f));
-            this.movimentes.Add(new ActionController(ActionController.move.LEFT, 13.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.UP,    8.0f));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT,  13.0f));
         }
         #endregion
-        
+        #endregion
+
     }
 }

@@ -129,7 +129,7 @@ namespace CareerOpportunities
 
                     if (Hearts.NumberOfhearts < 1)
                     {
-                        if (Map.isStoped()) {
+                        if (!Map.isStoped) {
                             //this.LoadingLevel = true;
                             this.status = GameStatus.LOSE;
                             this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
@@ -380,15 +380,20 @@ namespace CareerOpportunities
         public void LoadLevel()
         {
             Character = Content.Load<Texture2D>("sprites/jim_hud");
+
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
             Hearts.Scale = scale;
+
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
+
             Countdown = new Countdown();
             Countdown.Scale = scale;
             Countdown.setSprite(Content.Load<Texture2D>("sprites/hud_count"));
             Countdown.setJsonFile(this.path + "/Content/sprites/hud_count.json");
+
             Player = new PlayerController(Content.Load<Texture2D>("prototype/Jim"), scale, graphics.PreferredBackBufferHeight, graphics.PreferredBackBufferWidth, this.path + "/Content/prototype/jim.json");
             Player.countdown = this.Countdown;
+
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, this.screemGameWidth * this.scale);
             Map.setLevel(this.Level);
             Map.jsonContent = null;
@@ -400,9 +405,11 @@ namespace CareerOpportunities
             Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Map.countdown = this.Countdown;
-            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), this.scale);
+
             Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), Content.Load<Texture2D>("Effects/light"), this.camera, this.path + "/Content/sprites/bullet.json");
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+
+            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), Map, Countdown, this.scale, Level);
 
             // start game
             this.status = GameStatus.PLAY;

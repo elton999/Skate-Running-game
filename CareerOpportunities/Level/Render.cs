@@ -273,10 +273,13 @@ namespace CareerOpportunities.Level
             CurrentStopFramesNum = 0;
         }
 
-        public bool isStoped()
+        public bool isStoped
         {
-            if (CurrentStopFramesNum > stopFramesNum) return true;
-            else return false;
+            get
+            {
+                if (CurrentStopFramesNum > stopFramesNum) return false;
+                else return true;
+            }
         }
 
         public void setLevel(int level)
