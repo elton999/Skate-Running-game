@@ -154,7 +154,7 @@ namespace CareerOpportunities
                     if (this.lastFrame) this.currentAnimation = PlayerController.stateAnimation.JUMPING;
                     else this.play(gameTime, "start_jump");
                 }
-            } else this.play(gameTime, "hit");
+            } else this.play(gameTime, "hit", AnimationDirection.LOOP);
         }
 
         public void Update(GameTime gameTime, Controller.Input input, Level.Render map, HeartManagement heart, CoinManagement Coins, CameraManagement camera, Gun Weapon)
@@ -192,7 +192,7 @@ namespace CareerOpportunities
                     }
                 }
 
-                if (map.isStoped() || !countdown.isCountdown)
+                if (map.isStoped() && !countdown.isCountdown)
                 {
                     float limit = (BufferWidth / 2) - (150 * this.Scale);
                     if (this.Position.X - (pull * this.Scale * delta) > limit && !map.Collision(
