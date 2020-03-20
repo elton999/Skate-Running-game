@@ -8,21 +8,20 @@ namespace CareerOpportunities
         public float scale;
 
         // Shake
-        public float TimeShake;
-        private static readonly Random getrandom = new Random();
-        public Vector2 InitialPosition;
+        public  float   TimeShake;
+        private static  readonly Random getrandom = new Random();
+        public  Vector2 InitialPosition;
         private Vector2 ScreemSize;
         private Vector2 Position;
-        public Vector2 TargetPosition;
-        public float shakeMagnitude = 0.05f;
+        public  Vector2 TargetPosition;
+        public  float   shakeMagnitude = 0.05f;
 
         // Zoom
-        public float Zoom { get; set; }
-        public float maxZoom;
-        public float TimeZoom;
-        private float TimeZoomCurrent;
-        private bool ZoomIn;
-        private bool ZoomOut;
+        public  float Zoom { get; set; }
+        public  float maxZoom;
+        public  float TimeZoom;
+        private bool  ZoomIn;
+        private bool  ZoomOut;
 
 
         public CameraManagement()
@@ -39,7 +38,7 @@ namespace CareerOpportunities
             this.TargetPosition = targetPosition;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.UpdateShake(delta);
-            this.UpdateZoomJump(delta);
+            this.UpdateZoomJump(gameTime);
         }
 
         private void UpdateShake(float delta)
@@ -63,46 +62,52 @@ namespace CareerOpportunities
             
         }
 
+        private float t;
+        static  float d           = 500f;
+        static  float zoomPower   = 0.1f;
+        static  float zoomDefault = 1.0f;
 
         public void StartZoomJump()
         {
-            this.TimeZoom = 0.5f;
-            this.TimeZoomCurrent = this.TimeZoom;
+            this.Zoom = 1;
+            this.t = 0;
             this.ZoomIn = true;
         }
-
-        private void UpdateZoomJump(float delta)
+        
+        private void UpdateZoomJump(GameTime gameTime)
         {
-            this.TimeZoomCurrent -= delta;
-            float alpha = MathHelper.ToRadians(this.TimeZoom - 0.1f);
-
-            if (this.TimeZoomCurrent > 0)
+            if (this.ZoomIn)
             {
-                if (this.ZoomIn) this.Zoom += (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
-                else if (this.ZoomOut) this.Zoom -= (float)(1 * this.TimeZoomCurrent * Math.Sin(alpha));
-                // this.Position = new Vector2(this.TargetPosition.X - (this.ScreemSize.X / 2), 0);
-            }
-
-            if (this.TimeZoomCurrent <= 0)
-            {
-                if (this.ZoomIn)
+                if (d > t)
                 {
-                    this.ZoomIn = false;
+                    t += (float)gameTime.ElapsedGameTime.Milliseconds;
+                    this.Zoom = zoomDefault + zoomDefault + zoomPower - (float)(1 + Math.Sqrt((double)((t + d) * (d - t))) / (d / zoomPower));
+                } else
+                {
+                    this.ZoomIn  = false;
                     this.ZoomOut = true;
-                    this.TimeZoomCurrent = this.TimeZoom;
-
-                }
-                else if (this.ZoomOut)
-                {
-                    this.ZoomOut = false;
-                    this.Position = new Vector2(0, 0);
+                    this.Zoom    = zoomDefault + zoomPower;
                 }
             }
+            else if (this.ZoomOut)
+            {
+                if (t > 0)
+                {
+                    t -= (float)gameTime.ElapsedGameTime.Milliseconds;
+                    this.Zoom = zoomDefault + zoomDefault + zoomPower - (float)(1 + Math.Sqrt((double)((t + d) * (d - t))) / (d / zoomPower));
+                } else
+                {
+                    this.ZoomIn  = false;
+                    this.ZoomOut = false;
+                    this.Zoom    = zoomDefault;
+                }
+            }
+
+            if (this.Zoom.ToString() == "NaN") this.Zoom = 1.1f;
         }
 
         public Matrix transformMatrix()
         {
-            // Matrix.CreateRotationZ(-1.57f) vertical
             return Matrix.CreateScale(Zoom, Zoom, 1.0f) * Matrix.CreateRotationZ(0f) * Matrix.CreateTranslation(this.Position.X, this.Position.Y * scale, 0);
         }
     }

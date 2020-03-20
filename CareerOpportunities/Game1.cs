@@ -30,7 +30,7 @@ namespace CareerOpportunities
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
 
-        CameraManagement camera;
+        public CameraManagement camera;
 
         SpriteFont font3;
 
@@ -124,7 +124,7 @@ namespace CareerOpportunities
                     this.Map.Update(gameTime, Player);
                     this.Level = Map.CurrentlyLevel;
                     this.Player.Update(gameTime, this.InputGK, camera);
-                    this.Weapon.Update(gameTime, Map);
+                    this.Weapon.Update(gameTime);
                     if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime);
 
                     if (Hearts.NumberOfhearts < 1)
@@ -402,7 +402,7 @@ namespace CareerOpportunities
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Map.countdown = this.Countdown;
 
-            Weapon = new Gun(this.scale, Content.Load<Texture2D>("sprites/bullet"), Content.Load<Texture2D>("Effects/light"), this.camera, this.path + "/Content/sprites/bullet.json");
+            Weapon = new Gun(this, this.camera);
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
             Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), Map, Countdown, this.scale, Level);

@@ -41,9 +41,6 @@ namespace CareerOpportunities
         }
         public stateAnimation currentAnimation;
 
-
-        public Hud.Countdown countdown;
-
         public PlayerController(int BufferHeight, int BufferWidth, Game1 game)
         {
             this.game   = game;
