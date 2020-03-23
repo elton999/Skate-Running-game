@@ -59,13 +59,17 @@ namespace CareerOpportunities
                 }
             }
             else this.Position = new Vector2(0,0);
-            
         }
 
         private float t;
-        static  float d           = 500f;
+        static  float d           = 600f;
         static  float zoomPower   = 0.1f;
         static  float zoomDefault = 1.0f;
+
+        private float GetZoom
+        {
+            get => zoomDefault + zoomDefault + zoomPower - (float)(1 + Math.Sqrt((double)((t + d) * (d - t))) / (d / zoomPower)) ;
+        }
 
         public void StartZoomJump()
         {
@@ -81,7 +85,7 @@ namespace CareerOpportunities
                 if (d > t)
                 {
                     t += (float)gameTime.ElapsedGameTime.Milliseconds;
-                    this.Zoom = zoomDefault + zoomDefault + zoomPower - (float)(1 + Math.Sqrt((double)((t + d) * (d - t))) / (d / zoomPower));
+                    this.Zoom = this.GetZoom;
                 } else
                 {
                     this.ZoomIn  = false;
@@ -94,7 +98,7 @@ namespace CareerOpportunities
                 if (t > 0)
                 {
                     t -= (float)gameTime.ElapsedGameTime.Milliseconds;
-                    this.Zoom = zoomDefault + zoomDefault + zoomPower - (float)(1 + Math.Sqrt((double)((t + d) * (d - t))) / (d / zoomPower));
+                    this.Zoom = this.GetZoom;
                 } else
                 {
                     this.ZoomIn  = false;

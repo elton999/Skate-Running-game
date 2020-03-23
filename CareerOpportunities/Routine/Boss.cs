@@ -17,17 +17,17 @@ namespace CareerOpportunities.Routine
         public int line;
         public float pull_x = 2;
 
-        public Boss(Texture2D Sprite, Level.Render Map, Hud.Countdown Countdown, int Scale, int CurrentLevel)
+        public Game1 game;
+
+        public Boss(Game1 game)
         {
-            this.Sprite       = Sprite;
-            this.Scale        = Scale;
-            this.CurrentLevel = CurrentLevel;
-            this.Map          = Map;
-            this.Countdown    = Countdown;
+            this.game = game;
+            this.Scale = this.game.scale;
+            this.Sprite = game.Content.Load<Texture2D>("prototype/boss_1");
             this.Reset();
             this.SetRoutine();
+            this.RiggiBody();
         }
-
 
         int[] _BossLevels = { 3, 6 };
 
@@ -43,25 +43,37 @@ namespace CareerOpportunities.Routine
             this.Position = new Vector2(-35 * this.Scale, 112 * this.Scale);
         }
 
+        private void RiggiBody()
+        {
+            this.Body = new Rectangle(new Point((int)this.Position.X, (int)this.Position.Y + (8 * this.Scale)), new Point(70, 42));
+        }
+
         public void Update(GameTime gameTime)
         {
             this.Move();
+            this.RiggiBody();
+
+            game.Map.Collision(this.Body, this.Position, this.game.Map.LinePosition(this.Position.Y));
+            if (game.Map.CollisionItem(game.Map.CollisionPosition, true) == "hit_box")
+            {
+                this.NextMovimente();
+                game.Map.DestroyHitBox(game.Map.CollisionPosition);
+                game.Map.CollisionPosition = Vector2.Zero;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(this.Sprite, this.Position, null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+            DrawRiggidBody(spriteBatch, game.GraphicsDevice);
         }
 
 
         #region routines
-        private int CurrentLevel;
-        private Level.Render Map;
-        private Hud.Countdown Countdown;
 
         private void SetRoutine()
         {
-            switch (CurrentLevel)
+            switch (game.Level)
             {
                 case 3:
                     this.addRoutineLevel3();
@@ -78,16 +90,12 @@ namespace CareerOpportunities.Routine
         {
             this.currently = this.movimentes[CurrentMoviment].MoveTo;
 
-            if (!Map.isStoped && !Countdown.isCountdown)
+            if (!game.Map.isStoped && !game.Countdown.isCountdown && this.currently != ActionController.move.NONE)
             {
-                if (this.currently != ActionController.move.NONE)
-                {
-                    if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 172) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
-                    else if (this.currently == ActionController.move.LEFT && this.Position.X / this.Scale > -35) this.Position = new Vector2(this.Position.X - (this.Scale * this.pull_x), this.Position.Y);
-
-                    else if (this.currently == ActionController.move.UP && this.Position.Y / this.Scale > 47) this.Position = new Vector2(this.Position.X, this.Position.Y - (this.Scale * this.pull_x));
-                    else if (this.currently == ActionController.move.BOTTOM && this.Position.Y / this.Scale < 112) this.Position = new Vector2(this.Position.X, this.Position.Y + (this.Scale * this.pull_x));
-                }
+                if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 172) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
+                else if (this.currently == ActionController.move.LEFT && this.Position.X / this.Scale > -35) this.Position = new Vector2(this.Position.X - (this.Scale * this.pull_x), this.Position.Y);
+                else if (this.currently == ActionController.move.UP && this.Position.Y / this.Scale > 47) this.Position = new Vector2(this.Position.X, this.Position.Y - (this.Scale * this.pull_x));
+                else if (this.currently == ActionController.move.BOTTOM && this.Position.Y / this.Scale < 112) this.Position = new Vector2(this.Position.X, this.Position.Y + (this.Scale * this.pull_x));
             }
         }
 

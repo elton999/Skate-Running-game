@@ -209,6 +209,11 @@ namespace CareerOpportunities.Level
             return any_collision;
         }
 
+        public void DestroyHitBox(Vector2 position)
+        {
+            for (int i = 0; i < 5; i++) this.MapItems[(int)position.X, i] = Render.TypeOfItems.NONE;
+        }
+
         public string CollisionItem(Vector2 position, bool item = false, bool fireCollision = false)
         {
             Render.TypeOfItems ReturnColor = this.MapItems[(int)position.X, (int)position.Y];

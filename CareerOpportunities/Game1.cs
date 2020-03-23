@@ -10,7 +10,6 @@ using System.IO;
 
 namespace CareerOpportunities
 {
-   
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
@@ -71,18 +70,18 @@ namespace CareerOpportunities
         {
             spriteBatch   = new SpriteBatch(GraphicsDevice);
 
-            this.status = GameStatus.MENU;
+            this.status   = GameStatus.MENU;
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
-            this.font3 = Content.Load<SpriteFont>("pressstart3");
+            this.font3    = Content.Load<SpriteFont>("pressstart3");
 
             this.backgroundLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.PlayerLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.lightmapLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-            this.weaponLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.PlayerLayer     = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.lightmapLayer   = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.weaponLayer     = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
 
-            this.allLayers = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.allLayers       = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
 
-            this.HUDlayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+            this.HUDlayer        = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
         }
 
         
@@ -405,7 +404,7 @@ namespace CareerOpportunities
             Weapon = new Gun(this, this.camera);
             Weapon.Screem = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
 
-            Boss = new Boss(Content.Load<Texture2D>("prototype/boss_1"), Map, Countdown, this.scale, Level);
+            Boss = new Boss(this);
 
             // start game
             this.status = GameStatus.PLAY;

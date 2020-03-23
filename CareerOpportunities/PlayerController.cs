@@ -69,7 +69,7 @@ namespace CareerOpportunities
 
             canMoveVertical = true;
             this.Position = new Vector2(0, Lines[CurrentVerticalLine]);
-            this.Body = new Rectangle(new Point(16 * this.Scale, 21 * this.Scale), new Point(8 * this.Scale, 0));
+            this.Body = new Rectangle(new Point(8 * this.Scale, 0), new Point(16 * this.Scale, 21 * this.Scale));
 
             this.currentAnimation = PlayerController.stateAnimation.RUN;
             this.runTimes = 0;
@@ -191,7 +191,7 @@ namespace CareerOpportunities
                             game.Map.CollisionPosition = new Vector2(0, 0);
                             break;
                         case "hit_box":
-                            game.Boss.NextMovimente();
+                            game.Map.CollisionPosition = new Vector2(0, 0);
                             break;
                     }
                 }
@@ -237,7 +237,7 @@ namespace CareerOpportunities
 
         public void VerticalMove(Controller.Input input, Level.Render map)
         {
-            if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine))
+            if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine, false))
             {
                 if (input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP))
                 {
@@ -260,13 +260,15 @@ namespace CareerOpportunities
                 }
                
             }
+
+            game.Map.CollisionPosition = new Vector2(0, 0);
         }
 
         public void HorizontalMove(Controller.Input input, Level.Render map)
         {
             if (input.KeyDown(Controller.Input.Button.UP) && CurrentVerticalLine < 4)
             {
-                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1))
+                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine + 1, false))
                 {
                     CurrentVerticalLine += 1;
                     canMoveVertical = false;
@@ -274,12 +276,13 @@ namespace CareerOpportunities
             }
             if (input.KeyDown(Controller.Input.Button.DOWN) && CurrentVerticalLine > 0)
             {
-                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1))
+                if (!map.Collision(this.Body, this.Position, this.CurrentVerticalLine - 1, false))
                 {
                     CurrentVerticalLine -= 1;
                     canMoveVertical = false;
                 }
             }
+            game.Map.CollisionPosition = new Vector2(0, 0);
         }
 
         public void Jump( GameTime gameTime, float delta, float pull)
@@ -310,6 +313,8 @@ namespace CareerOpportunities
             //spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
             Vector2 sprite_position = new Vector2(this.Position.X - (2 * this.Scale), this.Position.Y - (16 * this.Scale));
             this.DrawAnimation(spriteBatch, sprite_position, this.Scale);
+
+            //this.DrawRiggidBody(spriteBatch, this.game.GraphicsDevice);
         }
 
     }
