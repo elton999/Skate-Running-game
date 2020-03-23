@@ -114,6 +114,9 @@ namespace CareerOpportunities.Routine
             this.movimentes.Add(new ActionController(ActionController.move.RIGHT));
             this.movimentes.Add(new ActionController(ActionController.move.UP));
             this.movimentes.Add(new ActionController(ActionController.move.LEFT));
+            this.movimentes.Add(new ActionController(ActionController.move.BOTTOM));
+            this.movimentes.Add(new ActionController(ActionController.move.LEFT));
+            this.movimentes.Add(new ActionController(ActionController.move.RIGHT));
         }
         #endregion
 

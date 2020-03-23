@@ -188,17 +188,20 @@ namespace CareerOpportunities
                             this.isGrounded = false;
                             JumpPull = pull;
                             camera.StartZoomJump();
-                            game.Map.CollisionPosition = new Vector2(0, 0);
+                            game.Map.CollisionPosition = Vector2.Zero;
                             break;
                         case "hit_box":
-                            game.Map.CollisionPosition = new Vector2(0, 0);
+                            game.Map.CollisionPosition = Vector2.Zero;
                             break;
                     }
                 }
 
                 if (!game.Map.isStoped && !game.Countdown.isCountdown)
                 {
+                    // push player back
                     float limit = (BufferWidth / 2) - (150 * this.Scale);
+                    if (game.Boss != null && game.Boss.isBossLevel(game.Level)) limit = (BufferWidth / 2) - (30 * this.Scale);
+
                     if (this.Position.X - (pull * this.Scale * delta) > limit && !game.Map.Collision(
                     this.Body,
                     new Vector2(this.Position.X - (pull * this.Scale * delta), this.Position.Y),
@@ -218,7 +221,7 @@ namespace CareerOpportunities
                             this.isGrounded = false;
                             JumpPull = 140f;
                             camera.StartZoomJump();
-                            game.Map.CollisionPosition = new Vector2(0, 0);
+                            game.Map.CollisionPosition = Vector2.Zero;
                         }
                     }
 
@@ -261,7 +264,7 @@ namespace CareerOpportunities
                
             }
 
-            game.Map.CollisionPosition = new Vector2(0, 0);
+            game.Map.CollisionPosition = Vector2.Zero;
         }
 
         public void HorizontalMove(Controller.Input input, Level.Render map)
@@ -282,7 +285,7 @@ namespace CareerOpportunities
                     canMoveVertical = false;
                 }
             }
-            game.Map.CollisionPosition = new Vector2(0, 0);
+            game.Map.CollisionPosition = Vector2.Zero;
         }
 
         public void Jump( GameTime gameTime, float delta, float pull)
