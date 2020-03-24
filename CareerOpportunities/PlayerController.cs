@@ -158,14 +158,28 @@ namespace CareerOpportunities
             } else this.play(gameTime, "hit", AnimationDirection.LOOP);
         }
 
+        private void RiggiBody()
+        {
+            this.Body = new Rectangle(new Point((int)this.Position.X + 22 * this.Scale, (int)this.Position.Y + 15 * this.Scale), new Point(16, 21));
+        }
+
         public void Update(GameTime gameTime, Controller.Input input, CameraManagement camera)
         {
             float pull = 100f;
             float JumpPull = pull;
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+            this.RiggiBody();
+
             if (this.isGrounded)
             {
+                if (game.Boss.isBossLevel(game.Level) && game.Boss.Collision(this.Body))
+                {
+                    game.Hearts.remove(game.Hearts.NumberOfhearts);
+                    game.Map.StopFor(60);
+                    camera.TimeShake = 15;
+                }
+
                 if (game.Map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
                 {
                     string MapItem = game.Map.CollisionItem(game.Map.CollisionPosition, false);
@@ -320,7 +334,7 @@ namespace CareerOpportunities
             Vector2 sprite_position = new Vector2(this.Position.X - (2 * this.Scale), this.Position.Y - (16 * this.Scale));
             this.DrawAnimation(spriteBatch, sprite_position, this.Scale);
 
-            //this.DrawRiggidBody(spriteBatch, this.game.GraphicsDevice);
+            this.DrawRiggidBody(spriteBatch, this.game.GraphicsDevice);
         }
 
     }

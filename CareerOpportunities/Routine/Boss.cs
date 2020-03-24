@@ -48,6 +48,25 @@ namespace CareerOpportunities.Routine
             this.Body = new Rectangle(new Point((int)this.Position.X, (int)this.Position.Y + (8 * this.Scale)), new Point(70, 42));
         }
 
+        public bool Collision(Rectangle player_body)
+        {
+            // Player collision
+            float width_position = (player_body.Size.X * this.Scale) + player_body.Location.X;
+            float height_position = (player_body.Size.Y * this.Scale) + player_body.Location.Y;
+
+            // Boss Collision
+            float x_position = Body.Location.X;
+            float y_position = Body.Location.Y;
+
+            float x_width = x_position + ((float)Body.Size.X * this.Scale);
+            float y_height = y_position + ((float)Body.Size.Y * this.Scale);
+
+            bool x_overlaps = ((player_body.Location.X < x_position && width_position > x_position) || (x_width > player_body.Location.X && x_width < width_position));
+            bool y_overlaps = ((player_body.Location.Y < y_position && height_position > y_position) || (y_height > player_body.Location.Y && y_height < height_position));
+
+            return x_overlaps && y_overlaps;
+        }
+
         public void Update(GameTime gameTime)
         {
             this.Move();

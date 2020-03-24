@@ -190,9 +190,14 @@ namespace CareerOpportunities.Level
                         float x_position = ((x) * 25) * this.scale + this.currentPositionX;
                         float x_width = x_position + (40 * this.scale);
 
-                        bool x_overlaps = (((body.X + position.X < x_position) && (body.X + position.X + body.Width > x_position) && (body.X + position.X + body.Width < x_width)) || 
+                        /*bool x_overlaps = (((body.X + position.X < x_position) && (body.X + position.X + body.Width > x_position) && (body.X + position.X + body.Width < x_width)) || 
                                            ((body.X + position.X > x_position) && (body.X + position.X + body.Width < x_width)) ||
-                                           ((body.X + position.X > x_position) && (body.X + position.X < x_width) && (body.X + position.X + body.Width > x_width)));
+                                           ((body.X + position.X > x_position) && (body.X + position.X < x_width) && (body.X + position.X + body.Width > x_width)));*/
+
+                        bool x_overlaps = (((body.X < x_position) && (body.X + body.Width > x_position) && (body.X + body.Width < x_width)) ||
+                        ((body.X > x_position) && (body.X + body.Width < x_width)) ||
+                        ((body.X > x_position) && (body.X < x_width) && (body.X + body.Width > x_width)));
+
                         bool y_overlaps = line == y;
 
                         if (x_overlaps && y_overlaps)
