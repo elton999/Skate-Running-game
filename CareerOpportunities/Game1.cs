@@ -298,8 +298,13 @@ namespace CareerOpportunities
                 GraphicsDevice.SetRenderTarget(this.HUDlayer);
                 GraphicsDevice.Clear(Color.Transparent);
                 spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
-                Hearts.Draw(spriteBatch);
-                Coins.Draw(spriteBatch);
+
+                if (!Boss.isBossLevel(this.Level))
+                {
+                    Hearts.Draw(spriteBatch);
+                    Coins.Draw(spriteBatch);
+                }
+                
                 spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
 
                 Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(50, 50));

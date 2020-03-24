@@ -169,7 +169,10 @@ namespace CareerOpportunities
                 if (game.Map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
                 {
                     string MapItem = game.Map.CollisionItem(game.Map.CollisionPosition, false);
-                    game.Hearts.remove(1);
+
+                    if (game.Boss.isBossLevel(game.Level)) game.Hearts.remove(game.Hearts.NumberOfhearts);
+                    else game.Hearts.remove(1);
+
                     game.Map.StopFor(60);
                     camera.TimeShake = 15;
                 }

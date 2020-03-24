@@ -92,7 +92,7 @@ namespace CareerOpportunities.Routine
 
             if (!game.Map.isStoped && !game.Countdown.isCountdown && this.currently != ActionController.move.NONE)
             {
-                if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 172) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
+                if (this.currently == ActionController.move.RIGHT && this.Position.X / this.Scale < 230) this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
                 else if (this.currently == ActionController.move.LEFT && this.Position.X / this.Scale > -35) this.Position = new Vector2(this.Position.X - (this.Scale * this.pull_x), this.Position.Y);
                 else if (this.currently == ActionController.move.UP && this.Position.Y / this.Scale > 47) this.Position = new Vector2(this.Position.X, this.Position.Y - (this.Scale * this.pull_x));
                 else if (this.currently == ActionController.move.BOTTOM && this.Position.Y / this.Scale < 112) this.Position = new Vector2(this.Position.X, this.Position.Y + (this.Scale * this.pull_x));
