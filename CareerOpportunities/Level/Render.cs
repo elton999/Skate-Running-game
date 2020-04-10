@@ -25,8 +25,7 @@ namespace CareerOpportunities.Level
 
             this.PositionGround = new Vector2[] {
                     new Vector2(0,0),
-                    new Vector2(start,0),
-                    new Vector2(start * 2,0),
+                    new Vector2(start,0)
             };
 
             // sprite height
@@ -43,45 +42,15 @@ namespace CareerOpportunities.Level
 
         #region Set sprites
 
-        Texture2D BoxTexture;
-        Texture2D BoxTexture2;
-        Texture2D BoxTextureWhite;
-        Texture2D BoxTexture2White;
-        Texture2D BoxShadow;
         Texture2D CoinTexture;
-        Texture2D HeartTexure;
-        Texture2D RampTexture;
-        Texture2D Ground;
+        List<Texture2D> Ground;
 
 
-        public void setGround(Texture2D Ground)
+        public void setGround(Texture2D Ground1, Texture2D Ground2)
         {
-            this.Ground = Ground;
-        }
-
-        public void setBoxTexture(Texture2D box, Texture2D box2, Texture2D box3, Texture2D box4)
-        {
-            this.BoxTexture = box;
-            this.BoxTexture2 = box2;
-
-            this.BoxTextureWhite = box3;
-            this.BoxTexture2White = box4;
-
-        }
-
-        public void setBoxShadow(Texture2D boxShadow)
-        {
-            this.BoxShadow = boxShadow;
-        }
-
-        public void setHeartTexture(Texture2D heart)
-        {
-            this.HeartTexure = heart;
-        }
-
-        public void setRampTexture(Texture2D ramp)
-        {
-            this.RampTexture = ramp;
+            this.Ground = new List<Texture2D>();
+            this.Ground.Add(Ground1);
+            this.Ground.Add(Ground2);
         }
 
         public void setCoinTexture(Texture2D coin, string jsonFile)
@@ -104,9 +73,13 @@ namespace CareerOpportunities.Level
             NONE,
             BOX,
             BOX_EFFECT,
+            CONE,
             COIN,
             RAMP,
             HEART,
+            THORN,
+            THORN_OFF,
+            THORN_ON,
             HIT_BOX,
         };
 
@@ -126,6 +99,10 @@ namespace CareerOpportunities.Level
             else if (color == Color.Blue) return Render.TypeOfItems.HEART;
             else if (color == Color.Green) return Render.TypeOfItems.RAMP;
             else if (color == Color.Purple) return Render.TypeOfItems.HIT_BOX;
+            else if (color == Color.Tomato) return Render.TypeOfItems.CONE;
+            else if (color == Color.SteelBlue) return Render.TypeOfItems.THORN;
+            else if (color == Color.SkyBlue) return Render.TypeOfItems.THORN_ON;
+            else if (color == Color.PowderBlue) return Render.TypeOfItems.THORN_OFF;
             else return Render.TypeOfItems.NONE;
         }
 
@@ -147,6 +124,21 @@ namespace CareerOpportunities.Level
             }
 
             this.PositionTile();
+        }
+
+
+        private float ChangeThornGameTimeTotal = 0;
+        private bool ChangeThornTurn = true;
+        private void ChangeThorn(GameTime gameTime)
+        {
+            if (!this.isStoped)
+            {
+                this.ChangeThornGameTimeTotal += gameTime.ElapsedGameTime.Milliseconds;
+                if (this.ChangeThornGameTimeTotal % 300 == 0)
+                {
+                    ChangeThornTurn = !ChangeThornTurn;
+                }
+            }
         }
 
         private void PositionTile()
@@ -203,9 +195,9 @@ namespace CareerOpportunities.Level
                         if (x_overlaps && y_overlaps)
                         {
                             //if (this.MapColors[x, y] != this.BoxColor) this.CollisionItem(new Vector2(x, y));
-                            if(!item && ( this.MapItems[x, y] == Render.TypeOfItems.BOX || this.MapItems[x, y] == Render.TypeOfItems.BOX_EFFECT)) this.CollisionPosition = new Vector2(x, y);
+                            if(!item && ( this.MapItems[x, y] == Render.TypeOfItems.BOX || this.MapItems[x, y] == Render.TypeOfItems.CONE || this.MapItems[x, y] == Render.TypeOfItems.THORN || (this.MapItems[x, y] == Render.TypeOfItems.THORN_ON && this.ChangeThornTurn) || (this.MapItems[x, y] == Render.TypeOfItems.THORN_OFF && !this.ChangeThornTurn))) this.CollisionPosition = new Vector2(x, y);
                             else if (item) this.CollisionPosition = new Vector2(x, y);
-                            if (this.MapItems[x, y] == Render.TypeOfItems.BOX || this.MapItems[x, y] == Render.TypeOfItems.BOX_EFFECT) any_collision = true;
+                            if (this.MapItems[x, y] == Render.TypeOfItems.BOX || this.MapItems[x, y] == Render.TypeOfItems.CONE || this.MapItems[x, y] == Render.TypeOfItems.THORN || (this.MapItems[x, y] == Render.TypeOfItems.THORN_ON && this.ChangeThornTurn) || (this.MapItems[x, y] == Render.TypeOfItems.THORN_OFF && !this.ChangeThornTurn)) any_collision = true;
                         }
 
                     }
@@ -219,7 +211,7 @@ namespace CareerOpportunities.Level
             for (int i = 0; i < 5; i++) this.MapItems[(int)position.X, i] = Render.TypeOfItems.NONE;
         }
 
-        public string CollisionItem(Vector2 position, bool item = false, bool fireCollision = false)
+        public string CollisionItem(Vector2 position, bool item = false, bool fireCollision = false, bool bossCollision = false)
         {
             Render.TypeOfItems ReturnColor = this.MapItems[(int)position.X, (int)position.Y];
             string ReturnItem = "";
@@ -235,21 +227,25 @@ namespace CareerOpportunities.Level
                         if (ReturnColor == Render.TypeOfItems.COIN) ReturnItem = "coin";
                         if (ReturnColor == Render.TypeOfItems.RAMP) ReturnItem = "ramp";
                         if (ReturnColor == Render.TypeOfItems.HIT_BOX) ReturnItem = "hit_box";
-                        if (Render.TypeOfItems.RAMP != ReturnColor)
+                        if (Render.TypeOfItems.RAMP != ReturnColor  &&  Render.TypeOfItems.HIT_BOX != ReturnColor && ((Render.TypeOfItems.THORN_OFF != ReturnColor && this.ChangeThornTurn) || (Render.TypeOfItems.THORN_ON != ReturnColor && !this.ChangeThornTurn)))
                         {
                             this.SpritesColors[i] = Render.TypeOfItems.NONE;
                             this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.NONE;
                         }
                     }
-                    else if (!item)
+                    else if (!item || bossCollision)
                     {
-                        if (ReturnColor == Render.TypeOfItems.BOX || ReturnColor == Render.TypeOfItems.BOX_EFFECT) ReturnItem = "box";
-                        if (ReturnColor == Render.TypeOfItems.BOX && fireCollision)
+                        if (ReturnColor == Render.TypeOfItems.BOX) ReturnItem = "box";
+                        if (ReturnColor == Render.TypeOfItems.BOX)
                         {
                             this.SpritesColors[i] = Render.TypeOfItems.BOX_EFFECT;
                             this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.BOX_EFFECT;
+                        } else if (ReturnColor == Render.TypeOfItems.CONE)
+                        {
+                            this.SpritesColors[i] = Render.TypeOfItems.NONE;
+                            this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.NONE;
                         }
-                        else
+                        else if(!fireCollision && !bossCollision)
                         {
                             this.SpritesColors[i] = Render.TypeOfItems.NONE;
                             this.MapItems[(int)position.X, (int)position.Y] = Render.TypeOfItems.NONE;
@@ -270,7 +266,7 @@ namespace CareerOpportunities.Level
         int tileWidth = 34;
 
         public int CurrentlyLevel;
-        public int LastLevel = 3;
+        public int LastLevel = 5;
 
         int[] LinesBox;
 
@@ -321,6 +317,13 @@ namespace CareerOpportunities.Level
             if (-this.currentPositionX + (this.start * this.scale) > ((this.TileMapWidth * 30) + (100)) * this.scale) return true;
             return false;
         }
+
+        public float FinishedPerCent()
+        {
+            float total = ((this.TileMapWidth * 30) + (100)) * this.scale;
+            float total_finished = (-this.currentPositionX + (this.start * this.scale));
+            return total_finished / total * 100;
+        }
         #endregion
         
         int velocity = 0;
@@ -344,16 +347,17 @@ namespace CareerOpportunities.Level
 
                     for (int i = 0; i < this.PositionGround.Length; i++)
                     {
-                        if (this.PositionGround[i].X <= -(start))
+                        if (this.PositionGround[i].X + Ground[0].Width * scale <= 0)
                         {
-                            if (i == 0) this.PositionGround[i] = new Vector2(this.PositionGround[this.PositionGround.Length - 1].X + start, 0);
-                            else if (i == this.PositionGround.Length - 1) this.PositionGround[i] = new Vector2(this.PositionGround[i - 1].X + start, 0);
-                            else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + start - velocityCurrent, 0);
+                            if (i == 0) this.PositionGround[i] = new Vector2(this.PositionGround[this.PositionGround.Length - 1].X + (Ground[0].Width * scale), 0);
+                            else if (i == this.PositionGround.Length - 1) this.PositionGround[i] = new Vector2(this.PositionGround[i - 1].X + (Ground[0].Width * scale), 0);
+                            //else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + (Ground[0].Width * scale), 0);
                         }
-                        else this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
+                        this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
                     }
                 }
                 else CurrentStopFramesNum += 1;
+                this.ChangeThorn(gameTime);
             }
             
         }
@@ -363,7 +367,7 @@ namespace CareerOpportunities.Level
         {
             for (int i = 0; i < this.PositionGround.Length; i++)
             {
-                spriteBatch.Draw(Ground, this.PositionGround[i], null, Color.White, 0, new Vector2(0, 0), (scale / 5f), SpriteEffects.None, 0f);
+                spriteBatch.Draw(Ground[i], this.PositionGround[i], null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -381,57 +385,45 @@ namespace CareerOpportunities.Level
 
         private void drawLayer(int i_layer, SpriteBatch spriteBatch, bool mask)
         {
-            if (!mask)
-            {
-                for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
-                {
-                    if (i_layer == (int)this.positionBoxs[i].Y) this.DrawBoxShadow(spriteBatch, i);
-                }
-            }
-
             for (int i = this.positionBoxs.Length - 1; i >= 0; i--)
             {
                 if (i_layer == (int)this.positionBoxs[i].Y) this.Draw(spriteBatch, i, mask);
             }
         }
 
-        public void DrawBoxShadow(SpriteBatch spriteBatch, int i)
-        {
-            Texture2D sprite = this.BoxShadow;
-            Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
-            if (SpritesColors[i] == Render.TypeOfItems.BOX)
-            {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(44 * 5, 43 * 5)), Color.White, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
-            }
-        }
-
         public void Draw(SpriteBatch spriteBatch, int i, bool mask)
         {
-            Texture2D sprite = this.BoxTexture;
             Color SpriteColorTexture = Color.White;
-
-            //if (mask) sprite = this.BoxTextureWhite;
-
-            if (SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT && !mask) sprite = this.BoxTexture2;
-            else if (SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT) sprite = this.BoxTexture2White;
-            if (SpritesColors[i] == Render.TypeOfItems.COIN) sprite = this.CoinTexture;
-            if (SpritesColors[i] == Render.TypeOfItems.HEART) sprite = this.HeartTexure;
-            if (SpritesColors[i] == Render.TypeOfItems.RAMP) sprite = this.RampTexture;
-
-
             Vector2 position = new Vector2((this.positionBoxs[i].X * (this.scale * 25)) + (this.currentPositionX), this.LinesBox[(int)this.positionBoxs[i].Y]);
 
-            if (SpritesColors[i] == Render.TypeOfItems.BOX || SpritesColors[i] == Render.TypeOfItems.BOX_EFFECT)
+            switch (SpritesColors[i])
             {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth * 5, 33 * 5)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale / 5f, SpriteEffects.None, 0f);
-            }
-            else if (SpritesColors[i] == Render.TypeOfItems.HEART)
-            {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(this.tileWidth, 33)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
-            }
-            else if (SpritesColors[i] == Render.TypeOfItems.RAMP)
-            {
-                spriteBatch.Draw(sprite, position, new Rectangle(new Point(0, 0), new Point(22, 30)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                case Render.TypeOfItems.BOX:
+                    spriteBatch.Draw(this.Sprite, position, new Rectangle(new Point(25, 0), new Point(34, 32)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.BOX_EFFECT:
+                    spriteBatch.Draw(this.Sprite, position, new Rectangle(new Point(59, 0), new Point(34, 32)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.HEART:
+                    spriteBatch.Draw(this.Sprite, new Vector2(position.X + (10 * this.scale), position.Y), new Rectangle(new Point(72, 43), new Point(22, 18)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.RAMP:
+                    spriteBatch.Draw(this.Sprite, position, new Rectangle(new Point(50, 32), new Point(22, 29)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.CONE:
+                    spriteBatch.Draw(this.Sprite, position, new Rectangle(new Point(0, 0), new Point(25, 32)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.THORN_OFF:
+                    if(ChangeThornTurn) spriteBatch.Draw(this.Sprite, new Vector2(position.X, position.Y + (this.scale * 10)), new Rectangle(new Point(0, 33), new Point(25, 22)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    else spriteBatch.Draw(this.Sprite, new Vector2(position.X, position.Y + (this.scale * 10)), new Rectangle(new Point(25, 33), new Point(25, 22)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.THORN_ON:
+                    if (ChangeThornTurn) spriteBatch.Draw(this.Sprite, new Vector2(position.X, position.Y + (this.scale * 10)), new Rectangle(new Point(25, 33), new Point(25, 22)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    else spriteBatch.Draw(this.Sprite, new Vector2(position.X, position.Y + (this.scale * 10)), new Rectangle(new Point(0, 33), new Point(25, 22)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
+                case Render.TypeOfItems.THORN:
+                    spriteBatch.Draw(this.Sprite, new Vector2(position.X, position.Y + (this.scale * 10)), new Rectangle(new Point(0, 57), new Point(28, 22)), SpriteColorTexture, 0, new Vector2(0, 0), this.scale, SpriteEffects.None, 0f);
+                    break;
             }
 
             if (SpritesColors[i] == Render.TypeOfItems.COIN && !mask)

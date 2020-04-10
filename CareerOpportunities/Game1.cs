@@ -18,6 +18,7 @@ namespace CareerOpportunities
 
         Texture2D loadingScreen;
         Texture2D GameOverScreen;
+        Texture2D Bar;
 
         public int Level;
         public enum GameStatus { WIN, LOSE, PLAY, PAUSE, MENU }
@@ -25,6 +26,8 @@ namespace CareerOpportunities
 
         public bool LoadingLevel;
         public bool LoadingMenu;
+
+        public Transition Transition;
 
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
@@ -44,7 +47,7 @@ namespace CareerOpportunities
         public Game1()
         {
             this.scale = 3;
-            this.Level = 3;
+            this.Level = 1;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 316 * this.scale;
             graphics.PreferredBackBufferHeight = 178 * this.scale;
@@ -73,6 +76,9 @@ namespace CareerOpportunities
             this.status   = GameStatus.MENU;
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
             this.font3    = Content.Load<SpriteFont>("pressstart3");
+            this.Bar      = Content.Load<Texture2D>("sprites/hud_gameover");
+
+            this.Transition = new Transition(Content, 316, this.scale);
 
             this.backgroundLayer = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
             this.PlayerLayer     = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
@@ -82,6 +88,7 @@ namespace CareerOpportunities
             this.allLayers       = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
 
             this.HUDlayer        = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
+
         }
 
         
@@ -100,6 +107,7 @@ namespace CareerOpportunities
 
         protected override void Update(GameTime gameTime)
         {
+            
 
             if (this.LoadingLevel)
             {
@@ -117,14 +125,15 @@ namespace CareerOpportunities
             {
                 if (this.status == GameStatus.PLAY)
                 {
+                    this.Transition.Update(gameTime);
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-                    this.Countdown.Update(gameTime);
+                    if (!this.Transition.animation) this.Countdown.Update(gameTime);
                     this.camera.Update(gameTime, Player.Position, screemSize);
                     this.Map.Update(gameTime, Player);
                     this.Level = Map.CurrentlyLevel;
                     this.Player.Update(gameTime, this.InputGK, camera);
                     this.Weapon.Update(gameTime);
-                    if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime);
+                    if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime, camera);
 
                     if (Hearts.NumberOfhearts < 1)
                     {
@@ -143,9 +152,13 @@ namespace CareerOpportunities
                 }
                 if (Map.Finished())
                 {
-                    this.Level = Map.NextLevel();
-                    if (this.Level <= Map.LastLevel) this.status = GameStatus.WIN;
-                    else this.goToMenu();
+                    if (!this.Transition.animation) this.Transition.HideScreem();
+                    if (this.Transition.IsHide)
+                    {
+                        this.Level = Map.NextLevel();
+                        if (this.Level <= Map.LastLevel) this.status = GameStatus.WIN;
+                        else this.goToMenu();
+                    }
                 }
 
             }
@@ -303,13 +316,17 @@ namespace CareerOpportunities
                 {
                     Hearts.Draw(spriteBatch);
                     Coins.Draw(spriteBatch);
+                    spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                } else
+                {
+                    Boss.DrawHud(spriteBatch);
                 }
                 
-                spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                
 
                 Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(50, 50));
                 Countdown.Draw(spriteBatch);
-                
+                this.Transition.Draw(spriteBatch);
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
             }
@@ -351,7 +368,8 @@ namespace CareerOpportunities
             if (this.isMainMenuReady() && this.status == GameStatus.PAUSE)
             {
                 GraphicsDevice.Clear(Color.Black);
-                this.PauseMenu.Draw(spriteBatch);
+                float x_start = (GraphicsDevice.Viewport.Width - (scale * this.GameOverScreen.Width)) / 2f;
+                this.PauseMenu.Draw(spriteBatch, x_start);
             }
         }
 
@@ -360,8 +378,36 @@ namespace CareerOpportunities
             if (this.isMainMenuReady() && this.status == GameStatus.LOSE)
             {
                 GraphicsDevice.Clear(Color.Black);
-                spriteBatch.Draw(this.GameOverScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-                this.GameOverMenu.Draw(spriteBatch);
+                float x_start = (GraphicsDevice.Viewport.Width - (scale * this.GameOverScreen.Width)) / 2f;
+                spriteBatch.Draw(this.GameOverScreen, new Vector2(x_start, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                this.GameOverMenu.Draw(spriteBatch, x_start);
+
+                int y = this.scale * 95;
+                float x = ((GraphicsDevice.Viewport.Width - (this.scale * 160)) / 2f) / this.scale;
+                float progress = ((this.Map.FinishedPerCent() / 100) * (150));
+                bool show_progress = false;
+
+                spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(0,0), new Point(5, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                x += 4;
+                for (int i = 3; i < 150; i++)
+                {
+                    x++;
+                    if(progress > i)
+                    {
+                        spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(4, 0), new Point(1, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                    } else
+                    {
+                        spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(5, 0), new Point(1, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                        if (!show_progress)
+                        {
+                            spriteBatch.Draw(this.Bar, new Vector2((x - 5) * this.scale, y - (13 * this.scale)), new Rectangle(new Point(10, 0), new Point(10, 13)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                            show_progress = true;
+                        }
+                    }
+                       
+                }
+                x++;
+                spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(5,0), new Point(5, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
         }
 
@@ -397,12 +443,9 @@ namespace CareerOpportunities
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, this.screemGameWidth * this.scale);
             Map.setLevel(this.Level);
             Map.jsonContent = null;
-            Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"));
-            Map.setBoxTexture(Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"), Content.Load<Texture2D>("prototype/box_2"), Content.Load<Texture2D>("prototype/box_4_2"));
-            Map.setBoxShadow(Content.Load<Texture2D>("prototype/box_2_shadows"));
+            Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"), Content.Load<Texture2D>("prototype/esteira-prototype2"));
+            Map.Sprite = Content.Load<Texture2D>("sprites/tiles");
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"), this.path +"/Content/sprites/coin.json");
-            Map.setHeartTexture(Content.Load<Texture2D>("prototype/heart"));
-            Map.setRampTexture(Content.Load<Texture2D>("prototype/rampa"));
             Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
             Map.countdown = this.Countdown;
 
@@ -413,11 +456,14 @@ namespace CareerOpportunities
 
             // start game
             this.status = GameStatus.PLAY;
+
+            this.Transition.ShowScreem();
+
         }
 
         public void LoadMenu()
         {
-            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.font3, this.scale);
+            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.font3, this.scale, GraphicsDevice);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.PauseMenu.Font = this.font3;
             this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);

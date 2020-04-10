@@ -21,6 +21,7 @@ namespace CareerOpportunities
             this.Position = new Vector2(screemX - (SpriteSize.X * this.Scale / 2), screemY - (SpriteSize.Y * this.Scale / 2));
         }
 
+#if DEBUG
         public void DrawRiggidBody(SpriteBatch spriteBatch, GraphicsDevice graphicsDevice)
         {
             Texture2D rect = new Texture2D( graphicsDevice, this.Body.Size.X, this.Body.Size.Y);
@@ -46,5 +47,6 @@ namespace CareerOpportunities
 
             spriteBatch.Draw(rect, positionbody, null, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
         }
+#endif
     }
 }

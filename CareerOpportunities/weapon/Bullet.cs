@@ -18,7 +18,6 @@ namespace CareerOpportunities.weapon
         {
             this.Sprite = Sprite;
             this.Scale = Scale;
-            //this.Position = new Vector2(Position.X + (this.Scale * (10 + 35)), Position.Y + (this.Scale * 15));
             this.Position = new Vector2(Position.X + (this.Scale * (10 + 40)), Position.Y + (this.Scale * 15));
         }
 
@@ -26,6 +25,7 @@ namespace CareerOpportunities.weapon
         {
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             this.Position = new Vector2(this.Position.X + (Scale * delta * velocity), this.Position.Y);
+            this.Body = new Rectangle(new Point((int)this.Position.X + 5 * this.Scale, (int)this.Position.Y + 5 * this.Scale), new Point(9, 9));
         }
     }
 }

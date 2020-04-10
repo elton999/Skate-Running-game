@@ -403,6 +403,15 @@
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "sourceSize": { "w": 64, "h": 64 },
     "duration": 100
+   },
+   {
+    "filename": "characters 45.aseprite",
+    "frame": { "x": 2880, "y": 0, "w": 64, "h": 64 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
+    "sourceSize": { "w": 64, "h": 64 },
+    "duration": 100
    }
  ],
  "meta": {
@@ -410,7 +419,7 @@
   "version": "1.2.17-x64",
   "image": "Jim.png",
   "format": "RGBA8888",
-  "size": { "w": 2880, "h": 64 },
+  "size": { "w": 2944, "h": 64 },
   "scale": "1",
   "frameTags": [
    { "name": "up", "from": 1, "to": 4, "direction": "forward" },
@@ -418,13 +427,13 @@
    { "name": "fire_full", "from": 10, "to": 14, "direction": "forward" },
    { "name": "start_fire", "from": 10, "to": 12, "direction": "forward" },
    { "name": "after_fire", "from": 13, "to": 14, "direction": "forward" },
-   { "name": "run", "from": 15, "to": 28, "direction": "forward" },
-   { "name": "run_idle", "from": 15, "to": 22, "direction": "forward" },
-   { "name": "hit", "from": 29, "to": 32, "direction": "forward" },
-   { "name": "jump", "from": 33, "to": 44, "direction": "forward" },
-   { "name": "start_jump", "from": 33, "to": 38, "direction": "forward" },
-   { "name": "jumping", "from": 39, "to": 42, "direction": "forward" },
-   { "name": "landing", "from": 43, "to": 44, "direction": "forward" }
+   { "name": "run", "from": 15, "to": 29, "direction": "forward" },
+   { "name": "run_idle", "from": 15, "to": 23, "direction": "forward" },
+   { "name": "hit", "from": 30, "to": 33, "direction": "forward" },
+   { "name": "jump", "from": 34, "to": 45, "direction": "forward" },
+   { "name": "start_jump", "from": 34, "to": 39, "direction": "forward" },
+   { "name": "jumping", "from": 40, "to": 43, "direction": "forward" },
+   { "name": "landing", "from": 44, "to": 45, "direction": "forward" }
   ]
  }
 }

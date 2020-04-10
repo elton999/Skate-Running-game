@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:Effects/light.png
 
+#begin Effects/transition.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Effects/transition.png
+
 #begin Maps/level_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -73,6 +85,21 @@
 /processorParam:TextureFormat=Color
 /build:Maps/level_4.png
 
+#begin Maps/level_5.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Maps/level_5.png
+
+#begin prototype/boss_1.json
+/copy:prototype/boss_1.json
+
 #begin prototype/boss_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -84,42 +111,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:prototype/boss_1.png
-
-#begin prototype/box_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prototype/box_2.png
-
-#begin prototype/box_2_shadows.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prototype/box_2_shadows.png
-
-#begin prototype/box_4_2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prototype/box_4_2.png
 
 #begin prototype/esteira-prototype.png
 /importer:TextureImporter
@@ -133,7 +124,7 @@
 /processorParam:TextureFormat=Color
 /build:prototype/esteira-prototype.png
 
-#begin prototype/esteira-sheet-2.png
+#begin prototype/esteira-prototype2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -143,19 +134,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/esteira-sheet-2.png
-
-#begin prototype/heart.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:prototype/heart.png
+/build:prototype/esteira-prototype2.png
 
 #begin prototype/jim.json
 /copy:prototype/jim.json
@@ -172,7 +151,7 @@
 /processorParam:TextureFormat=Color
 /build:prototype/Jim.png
 
-#begin prototype/rampa.png
+#begin sprites/boss_hud.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -182,7 +161,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/rampa.png
+/build:sprites/boss_hud.png
 
 #begin sprites/bullet.json
 /copy:sprites/bullet.json
@@ -265,6 +244,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/hud_count.png
 
+#begin sprites/hud_gameover.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/hud_gameover.png
+
 #begin sprites/jim_hud.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -312,4 +303,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/pause_menu.png
+
+#begin sprites/tiles.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/tiles.png
 

@@ -73,6 +73,8 @@ namespace CareerOpportunities
 
             this.currentAnimation = PlayerController.stateAnimation.RUN;
             this.runTimes = 0;
+
+            this.CollisionBoss = false;
         }
 
 
@@ -158,6 +160,8 @@ namespace CareerOpportunities
             } else this.play(gameTime, "hit", AnimationDirection.LOOP);
         }
 
+        private bool CollisionBoss = false;
+
         private void RiggiBody()
         {
             this.Body = new Rectangle(new Point((int)this.Position.X + 22 * this.Scale, (int)this.Position.Y + 15 * this.Scale), new Point(16, 21));
@@ -173,11 +177,13 @@ namespace CareerOpportunities
 
             if (this.isGrounded)
             {
-                if (game.Boss.isBossLevel(game.Level) && game.Boss.Collision(this.Body))
+                // boss level
+                if (game.Boss.isBossLevel(game.Level) && game.Boss.Collision(this.Body) && !this.CollisionBoss)
                 {
                     game.Hearts.remove(game.Hearts.NumberOfhearts);
                     game.Map.StopFor(60);
                     camera.TimeShake = 15;
+                    this.CollisionBoss = true;
                 }
 
                 if (game.Map.Collision(this.Body, this.Position, this.CurrentVerticalLine))
@@ -330,11 +336,11 @@ namespace CareerOpportunities
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(this.Sprite, this.Position, new Rectangle(new Point(0, 0), new Point(32, 32)), Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
             Vector2 sprite_position = new Vector2(this.Position.X - (2 * this.Scale), this.Position.Y - (16 * this.Scale));
             this.DrawAnimation(spriteBatch, sprite_position, this.Scale);
-
+#if DEBUG
             this.DrawRiggidBody(spriteBatch, this.game.GraphicsDevice);
+#endif
         }
 
     }

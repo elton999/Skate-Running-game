@@ -32,17 +32,19 @@ namespace CareerOpportunities
             else if (input.KeyPress(Controller.Input.Button.CONFIRM)) this.ItemSelected = MenuStatus.RESUME;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, float x_start)
         {
-            Vector2 position_exit = new Vector2(this.Scale * 157, this.Position.Y);
+            Vector2 position_exit = new Vector2((this.Scale * 157) + x_start, this.Position.Y);
+            Vector2 position_first_btn = new Vector2(this.Position.X + x_start, this.Position.Y);
+
             if (this.gameOver)
             {
-                spriteBatch.DrawString(this.Font, MenuGameOver[0], this.Position, this.SpriteColor);
+                spriteBatch.DrawString(this.Font, MenuGameOver[0], position_first_btn, this.SpriteColor);
                 spriteBatch.DrawString(this.Font, MenuGameOver[1], position_exit, this.SpriteColor);
             }
             else
             {
-                spriteBatch.DrawString(this.Font, MenuPause[0], this.Position, this.SpriteColor);
+                spriteBatch.DrawString(this.Font, MenuPause[0], position_first_btn, this.SpriteColor);
                 spriteBatch.DrawString(this.Font, MenuPause[1], position_exit, this.SpriteColor);
             }
         }

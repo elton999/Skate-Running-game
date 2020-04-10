@@ -108,6 +108,8 @@ namespace CareerOpportunities
             }
 
             if (this.Zoom.ToString() == "NaN") this.Zoom = 1.1f;
+            if (this.ZoomIn || this.ZoomOut) this.Position.Y = this.Zoom * this.scale; 
+            
         }
 
         public Matrix transformMatrix()

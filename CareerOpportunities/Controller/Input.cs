@@ -53,6 +53,12 @@ namespace CareerOpportunities.Controller
             this.SetAllKey();
         }
 
+        public bool PressAnyButton ()
+        {
+            if (Keyboard.GetState().GetPressedKeys().Length > 0) return true;
+            return false;
+        }
+
         private void SetAllKey()
         {
             // keyboard

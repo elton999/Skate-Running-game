@@ -25,12 +25,12 @@ namespace CareerOpportunities.weapon
         public void Update(GameTime gameTime)
         {
             List<Bullet> list_bullet = new List<Bullet>();
-            this.Body = new Rectangle(new Point(5, 5), new Point(9, 9));
             bool collision = false;
+
             for (int i = 0; i < this.bullets.Count; i++)
             {
                 this.bullets[i].Update(gameTime);
-                collision = game.Map.Collision(this.Body, new Vector2( this.bullets[i].Position.X, this.bullets[i].Position.Y ), game.Map.LinePosition(this.bullets[i].Position.Y + (this.Scale * 7)), false);
+                collision = game.Map.Collision(this.bullets[i].Body, this.bullets[i].Position, game.Map.LinePosition(this.bullets[i].Position.Y + (this.Scale * 7)), false);
                 if (this.bullets[i].Position.X < this.Screem.X && !collision) list_bullet.Add(this.bullets[i]);
                 if (collision)
                 {
@@ -54,6 +54,9 @@ namespace CareerOpportunities.weapon
             for (int i = 0; i < this.bullets.Count; i++)
             {
                 this.DrawAnimation(spriteBatch, this.bullets[i].Position, this.Scale);
+#if DEBUG
+                this.bullets[i].DrawRiggidBody(spriteBatch, game.GraphicsDevice);
+#endif
             }
         }
 
