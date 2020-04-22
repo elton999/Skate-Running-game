@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace CareerOpportunities.weapon
 {
@@ -11,6 +12,8 @@ namespace CareerOpportunities.weapon
         private Game1 game;
         public Vector2 Screem;
         public Texture2D Light;
+        SoundEffect FireSFX;
+        SoundEffect HitSFX;
 
         public Gun(Game1 game, CameraManagement camera)
         {
@@ -20,6 +23,9 @@ namespace CareerOpportunities.weapon
 
             setSprite(game.Content.Load<Texture2D>("sprites/bullet"));
             setJsonFile(this.game.path + "/Content/sprites/bullet.json");
+
+            this.FireSFX = FireSFX = game.Content.Load<SoundEffect>("Sound/sfx_weapon_shotgun1");
+            this.HitSFX = game.Content.Load<SoundEffect>("Sound/sfx_exp_short_hard12");
         }
 
         public void Update(GameTime gameTime)
@@ -37,6 +43,7 @@ namespace CareerOpportunities.weapon
                     game.Map.CollisionItem(game.Map.CollisionPosition, false, true);
                     game.Map.CollisionPosition = new Vector2(0, 0);
                     game.camera.TimeShake = 5;
+                    this.HitSFX.Play();
                 }
             }
             this.play(gameTime, "idle", AnimationDirection.LOOP);
@@ -46,6 +53,7 @@ namespace CareerOpportunities.weapon
         public void Fire(Vector2 Position)
         {
             this.bullets.Add(new Bullet(this.Sprite, this.Scale, new Vector2(Position.X, Position.Y - (10 * this.Scale))));
+            this.FireSFX.Play();
         }
 
         public void Draw(SpriteBatch spriteBatch)

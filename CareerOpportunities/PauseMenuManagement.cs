@@ -10,7 +10,7 @@ namespace CareerOpportunities
 
         public enum MenuStatus { RESUME, EXIT, NONE };
         public String[] MenuPause = new String[] { "RESUME (ENTER)", "EXIT (ESC)" };
-        public String[] MenuGameOver = new String[] { "CONTINUIE (ENTER)", "EXIT (ESC)" };
+        public String[] MenuGameOver = new String[] { "CONTINUE (ENTER)", "EXIT (ESC)" };
         public MenuStatus ItemSelected;
         public bool gameOver;
         public SpriteFont Font;

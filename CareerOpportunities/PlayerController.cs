@@ -2,6 +2,7 @@
 using CareerOpportunities.weapon;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace CareerOpportunities
 {
@@ -41,6 +42,11 @@ namespace CareerOpportunities
         }
         public stateAnimation currentAnimation;
 
+
+        SoundEffect HitSFX;
+        SoundEffect CollectCoinSFX;
+        SoundEffect ColletctHeartSFX;
+
         public PlayerController(int BufferHeight, int BufferWidth, Game1 game)
         {
             this.game   = game;
@@ -75,6 +81,10 @@ namespace CareerOpportunities
             this.runTimes = 0;
 
             this.CollisionBoss = false;
+
+            HitSFX = game.Content.Load<SoundEffect>("Sound/sfx_exp_short_hard12");
+            CollectCoinSFX = game.Content.Load<SoundEffect>("Sound/coin3");
+            ColletctHeartSFX = game.Content.Load<SoundEffect>("Sound/sfx_sounds_powerup3");
         }
 
 
@@ -195,6 +205,7 @@ namespace CareerOpportunities
 
                     game.Map.StopFor(60);
                     camera.TimeShake = 15;
+                    this.HitSFX.Play();
                 }
                 else
                 {
@@ -203,9 +214,11 @@ namespace CareerOpportunities
                     {
                         case "heart":
                             game.Hearts.add(1);
+                            this.ColletctHeartSFX.Play();
                             break;
                         case "coin":
                             game.Coins.add(1);
+                            this.CollectCoinSFX.Play();
                             break;
                         case "ramp":
                             this.isGrounded = false;
@@ -239,13 +252,13 @@ namespace CareerOpportunities
                         this.HorizontalMove(input, game.Map);
 
                         // Jump
-                        if (input.KeyPress(Controller.Input.Button.JUMP) && this.isGrounded)
+                        /*if (input.KeyPress(Controller.Input.Button.JUMP) && this.isGrounded)
                         {
                             this.isGrounded = false;
                             JumpPull = 140f;
                             camera.StartZoomJump();
                             game.Map.CollisionPosition = Vector2.Zero;
-                        }
+                        }*/
                     }
 
                     // left and right

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace CareerOpportunities.Routine
 {
@@ -16,6 +17,7 @@ namespace CareerOpportunities.Routine
         public ActionController.move currently;
         public int line;
         public float pull_x = 2;
+        SoundEffect HitSFX;
 
         public Game1 game;
 
@@ -29,10 +31,11 @@ namespace CareerOpportunities.Routine
             this.SetRoutine();
             this.RiggiBody();
             this.setSprite(this.Sprite);
-            this.setJsonFile(@"Content/prototype/boss_1.json");
+            this.setJsonFile(game.path+"/Content/prototype/boss_1.json");
+            this.HitSFX = game.Content.Load<SoundEffect>("Sound/sfx_exp_short_hard12");
         }
 
-        int[] _BossLevels = { 5, 6 };
+        int[] _BossLevels = { 1, 6, 7 };
 
         public bool isBossLevel(int level)
         {
@@ -78,8 +81,17 @@ namespace CareerOpportunities.Routine
         int healthy = 18;
         public void Update(GameTime gameTime, CameraManagement camera)
         {
-            this.Move();
-            this.RiggiBody();
+
+            if (game.Level == 1)
+            {
+                this.CurrentAnimation = AnimationStatus.RUN;
+                this.Position = new Vector2(this.Position.X + (this.Scale * this.pull_x), this.Position.Y);
+            }
+            else
+            {
+                this.Move();
+                this.RiggiBody();
+            }
 
             game.Map.Collision(this.Body, this.Position, this.game.Map.LinePosition(this.Position.Y));
             switch (game.Map.CollisionItem(game.Map.CollisionPosition, true, false, true))
@@ -92,6 +104,7 @@ namespace CareerOpportunities.Routine
                 case "box":
                     healthy--;
                     camera.TimeShake = 10;
+                    this.HitSFX.Play();
                     break;
                 
             }
@@ -149,15 +162,14 @@ namespace CareerOpportunities.Routine
         {
             switch (game.Level)
             {
-                case 5:
-                    this.addRoutineLevel5();
+                case 6:
+                    this.addRoutineLevel6();
                     break;
                 case 7:
                     this.addRoutineLevel7();
                     break;
             }
         }
-
 
         private int CurrentMoviment = 0;
         protected void Move()
@@ -219,7 +231,7 @@ namespace CareerOpportunities.Routine
         }
 
         #region level 3
-        protected void addRoutineLevel5 ()
+        protected void addRoutineLevel6 ()
         {
             this.movimentes.Add(new ActionController(ActionController.move.NONE));
             this.movimentes.Add(new ActionController(ActionController.move.RIGHT));

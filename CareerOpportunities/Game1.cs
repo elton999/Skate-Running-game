@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using CareerOpportunities.weapon;
 using CareerOpportunities.Controller;
 using CareerOpportunities.Hud;
@@ -7,6 +8,7 @@ using CareerOpportunities.Routine;
 using System.Reflection;
 using System.IO;
 
+using GameAnalyticsSDK.Net;
 
 namespace CareerOpportunities
 {
@@ -16,9 +18,17 @@ namespace CareerOpportunities
         SpriteBatch spriteBatch;
         Input InputGK;
 
+        Tutorial Tutorial;
+
         Texture2D loadingScreen;
         Texture2D GameOverScreen;
         Texture2D Bar;
+
+        SoundEffect SoundTrack;
+        SoundEffectInstance BackgroundSoundTrack;
+
+        SoundEffect SoundTrackBoss;
+        SoundEffectInstance BackgroundSoundTrackBoss;
 
         public int Level;
         public enum GameStatus { WIN, LOSE, PLAY, PAUSE, MENU }
@@ -32,6 +42,8 @@ namespace CareerOpportunities
         PauseMenuManagement PauseMenu;
         PauseMenuManagement GameOverMenu;
 
+        CutScene CutScene;
+
         public CameraManagement camera;
 
         SpriteFont font3;
@@ -40,19 +52,26 @@ namespace CareerOpportunities
         public string path;
 
         public int scale;
-
+        private bool mute = false;
         int screemGameHeight = 162;
         int screemGameWidth = 288;
-
         public Game1()
         {
+#if GameAnalytics
+            GameAnalytics.SetEnabledInfoLog(true);
+            GameAnalytics.SetEnabledVerboseLog(true);
+            GameAnalytics.ConfigureBuild("windows 1.0.0");
+            
+            GameAnalytics.SetEnabledManualSessionHandling(true);
+#endif
+
             this.scale = 3;
             this.Level = 1;
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 316 * this.scale;
             graphics.PreferredBackBufferHeight = 178 * this.scale;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
-            Window.AllowUserResizing = true;
+            //Window.AllowUserResizing = true;
             //graphics.ToggleFullScreen();
             Content.RootDirectory = "Content";
             this.LoadingLevel = false;
@@ -67,6 +86,7 @@ namespace CareerOpportunities
             camera = new CameraManagement();
             camera.scale = 3;
             this.InputGK = new Input();
+            Window.Title = "Skate Running";
         }
 
         protected override void LoadContent()
@@ -77,6 +97,16 @@ namespace CareerOpportunities
             loadingScreen = Content.Load<Texture2D>("sprites/loading");
             this.font3    = Content.Load<SpriteFont>("pressstart3");
             this.Bar      = Content.Load<Texture2D>("sprites/hud_gameover");
+
+            this.SoundTrack = Content.Load<SoundEffect>("Sound/Juhani Junkala [Chiptune Adventures] 2 Stage 2");
+            this.BackgroundSoundTrack = this.SoundTrack.CreateInstance();
+            this.BackgroundSoundTrack.IsLooped = true;
+            this.BackgroundSoundTrack.Volume = 0.4f;
+
+            this.SoundTrackBoss = Content.Load<SoundEffect>("Sound/Juhani Junkala [Chiptune Adventures] 3 Boss Fight");
+            this.BackgroundSoundTrackBoss = this.SoundTrackBoss.CreateInstance();
+            this.BackgroundSoundTrack.IsLooped = true;
+            this.BackgroundSoundTrack.Volume = 0.4f;
 
             this.Transition = new Transition(Content, 316, this.scale);
 
@@ -96,7 +126,7 @@ namespace CareerOpportunities
         {
         }
 
-        #region Update
+#region Update
 
         private void goToMenu()
         {
@@ -107,7 +137,25 @@ namespace CareerOpportunities
 
         protected override void Update(GameTime gameTime)
         {
-            
+            if (this.status != GameStatus.MENU && !mute)
+            {
+                if (this.Boss != null && this.Boss.isBossLevel(Level))
+                {
+                    if (this.BackgroundSoundTrackBoss.State == SoundState.Stopped) this.BackgroundSoundTrackBoss.Play();
+                    else this.BackgroundSoundTrack.Stop();
+                }
+                else
+                {
+                    if (this.BackgroundSoundTrack.State == SoundState.Stopped) this.BackgroundSoundTrack.Play();
+                    else this.BackgroundSoundTrackBoss.Stop();
+                }
+               
+            }
+            else
+            {
+                if (this.BackgroundSoundTrackBoss.State == SoundState.Playing) this.BackgroundSoundTrackBoss.Stop();
+                if (this.BackgroundSoundTrack.State == SoundState.Playing) this.BackgroundSoundTrack.Stop();
+            }
 
             if (this.LoadingLevel)
             {
@@ -125,39 +173,77 @@ namespace CareerOpportunities
             {
                 if (this.status == GameStatus.PLAY)
                 {
-                    this.Transition.Update(gameTime);
+                    this.CutScene.Update(gameTime);
+                    if (this.CutScene.IsFinished)
+                    {
+                        this.Transition.Update(gameTime);
+                        if (!this.Transition.animation && !this.Tutorial.ShowTutorial) this.Countdown.Update(gameTime);
+                        this.Tutorial.Update(gameTime, this.Level, this.InputGK);
+                    }
+
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
-                    if (!this.Transition.animation) this.Countdown.Update(gameTime);
                     this.camera.Update(gameTime, Player.Position, screemSize);
                     this.Map.Update(gameTime, Player);
                     this.Level = Map.CurrentlyLevel;
-                    this.Player.Update(gameTime, this.InputGK, camera);
+                    if (this.Level > 1) this.Player.Update(gameTime, this.InputGK, camera);
                     this.Weapon.Update(gameTime);
-                    if(this.Boss != null && this.Boss.isBossLevel(this.Level)) this.Boss.Update(gameTime, camera);
+                    if(this.Boss != null && this.Boss.isBossLevel(this.Level) && !this.Transition.IsHide) this.Boss.Update(gameTime, camera);
+
+
+                    // cut scene done, next level
+                    // boss is not visible
+                    if (this.Boss.Position.X - 100 > graphics.PreferredBackBufferWidth)
+                    {
+                        if (!this.Transition.animation) this.Transition.HideScreem();
+                        if (this.Transition.IsHide)
+                        {
+                            this.Level = Map.NextLevel();
+                            if (this.Level <= Map.LastLevel) this.status = GameStatus.WIN;
+                        }
+                    }
+                    
 
                     if (Hearts.NumberOfhearts < 1)
                     {
                         if (!Map.isStoped) {
                             //this.LoadingLevel = true;
+#if GameAnalytics
+                            GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Fail, "Level0" + this.Level, (double)this.Coins.numbCoins);
+#endif
                             this.status = GameStatus.LOSE;
                             this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
+                            this.Transition.Hide();
                         }
                     }
 
                     if (this.InputGK.KeyPress(Input.Button.ESC))
                     {
+#if GameAnalytics
+                        GameAnalytics.AddDesignEvent("Menu:Pause");
+#endif
                         this.status = GameStatus.PAUSE;
                         this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
                     }
                 }
-                if (Map.Finished())
+                if (Map != null && Map.Finished())
                 {
                     if (!this.Transition.animation) this.Transition.HideScreem();
                     if (this.Transition.IsHide)
                     {
+#if GameAnalytics
+                        GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Complete, "Level0" + this.Level, (double)this.Coins.numbCoins);
+#endif
                         this.Level = Map.NextLevel();
                         if (this.Level <= Map.LastLevel) this.status = GameStatus.WIN;
-                        else this.goToMenu();
+                        else
+                        {
+                            this.Level = 1;
+                            this.Map = null;
+                            this.status = GameStatus.MENU;
+                            this.MainMenu.ItemSelected = MenuManagement.MenuItens.CREDITS;
+                            this.MainMenu.ItemOver = MenuManagement.MenuItens.CREDITS;
+                        }
+
                     }
                 }
 
@@ -185,11 +271,18 @@ namespace CareerOpportunities
                     {
                         this.status = GameStatus.PLAY;
                         this.LoadingLevel = true;
+                        this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
+#if GameAnalytics
+                        GameAnalytics.AddDesignEvent("Menu:Resume");
+#endif
                     }
                     else if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
                     {
                         this.status = GameStatus.MENU;
                         this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
+#if GameAnalytics
+                        GameAnalytics.AddDesignEvent("Menu:BackToMenu");
+#endif
                     }
                 }
 
@@ -208,14 +301,21 @@ namespace CareerOpportunities
                         this.status = GameStatus.PLAY;
                         this.LoadingLevel = true;
                     }
-                    if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT) Exit();
+                    if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT)
+                    {
+#if GameAnalytics
+                        GameAnalytics.AddDesignEvent("Menu:Exit");
+                        GameAnalytics.EndSession();
+#endif
+                        Exit();
+                    }
                 }
             }
             base.Update(gameTime);
         }
-        #endregion
+#endregion
 
-        #region Draw Player
+#region Draw Player
         protected override void Draw(GameTime gameTime)
         {
             // Start Game
@@ -240,7 +340,7 @@ namespace CareerOpportunities
             base.Draw(gameTime);
         }
 
-        #region Draw Player Layers
+#region Draw Player Layers
         // layers
         private RenderTarget2D backgroundLayer;
         private RenderTarget2D PlayerLayer;
@@ -261,7 +361,7 @@ namespace CareerOpportunities
                 spriteBatch.End();
 
                 spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, SamplerState.PointClamp, null, null, null, null);
-                Player.Draw(spriteBatch);
+                if (this.Level > 1) Player.Draw(spriteBatch);
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
@@ -271,7 +371,7 @@ namespace CareerOpportunities
                 spriteBatch.Begin(SpriteSortMode.Immediate, null, SamplerState.PointClamp, null, null, null, null);
                 Map.DrawGround(spriteBatch);
                 Map.Layers(spriteBatch, Player.CurrentVerticalLine, false, false);
-                Player.Draw(spriteBatch);
+                if (this.Level > 1) Player.Draw(spriteBatch);
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
 
@@ -299,9 +399,9 @@ namespace CareerOpportunities
                 
             }
         }
-        #endregion
+#endregion
 
-        #region Draw HUD Layer
+#region Draw HUD Layer
         private RenderTarget2D HUDlayer;
 
         public void DrawHUDPlay()
@@ -317,21 +417,22 @@ namespace CareerOpportunities
                     Hearts.Draw(spriteBatch);
                     Coins.Draw(spriteBatch);
                     spriteBatch.Draw(this.Character, new Vector2(3 * this.scale, 3 * this.scale), new Rectangle(new Point(0, 0), new Point(27, 27)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
-                } else
+                } else if (this.Level > 1) Boss.DrawHud(spriteBatch);
+                
+                if(this.Level > 1)
                 {
-                    Boss.DrawHud(spriteBatch);
+                    Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(50, 50));
+                    Countdown.Draw(spriteBatch);
+                    Tutorial.Draw(spriteBatch, graphics.PreferredBackBufferWidth, font3);
                 }
-                
-                
 
-                Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(50, 50));
-                Countdown.Draw(spriteBatch);
                 this.Transition.Draw(spriteBatch);
+                if (!this.CutScene.IsFinished) this.CutScene.Draw(spriteBatch);
                 spriteBatch.End();
                 GraphicsDevice.SetRenderTarget(null);
             }
         }
-        #endregion
+#endregion
 
         public void DrawAllLayers()
         {
@@ -351,9 +452,9 @@ namespace CareerOpportunities
             spriteBatch.End();
         }
 
-        #endregion
+#endregion
 
-        #region Draw Menu
+#region Draw Menu
         public void DrawMainMenu()
         {
             if (this.isMainMenuReady() && this.status == GameStatus.MENU)
@@ -411,9 +512,9 @@ namespace CareerOpportunities
             }
         }
 
-        #endregion
+#endregion
 
-        #region Load Content
+#region Load Content
 
         public Texture2D Character;
         public MenuManagement MainMenu;
@@ -429,7 +530,15 @@ namespace CareerOpportunities
         // Load all assets to the level
         public void LoadLevel()
         {
+
+#if GameAnalytics
+            GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Start, "Level0" + this.Level);
+#endif
+
             Character = Content.Load<Texture2D>("sprites/jim_hud");
+
+            this.Tutorial = new Tutorial(Content, this.scale);
+            this.CutScene = new CutScene(this.font3, new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), this.Level);
 
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
             Hearts.Scale = scale;
@@ -443,10 +552,11 @@ namespace CareerOpportunities
             Map = new Level.Render(scale, graphics.PreferredBackBufferHeight, this.screemGameWidth * this.scale);
             Map.setLevel(this.Level);
             Map.jsonContent = null;
-            Map.setGround(Content.Load<Texture2D>("prototype/esteira-prototype"), Content.Load<Texture2D>("prototype/esteira-prototype2"));
+            Map.SetBackground(Content, this.Level);
             Map.Sprite = Content.Load<Texture2D>("sprites/tiles");
             Map.setCoinTexture(Content.Load<Texture2D>("sprites/coin"), this.path +"/Content/sprites/coin.json");
-            Map.setTileMap(Content.Load<Texture2D>("Maps/level_" + this.Level));
+            if(this.Level == 1 || this.Level == 2) Map.setTileMap(Content.Load<Texture2D>("Maps/level_1"));
+            else Map.setTileMap(Content.Load<Texture2D>("Maps/level_"+(this.Level-1)));
             Map.countdown = this.Countdown;
 
             Weapon = new Gun(this, this.camera);
@@ -456,14 +566,14 @@ namespace CareerOpportunities
 
             // start game
             this.status = GameStatus.PLAY;
-
             this.Transition.ShowScreem();
+
 
         }
 
         public void LoadMenu()
         {
-            this.MainMenu = new MenuManagement(Content.Load<Texture2D>("sprites/main_menu"), this.font3, this.scale, GraphicsDevice);
+            this.MainMenu = new MenuManagement(Content, this.font3, this.scale, GraphicsDevice);
             this.PauseMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
             this.PauseMenu.Font = this.font3;
             this.GameOverMenu = new PauseMenuManagement(Content.Load<Texture2D>("sprites/pause_menu"), this.scale);
@@ -486,7 +596,7 @@ namespace CareerOpportunities
             if (this.MainMenu != null && this.PauseMenu != null) return true;
             return false;
         }
-        #endregion
+#endregion
 
     }
 }

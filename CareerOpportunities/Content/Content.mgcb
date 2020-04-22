@@ -97,6 +97,54 @@
 /processorParam:TextureFormat=Color
 /build:Maps/level_5.png
 
+#begin prototype/background_1_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/background_1_1.png
+
+#begin prototype/background_1_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/background_1_2.png
+
+#begin prototype/background_2_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/background_2_1.png
+
+#begin prototype/background_2_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/background_2_2.png
+
 #begin prototype/boss_1.json
 /copy:prototype/boss_1.json
 
@@ -112,7 +160,7 @@
 /processorParam:TextureFormat=Color
 /build:prototype/boss_1.png
 
-#begin prototype/esteira-prototype.png
+#begin prototype/ground_1_1.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -122,9 +170,9 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/esteira-prototype.png
+/build:prototype/ground_1_1.png
 
-#begin prototype/esteira-prototype2.png
+#begin prototype/ground_1_2.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -134,7 +182,31 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:prototype/esteira-prototype2.png
+/build:prototype/ground_1_2.png
+
+#begin prototype/ground_2_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/ground_2_1.png
+
+#begin prototype/ground_2_2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:prototype/ground_2_2.png
 
 #begin prototype/jim.json
 /copy:prototype/jim.json
@@ -150,6 +222,54 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:prototype/Jim.png
+
+#begin Sound/coin3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/coin3.wav
+
+#begin Sound/Into the Depths.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Into the Depths.wav
+
+#begin Sound/Juhani Junkala [Chiptune Adventures] 2 Stage 2.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Juhani Junkala [Chiptune Adventures] 2 Stage 2.ogg
+
+#begin Sound/Juhani Junkala [Chiptune Adventures] 3 Boss Fight.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/Juhani Junkala [Chiptune Adventures] 3 Boss Fight.ogg
+
+#begin Sound/sfx_exp_short_hard12.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/sfx_exp_short_hard12.wav
+
+#begin Sound/sfx_sounds_button3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/sfx_sounds_button3.wav
+
+#begin Sound/sfx_sounds_powerup3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/sfx_sounds_powerup3.wav
+
+#begin Sound/sfx_weapon_shotgun1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/sfx_weapon_shotgun1.wav
 
 #begin sprites/boss_hud.png
 /importer:TextureImporter
@@ -256,6 +376,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/hud_gameover.png
 
+#begin sprites/hud_tutorial_dialogue_box.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/hud_tutorial_dialogue_box.png
+
 #begin sprites/jim_hud.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -303,6 +435,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/pause_menu.png
+
+#begin sprites/skate_running_logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/skate_running_logo.png
 
 #begin sprites/tiles.png
 /importer:TextureImporter

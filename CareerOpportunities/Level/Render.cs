@@ -2,6 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace CareerOpportunities.Level
@@ -12,7 +13,8 @@ namespace CareerOpportunities.Level
         float TileMapWidth;
 
         Vector2[] PositionGround;
-       
+        Vector2[] PositionBackground;
+
         int scale;
         
 
@@ -26,6 +28,11 @@ namespace CareerOpportunities.Level
             this.PositionGround = new Vector2[] {
                     new Vector2(0,0),
                     new Vector2(start,0)
+            };
+
+            this.PositionBackground = new Vector2[] {
+                    new Vector2(0,-(100*this.scale)),
+                    new Vector2(start,-(100*this.scale))
             };
 
             // sprite height
@@ -44,13 +51,48 @@ namespace CareerOpportunities.Level
 
         Texture2D CoinTexture;
         List<Texture2D> Ground;
+        List<Texture2D> Background;
 
+        public void SetBackground(ContentManager content, int Level)
+        {
+            if (Level > 3) this.SetBackgroundTexture(2, content);
+            else this.SetBackgroundTexture(1, content);
 
-        public void setGround(Texture2D Ground1, Texture2D Ground2)
+            switch (Level)
+            {
+                case 1:
+                    this.setGroundTexture(1, content);
+                    break;
+                case 2:
+                    this.setGroundTexture(1, content);
+                    break;
+                case 3:
+                    this.setGroundTexture(2, content);
+                    break;
+                case 4:
+                    this.setGroundTexture(2, content);
+                    break;
+                case 5:
+                    this.setGroundTexture(2, content);
+                    break;
+                case 6:
+                    this.setGroundTexture(1, content);
+                    break;
+            }
+        }
+
+        private void SetBackgroundTexture(int BN, ContentManager Content)
+        {
+            this.Background = new List<Texture2D>();
+            this.Background.Add(Content.Load<Texture2D>("prototype/background_"+BN+"_1"));
+            this.Background.Add(Content.Load<Texture2D>("prototype/background_"+BN+"_2"));
+        }
+
+        private void setGroundTexture(int BN, ContentManager Content)
         {
             this.Ground = new List<Texture2D>();
-            this.Ground.Add(Ground1);
-            this.Ground.Add(Ground2);
+            this.Ground.Add(Content.Load<Texture2D>("prototype/ground_" + BN + "_1"));
+            this.Ground.Add(Content.Load<Texture2D>("prototype/ground_" + BN + "_2"));
         }
 
         public void setCoinTexture(Texture2D coin, string jsonFile)
@@ -266,7 +308,7 @@ namespace CareerOpportunities.Level
         int tileWidth = 34;
 
         public int CurrentlyLevel;
-        public int LastLevel = 5;
+        public int LastLevel = 6;
 
         int[] LinesBox;
 
@@ -336,12 +378,13 @@ namespace CareerOpportunities.Level
             if (Player.isGrounded) this.velocity = 145;
             else this.velocity = 130;
 
-            if (!countdown.isCountdown)
+            if (!countdown.isCountdown && this.CurrentlyLevel > 1)
             {
                 if (CurrentStopFramesNum > stopFramesNum)
                 {
                     float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
                     int velocityCurrent = (int)(velocity * delta * this.scale);
+                    int velocityCurrentbackground = (int)((velocity - 10) * delta * this.scale);
                     // int velocityCurrent = (int)(2 * this.scale);
                     this.currentPositionX -= velocityCurrent;
 
@@ -353,7 +396,15 @@ namespace CareerOpportunities.Level
                             else if (i == this.PositionGround.Length - 1) this.PositionGround[i] = new Vector2(this.PositionGround[i - 1].X + (Ground[0].Width * scale), 0);
                             //else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + (Ground[0].Width * scale), 0);
                         }
+
+                        if (this.PositionBackground[i].X + Background[0].Width * scale <= 0)
+                        {
+                            if (i == 0) this.PositionBackground[i] = new Vector2(this.PositionBackground[this.PositionBackground.Length - 1].X + (Background[0].Width * scale), this.PositionBackground[this.PositionBackground.Length - 1].Y);
+                            else if (i == this.PositionBackground.Length - 1) this.PositionBackground[i] = new Vector2(this.PositionBackground[i - 1].X + (Background[0].Width * scale), this.PositionBackground[i - 1].Y);
+                            //else this.PositionGround[i] = this.PositionGround[i] = new Vector2(this.PositionGround[i + 1].X + (Ground[0].Width * scale), 0);
+                        }
                         this.PositionGround[i] = new Vector2(this.PositionGround[i].X - velocityCurrent, this.PositionGround[i].Y);
+                        this.PositionBackground[i] = new Vector2(this.PositionBackground[i].X - velocityCurrentbackground, this.PositionBackground[i].Y);
                     }
                 }
                 else CurrentStopFramesNum += 1;
@@ -365,6 +416,11 @@ namespace CareerOpportunities.Level
         #region Draw
         public void DrawGround(SpriteBatch spriteBatch)
         {
+            for (int i = 0; i < this.PositionBackground.Length; i++)
+            {
+                spriteBatch.Draw(Background[i], this.PositionBackground[i], null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+            }
+
             for (int i = 0; i < this.PositionGround.Length; i++)
             {
                 spriteBatch.Draw(Ground[i], this.PositionGround[i], null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
