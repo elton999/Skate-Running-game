@@ -8,8 +8,6 @@ using CareerOpportunities.Routine;
 using System.Reflection;
 using System.IO;
 
-using GameAnalyticsSDK.Net;
-
 namespace CareerOpportunities
 {
     public class Game1 : Game
@@ -57,13 +55,6 @@ namespace CareerOpportunities
         int screemGameWidth = 288;
         public Game1()
         {
-#if GameAnalytics
-            GameAnalytics.SetEnabledInfoLog(true);
-            GameAnalytics.SetEnabledVerboseLog(true);
-            GameAnalytics.ConfigureBuild("windows 1.0.0");
-            
-            GameAnalytics.SetEnabledManualSessionHandling(true);
-#endif
 
             this.scale = 3;
             this.Level = 1;
@@ -207,9 +198,6 @@ namespace CareerOpportunities
                     {
                         if (!Map.isStoped) {
                             //this.LoadingLevel = true;
-#if GameAnalytics
-                            GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Fail, "Level0" + this.Level, (double)this.Coins.numbCoins);
-#endif
                             this.status = GameStatus.LOSE;
                             this.GameOverMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
                             this.Transition.Hide();
@@ -218,9 +206,6 @@ namespace CareerOpportunities
 
                     if (this.InputGK.KeyPress(Input.Button.ESC))
                     {
-#if GameAnalytics
-                        GameAnalytics.AddDesignEvent("Menu:Pause");
-#endif
                         this.status = GameStatus.PAUSE;
                         this.PauseMenu.ItemSelected = PauseMenuManagement.MenuStatus.NONE;
                     }
@@ -230,9 +215,6 @@ namespace CareerOpportunities
                     if (!this.Transition.animation) this.Transition.HideScreem();
                     if (this.Transition.IsHide)
                     {
-#if GameAnalytics
-                        GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Complete, "Level0" + this.Level, (double)this.Coins.numbCoins);
-#endif
                         this.Level = Map.NextLevel();
                         if (this.Level <= Map.LastLevel) this.status = GameStatus.WIN;
                         else
@@ -272,17 +254,11 @@ namespace CareerOpportunities
                         this.status = GameStatus.PLAY;
                         this.LoadingLevel = true;
                         this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
-#if GameAnalytics
-                        GameAnalytics.AddDesignEvent("Menu:Resume");
-#endif
                     }
                     else if (this.GameOverMenu.ItemSelected == PauseMenuManagement.MenuStatus.EXIT)
                     {
                         this.status = GameStatus.MENU;
                         this.MainMenu.ItemSelected = MenuManagement.MenuItens.NONE;
-#if GameAnalytics
-                        GameAnalytics.AddDesignEvent("Menu:BackToMenu");
-#endif
                     }
                 }
 
@@ -303,10 +279,6 @@ namespace CareerOpportunities
                     }
                     if (MainMenu.ItemSelected == MenuManagement.MenuItens.EXIT)
                     {
-#if GameAnalytics
-                        GameAnalytics.AddDesignEvent("Menu:Exit");
-                        GameAnalytics.EndSession();
-#endif
                         Exit();
                     }
                 }
@@ -530,10 +502,6 @@ namespace CareerOpportunities
         // Load all assets to the level
         public void LoadLevel()
         {
-
-#if GameAnalytics
-            GameAnalytics.AddProgressionEvent(EGAProgressionStatus.Start, "Level0" + this.Level);
-#endif
 
             Character = Content.Load<Texture2D>("sprites/jim_hud");
 

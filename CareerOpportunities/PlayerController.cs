@@ -264,7 +264,7 @@ namespace CareerOpportunities
                     // left and right
                     this.VerticalMove(input, game.Map);
 
-                    if (input.KeyPress(Controller.Input.Button.FIRE) && (this.currentAnimation == PlayerController.stateAnimation.RUN || this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)) {
+                    if (input.KeyPress(Controller.Input.Button.FIRE) && game.Level != 6 && (this.currentAnimation == PlayerController.stateAnimation.RUN || this.currentAnimation == PlayerController.stateAnimation.AFTER_FIRE)) {
                        this.currentAnimation = PlayerController.stateAnimation.BEFORE_FIRE;
                     }
                 }
