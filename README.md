@@ -6,7 +6,7 @@ Remind it1s my first game, be nice please :)
 
 ## Where can I play the game?
 
-You can download the downloa the game on my site [here](https://eltonsilva.site/games/skate-runner/)
+You can download the game on my site [here](https://eltonsilva.site/games/skate-runner/)
 
 ![Image of gameplay](https://eltonsilva799505601.files.wordpress.com/2020/04/game1-1.png)
 
