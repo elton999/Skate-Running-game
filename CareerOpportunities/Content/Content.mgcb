@@ -325,6 +325,18 @@
 /processorParam:TextureFormat=Color
 /build:sprites/coin-hud.png
 
+#begin sprites/coinPlus.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/coinPlus.png
+
 #begin sprites/game_over.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -348,6 +360,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:sprites/heart.png
+
+#begin sprites/heartPlus.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sprites/heartPlus.png
 
 #begin sprites/hud_count.json
 /copy:sprites/hud_count.json

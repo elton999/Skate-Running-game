@@ -28,7 +28,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -104,6 +104,7 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="HeartManagement.cs" />
     <Compile Include="Hud\Countdown.cs" />
+    <Compile Include="Hud\Score.cs" />
     <Compile Include="Hud\Tutorial.cs" />
     <Compile Include="Level\Render.cs" />
     <Compile Include="MenuManagement.cs" />

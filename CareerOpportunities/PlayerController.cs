@@ -213,11 +213,11 @@ namespace CareerOpportunities
                     switch (MapItem)
                     {
                         case "heart":
-                            game.Hearts.add(1);
+                            game.Hearts.add(1, this.Position);
                             this.ColletctHeartSFX.Play();
                             break;
                         case "coin":
-                            game.Coins.add(1);
+                            game.Coins.add(this.Position, 1);
                             this.CollectCoinSFX.Play();
                             break;
                         case "ramp":

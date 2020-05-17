@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 
 namespace CareerOpportunities
@@ -14,7 +15,8 @@ namespace CareerOpportunities
     {
         public int numbCoins = 0;
         public SpriteFont font;
-
+        public ContentManager Content;
+        public List<Hud.Score> CoinPlusList = new List<Hud.Score>();
 
         public CoinManagement(Texture2D sprite, SpriteFont font, int scale)
         {
@@ -29,9 +31,19 @@ namespace CareerOpportunities
         }
 
 
-        public void add(int numb = 1)
+        public void Update(GameTime gameTime)
+        {
+            for (int i = 0; i < this.CoinPlusList.Count(); i++)
+            {
+                if (!this.CoinPlusList[i].CanDetroy) this.CoinPlusList[i].Update(gameTime);
+            }
+        }
+
+
+        public void add(Vector2 Position, int numb = 1)
         {
             this.numbCoins += numb;
+            this.CoinPlusList.Add(new Hud.Score(Content, this.Scale, Position));
         }
 
 
@@ -44,6 +56,11 @@ namespace CareerOpportunities
 
             spriteBatch.Draw(this.Sprite, this.Position, this.Body, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
             spriteBatch.DrawString(this.font, CollectedCoins, new Vector2(this.Position.X + (9 * this.Scale), this.Position.Y), Color.White);
+
+            for (int i = 0; i < this.CoinPlusList.Count(); i++)
+            {
+                if (!this.CoinPlusList[i].CanDetroy) this.CoinPlusList[i].Draw(spriteBatch);
+            }
         }
 
     }

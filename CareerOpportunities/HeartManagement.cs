@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 
 namespace CareerOpportunities
 {
@@ -27,9 +28,16 @@ namespace CareerOpportunities
             this.Sprite = sprite;
         }
 
-        public void Update(GameTime gameime)
-        {
 
+        public ContentManager Content;
+        public List<Hud.Score> HeartPlusList = new List<Hud.Score>();
+
+        public void Update(GameTime gameTime)
+        {
+            for (int i = 0; i < this.HeartPlusList.Count(); i++)
+            {
+                if (!this.HeartPlusList[i].CanDetroy) this.HeartPlusList[i].Update(gameTime);
+            }
         }
 
         public void remove(int num)
@@ -37,9 +45,10 @@ namespace CareerOpportunities
             this.NumberOfhearts -= num;
         }
 
-        public void add(int num)
+        public void add(int num, Vector2 Position)
         {
             this.NumberOfhearts += num;
+            this.HeartPlusList.Add(new Hud.Score(Content, this.Scale, Position, false));
         }
 
 
@@ -53,6 +62,11 @@ namespace CareerOpportunities
                 Vector2 position = new Vector2(position_x, this.Position.Y * this.Scale);
 
                 spriteBatch.Draw(this.Sprite, position, this.Body, Color.White, 0, new Vector2(0, 0), this.Scale, SpriteEffects.None, 0f);
+            }
+
+            for (int i = 0; i < this.HeartPlusList.Count(); i++)
+            {
+                if (!this.HeartPlusList[i].CanDetroy) this.HeartPlusList[i].Draw(spriteBatch);
             }
         }
             

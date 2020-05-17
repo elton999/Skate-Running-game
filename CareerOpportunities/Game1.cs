@@ -175,6 +175,8 @@ namespace CareerOpportunities
                     Vector2 screemSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
                     this.camera.Update(gameTime, Player.Position, screemSize);
                     this.Map.Update(gameTime, Player);
+                    this.Coins.Update(gameTime);
+                    this.Hearts.Update(gameTime);
                     this.Level = Map.CurrentlyLevel;
                     if (this.Level > 1) this.Player.Update(gameTime, this.InputGK, camera);
                     this.Weapon.Update(gameTime);
@@ -509,9 +511,11 @@ namespace CareerOpportunities
             this.CutScene = new CutScene(this.font3, new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), this.Level);
 
             Hearts = new HeartManagement(Content.Load<Texture2D>("sprites/heart"));
+            Hearts.Content = Content;
             Hearts.Scale = scale;
 
             Coins = new CoinManagement(Content.Load<Texture2D>("sprites/coin-hud"), this.font3, this.scale);
+            Coins.Content = Content;
 
             Countdown = new Countdown(this);
 
