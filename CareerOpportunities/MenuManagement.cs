@@ -36,7 +36,7 @@ namespace CareerOpportunities
             this.GraphicsDevice = graphicsDevice;
             this.ItemOver = MenuItens.START;
             this.ItemSelected = MenuItens.NONE;
-            this.Position = new Vector2(140*this.Scale, 100*this.Scale);
+            this.Position = new Vector2(140*this.Scale, 110*this.Scale);
             this.PositionAnyButton = new Vector2(120 * this.Scale,  130 * this.Scale);
             this.Font = Font;
             this.MenuItensString = new string[] {
@@ -73,7 +73,7 @@ namespace CareerOpportunities
                 "Mom and Dad",
                 "Mayra Carvalho",
                 "www.eltonsilva.site",
-                "[ECS] Back to main menu"
+                "[ESC] Back to main menu"
             };
         private void SetSizeStringCredits()
         {
@@ -148,13 +148,13 @@ namespace CareerOpportunities
             if (this.ItemSelected == MenuItens.NONE)
             {
 
-                spriteBatch.Draw(this.SpriteLogo, new Vector2(((GraphicsDevice.Viewport.Width / 2f) - (this.SpriteLogo.Width * this.Scale / 2f)), 80), null, Color.White, 0, new Vector2(0,0), this.Scale, SpriteEffects.None, 0 );
+                spriteBatch.Draw(this.SpriteLogo, new Vector2(((GraphicsDevice.Viewport.Width / 2f) - (this.SpriteLogo.Width / 2f)), 0), null, Color.White, 0, new Vector2(0,0), 1f, SpriteEffects.None, 0 );
 
                 if (this.any_button)
                 {
                     for (int i = 0; i < this.MenuItensString.Length; i++)
                     {
-                        Vector2 position = new Vector2((GraphicsDevice.Viewport.Width / 2f) - ((this.MenuItensWidth[i]) / 2f), this.Position.Y + ((i * 9) * this.Scale));
+                        Vector2 position = new Vector2((GraphicsDevice.Viewport.Width / 2f) - ((this.MenuItensWidth[i]) / 2f), this.Position.Y + ((i * 10) * this.Scale));
                         this.SpriteColor = Color.Gray;
                         if ((MenuItens)i == this.ItemOver) this.SpriteColor = Color.White;
                         spriteBatch.DrawString(this.Font, this.MenuItensString[i], position, this.SpriteColor);
