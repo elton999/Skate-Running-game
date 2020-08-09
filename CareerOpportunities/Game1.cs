@@ -50,7 +50,7 @@ namespace CareerOpportunities
         public string path;
 
         public int scale;
-        private bool mute = false;
+        private bool mute = true;
         int screemGameHeight = 162;
         int screemGameWidth = 288;
         public Game1()
@@ -395,7 +395,7 @@ namespace CareerOpportunities
                 
                 if(this.Level > 1)
                 {
-                    Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(50, 50));
+                    Countdown.PostionToCenter(new Vector2(HUDlayer.Width, HUDlayer.Height), new Vector2(400*0.4f, 400*0.4f));
                     Countdown.Draw(spriteBatch);
                     Tutorial.Draw(spriteBatch, graphics.PreferredBackBufferWidth, font3);
                 }
@@ -443,7 +443,7 @@ namespace CareerOpportunities
             if (this.isMainMenuReady() && this.status == GameStatus.PAUSE)
             {
                 GraphicsDevice.Clear(Color.Black);
-                float x_start = (GraphicsDevice.Viewport.Width - (scale * this.GameOverScreen.Width)) / 2f;
+                float x_start = (GraphicsDevice.Viewport.Width - (0.7f * this.GameOverScreen.Width)) / 2f;
                 this.PauseMenu.Draw(spriteBatch, x_start);
             }
         }
@@ -453,12 +453,12 @@ namespace CareerOpportunities
             if (this.isMainMenuReady() && this.status == GameStatus.LOSE)
             {
                 GraphicsDevice.Clear(Color.Black);
-                float x_start = (GraphicsDevice.Viewport.Width - (scale * this.GameOverScreen.Width)) / 2f;
-                spriteBatch.Draw(this.GameOverScreen, new Vector2(x_start, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                float x_start = (GraphicsDevice.Viewport.Width - (0.7f * this.GameOverScreen.Width)) / 2f;
+                spriteBatch.Draw(this.GameOverScreen, new Vector2(x_start, 100), null, Color.White, 0, new Vector2(0, 0), 0.7f, SpriteEffects.None, 0f);
                 this.GameOverMenu.Draw(spriteBatch, x_start);
 
                 int y = this.scale * 95;
-                float x = ((GraphicsDevice.Viewport.Width - (this.scale * 160)) / 2f) / this.scale;
+                float x = ((GraphicsDevice.Viewport.Width - (this.scale * 160)) / 2f) / scale;
                 float progress = ((this.Map.FinishedPerCent() / 100) * (150));
                 bool show_progress = false;
 

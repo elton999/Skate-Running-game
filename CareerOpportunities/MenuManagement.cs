@@ -13,6 +13,10 @@ namespace CareerOpportunities
         public MenuItens ItemOver;
         public MenuItens ItemSelected;
 
+        public enum Characters { JIM, JOSIE };
+        public Characters CharacterOver;
+        public Characters CharacterSelected;
+
         public bool any_button;
         public bool any_button_press;
         public Vector2 PositionAnyButton;
@@ -167,8 +171,14 @@ namespace CareerOpportunities
             }
 
             this.DrawCredits(spriteBatch);
+            this.DrawSelectPlayer(spriteBatch);
         }
 
+
+        public void DrawSelectPlayer(SpriteBatch spriteBatch)
+        {
+
+        }
 
         public void DrawCredits(SpriteBatch spriteBatch)
         {

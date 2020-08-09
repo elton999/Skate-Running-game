@@ -50,7 +50,7 @@ namespace CareerOpportunities.Hud
         {
             if (this.AnimationCurrent != animationStates.NONE)
             {
-                this.DrawAnimation(spriteBatch, Position, Scale);
+                this.DrawAnimation(spriteBatch, Position, 0.6f);
             }
         }
 
