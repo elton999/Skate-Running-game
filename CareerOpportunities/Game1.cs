@@ -459,13 +459,13 @@ namespace CareerOpportunities
                 this.GameOverMenu.Draw(spriteBatch, x_start);
 
                 int y = this.scale * 95;
-                float x = ((GraphicsDevice.Viewport.Width - (this.scale * 160)) / 2f) / scale;
-                float progress = ((this.Map.FinishedPerCent() / 100) * (150));
+                float x = ((GraphicsDevice.Viewport.Width - (this.scale * 140)) / 2f) / scale;
+                float progress = ((this.Map.FinishedPerCent() / 100) * (140));
                 bool show_progress = false;
 
                 spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(0,0), new Point(5, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
                 x += 4;
-                for (int i = 3; i < 150; i++)
+                for (int i = 3; i < 140; i++)
                 {
                     x++;
                     if(progress > i)
@@ -476,14 +476,20 @@ namespace CareerOpportunities
                         spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(5, 0), new Point(1, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
                         if (!show_progress)
                         {
-                            spriteBatch.Draw(this.Bar, new Vector2((x - 5) * this.scale, y - (13 * this.scale)), new Rectangle(new Point(10, 0), new Point(10, 13)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                            Rectangle BoxCharacter = new Rectangle(new Point(5, 0), new Point(5, 14)); ;
+                            if (this.MainMenu.CharacterSelected == MenuManagement.Characters.JIM)
+                                BoxCharacter = new Rectangle(new Point(10, 0), new Point(10, 13));
+                            else if (this.MainMenu.CharacterSelected == MenuManagement.Characters.JOSIE)
+                                BoxCharacter = new Rectangle(new Point(20, 0), new Point(9, 13));
+
+                            spriteBatch.Draw(this.Bar, new Vector2((x - 5) * this.scale, y - (13 * this.scale)), BoxCharacter, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
                             show_progress = true;
                         }
                     }
                        
                 }
                 x++;
-                spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(5,0), new Point(5, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
+                spriteBatch.Draw(this.Bar, new Vector2(x * this.scale, y), new Rectangle(new Point(5, 0), new Point(5, 14)), Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
         }
 
