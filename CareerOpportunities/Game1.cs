@@ -50,7 +50,7 @@ namespace CareerOpportunities
         public string path;
 
         public int scale;
-        private bool mute = true;
+        private bool mute = false;
         int screemGameHeight = 162;
         int screemGameWidth = 288;
         public Game1()
@@ -300,6 +300,7 @@ namespace CareerOpportunities
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.PointClamp, null, null, null, null);
             if ((!this.isLevelReady() && !this.isMainMenuReady()) || (!this.isLevelReady() && this.isMainMenuReady() && this.status == GameStatus.PLAY) || (this.status == GameStatus.WIN) )
             {
+                GraphicsDevice.Clear(Color.Black);
                 spriteBatch.Draw(this.loadingScreen, new Vector2(0, 0), null, Color.White, 0, new Vector2(0, 0), scale, SpriteEffects.None, 0f);
             }
             spriteBatch.End();
@@ -491,6 +492,8 @@ namespace CareerOpportunities
 #region Load Content
 
         public Texture2D Character;
+        public Texture2D JimSpriteHud;
+        public Texture2D JosieSpriteHud;
         public MenuManagement MainMenu;
         public HeartManagement Hearts;
         public Hud.Countdown Countdown;
@@ -505,7 +508,11 @@ namespace CareerOpportunities
         public void LoadLevel()
         {
 
-            Character = Content.Load<Texture2D>("sprites/jim_hud");
+            JimSpriteHud = Content.Load<Texture2D>("sprites/jim_hud");
+            JosieSpriteHud = Content.Load<Texture2D>("sprites/josie_hud");
+
+            if (MainMenu.CharacterSelected == MenuManagement.Characters.JIM) Character = JimSpriteHud;
+            else if (MainMenu.CharacterSelected == MenuManagement.Characters.JOSIE) Character = JosieSpriteHud;
 
             this.Tutorial = new Tutorial(Content, this.scale);
             this.CutScene = new CutScene(this.font3, new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), this.Level);

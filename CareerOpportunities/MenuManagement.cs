@@ -9,14 +9,10 @@ namespace CareerOpportunities
 {
     public class MenuManagement : GameObject
     {
-        public enum MenuItens { START, CREDITS, EXIT, NONE };
+        public enum MenuItens { SELECT_PLAYER, CREDITS, EXIT, START, NONE };
         public MenuItens ItemOver;
         public MenuItens ItemSelected;
-
-        public enum Characters { JIM, JOSIE };
-        public Characters CharacterOver;
-        public Characters CharacterSelected;
-
+        
         public bool any_button;
         public bool any_button_press;
         public Vector2 PositionAnyButton;
@@ -33,12 +29,13 @@ namespace CareerOpportunities
         public MenuManagement(ContentManager content, SpriteFont Font, int scale, GraphicsDevice graphicsDevice)
         {
             this.Sprite = content.Load<Texture2D>("sprites/main_menu");
+            this.SpriteSelectedCharacterHud = content.Load<Texture2D>("sprites/hud_select_character");
             this.SpriteLogo = content.Load<Texture2D>("sprites/skate_running_logo");
             this.MusicMenu = content.Load<SoundEffect>("Sound/Into the Depths");
             this.SoundConfirme = content.Load<SoundEffect>("Sound/sfx_sounds_button3");
             this.Scale = scale;
             this.GraphicsDevice = graphicsDevice;
-            this.ItemOver = MenuItens.START;
+            this.ItemOver = MenuItens.SELECT_PLAYER;
             this.ItemSelected = MenuItens.NONE;
             this.Position = new Vector2(140*this.Scale, 110*this.Scale);
             this.PositionAnyButton = new Vector2(120 * this.Scale,  130 * this.Scale);
@@ -96,43 +93,86 @@ namespace CareerOpportunities
             }
 
             if (this.any_button && !any_button_press)
-            {   
-                if (input.KeyPress(Controller.Input.Button.DOWN))
+            {
+                if (this.ItemSelected != MenuItens.SELECT_PLAYER)
                 {
-                    if ((int)this.ItemOver < 2)
+                    if (input.KeyPress(Controller.Input.Button.DOWN))
                     {
-                        int item = (int)this.ItemOver;
-                        item += 1;
+                        if ((int)this.ItemOver < 2)
+                        {
+                            int item = (int)this.ItemOver;
+                            item += 1;
 
-                        this.ItemOver = (MenuItens)item;
+                            this.ItemOver = (MenuItens)item;
+                            this.SoundConfirme.Play();
+                        }
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.UP))
+                    {
+                        if ((int)this.ItemOver > 0)
+                        {
+                            int item = (int)this.ItemOver;
+                            item -= 1;
+
+                            this.ItemOver = (MenuItens)item;
+                            this.SoundConfirme.Play();
+                        }
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.CONFIRM) && this.ItemSelected == MenuItens.NONE)
+                    {
+                        this.ItemSelected = this.ItemOver;
+                        this.SoundConfirme.Play();
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.ESC) && this.ItemSelected == MenuItens.CREDITS)
+                    {
+                        this.ItemSelected = MenuItens.NONE;
+                        this.ItemOver = MenuItens.SELECT_PLAYER;
                         this.SoundConfirme.Play();
                     }
                 }
-
-                if (input.KeyPress(Controller.Input.Button.UP))
+                else
                 {
-                    if ((int)this.ItemOver > 0)
+                    if (input.KeyPress(Controller.Input.Button.RIGHT))
                     {
-                        int item = (int)this.ItemOver;
-                        item -= 1;
+                        if ((int)this.CharacterOver == 0)
+                        {
+                            int item = (int)this.CharacterOver;
+                            item += 1;
 
-                        this.ItemOver = (MenuItens)item;
+                            this.CharacterOver = (Characters)item;
+                            this.SoundConfirme.Play();
+                        }
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.LEFT))
+                    {
+                        if ((int)this.CharacterOver == 1)
+                        {
+                            int item = (int)this.CharacterOver;
+                            item -= 1;
+
+                            this.CharacterOver = (Characters)item;
+                            this.SoundConfirme.Play();
+                        }
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.CONFIRM))
+                    {
+                        this.CharacterSelected = this.CharacterOver;
+                        this.ItemSelected = MenuItens.START;
+                        this.SoundConfirme.Play();
+                        this.soundInstance.Stop();
+                    }
+
+                    if (input.KeyPress(Controller.Input.Button.ESC))
+                    {
+                        this.ItemSelected = MenuItens.NONE;
+                        this.ItemOver = MenuItens.SELECT_PLAYER;
                         this.SoundConfirme.Play();
                     }
-                }
-
-                if (input.KeyPress(Controller.Input.Button.CONFIRM) && this.ItemSelected == MenuItens.NONE)
-                {
-                    this.ItemSelected = this.ItemOver;
-                    this.SoundConfirme.Play();
-                    if (this.ItemOver == MenuItens.START) this.soundInstance.Stop();
-                }
-
-                if (input.KeyPress(Controller.Input.Button.ESC) && this.ItemSelected == MenuItens.CREDITS)
-                {
-                    this.ItemSelected = MenuItens.NONE;
-                    this.ItemOver = MenuItens.START;
-                    this.SoundConfirme.Play();
                 }
             } else
             {
@@ -164,10 +204,7 @@ namespace CareerOpportunities
                         spriteBatch.DrawString(this.Font, this.MenuItensString[i], position, this.SpriteColor);
                     }
                 }
-                else
-                {
-                    spriteBatch.DrawString(this.Font, "Press Any Button", this.PositionAnyButton, Color.White);
-                }
+                else spriteBatch.DrawString(this.Font, "Press Any Button", this.PositionAnyButton, Color.White);
             }
 
             this.DrawCredits(spriteBatch);
@@ -175,9 +212,27 @@ namespace CareerOpportunities
         }
 
 
+        public enum Characters { JIM, JOSIE, NONE };
+        public Characters CharacterOver = Characters.JIM;
+        public Characters CharacterSelected = Characters.NONE;
+        public Texture2D SpriteSelectedCharacterHud;
+
         public void DrawSelectPlayer(SpriteBatch spriteBatch)
         {
+            if (this.ItemSelected == MenuItens.SELECT_PLAYER)
+            {
+                float ScaleHud = 6f;
+                Vector2 PositionJim = new Vector2((GraphicsDevice.Viewport.Width / 4f) + (20 * ScaleHud) - (18 / 2f * ScaleHud), (GraphicsDevice.Viewport.Height / 2f) - (40 / 2f * ScaleHud));
+                Vector2 PositionJosie = new Vector2((GraphicsDevice.Viewport.Width / 2f) + (GraphicsDevice.Viewport.Width / 4f) - (20 * ScaleHud) - (18 / 2f * ScaleHud), (GraphicsDevice.Viewport.Height / 2f) - (40 / 2f * ScaleHud));
 
+                if(this.CharacterOver == Characters.JIM)
+                    spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJim, new Rectangle(new Point(0, 0), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
+                else if (this.CharacterOver == Characters.JOSIE)
+                    spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJosie, new Rectangle(new Point(0, 0), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
+
+                spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJim, new Rectangle(new Point(0, 40), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
+                spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJosie, new Rectangle(new Point(18, 40), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
+            }
         }
 
         public void DrawCredits(SpriteBatch spriteBatch)

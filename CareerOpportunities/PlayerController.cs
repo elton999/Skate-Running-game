@@ -47,11 +47,18 @@ namespace CareerOpportunities
         SoundEffect CollectCoinSFX;
         SoundEffect ColletctHeartSFX;
 
+        Texture2D JimSprite;
+        Texture2D JosieSprite;
+
         public PlayerController(int BufferHeight, int BufferWidth, Game1 game)
         {
-            this.game   = game;
-            this.Sprite = this.game.Content.Load<Texture2D>("prototype/Jim");
-            this.Scale  = game.scale;
+            this.game = game;
+            this.JimSprite = this.game.Content.Load<Texture2D>("prototype/Jim");
+            this.JosieSprite = this.game.Content.Load<Texture2D>("prototype/Josie");
+            this.Scale = game.scale;
+
+            if (this.game.MainMenu.CharacterSelected == MenuManagement.Characters.JIM) this.Sprite = JimSprite;
+            else if (this.game.MainMenu.CharacterSelected == MenuManagement.Characters.JOSIE) this.Sprite = JosieSprite;
 
             this.CurrentVerticalLine = 3;
             this.PreviousVerticalLine = 1;
