@@ -30,6 +30,7 @@ namespace CareerOpportunities
         {
             this.Sprite = content.Load<Texture2D>("sprites/main_menu");
             this.SpriteSelectedCharacterHud = content.Load<Texture2D>("sprites/hud_select_character");
+            this.SpritesSelectPlayerTextHud = content.Load<Texture2D>("sprites/select_player");
             this.SpriteLogo = content.Load<Texture2D>("sprites/skate_running_logo");
             this.MusicMenu = content.Load<SoundEffect>("Sound/Into the Depths");
             this.SoundConfirme = content.Load<SoundEffect>("Sound/sfx_sounds_button3");
@@ -49,6 +50,7 @@ namespace CareerOpportunities
 
             this.SetSizeString();
             this.SetSizeStringCredits();
+            this.SetSizesStringMenuButtons();
 
             this.soundInstance = this.MusicMenu.CreateInstance();
             this.soundInstance.IsLooped = true;
@@ -80,11 +82,9 @@ namespace CareerOpportunities
         {
             this.CreditsWidth = new float[this.CreditsItensString.Length];
             for (int i = 0; i < this.CreditsItensString.Length; i++)
-            {
                 this.CreditsWidth[i] = this.Font.MeasureString(this.CreditsItensString[i]).X;
-            }
         }
-
+        
         public void Update(GameTime gameTime, Controller.Input input)
         {
             if (this.soundInstance.State == SoundState.Stopped)
@@ -210,12 +210,25 @@ namespace CareerOpportunities
             this.DrawCredits(spriteBatch);
             this.DrawSelectPlayer(spriteBatch);
         }
-
+        
+        private float[] MenuButtonsWidth;
+        private string[] MenuButtonsString = new string[]
+        {
+            "[ENTER] Confirm",
+            "[ESC] Back to main menu"
+        };
+        private void SetSizesStringMenuButtons()
+        {
+            this.MenuButtonsWidth = new float[this.MenuButtonsString.Length];
+            for (int i = 0; i < this.MenuButtonsString.Length; i++)
+                this.MenuButtonsWidth[i] = this.Font.MeasureString(this.MenuButtonsString[i]).X;
+        }
 
         public enum Characters { JIM, JOSIE, NONE };
         public Characters CharacterOver = Characters.JIM;
         public Characters CharacterSelected = Characters.NONE;
         public Texture2D SpriteSelectedCharacterHud;
+        public Texture2D SpritesSelectPlayerTextHud;
 
         public void DrawSelectPlayer(SpriteBatch spriteBatch)
         {
@@ -232,6 +245,16 @@ namespace CareerOpportunities
 
                 spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJim, new Rectangle(new Point(0, 40), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
                 spriteBatch.Draw(this.SpriteSelectedCharacterHud, PositionJosie, new Rectangle(new Point(18, 40), new Point(18, 40)), Color.White, 0f, Vector2.Zero, ScaleHud, SpriteEffects.None, 0f);
+
+                Vector2 position;
+                position = new Vector2( 40 * this.Scale , 150 * this.Scale);
+                spriteBatch.DrawString(this.Font, this.MenuButtonsString[0], position, Color.White);
+
+                position = new Vector2(170 * this.Scale, 150 * this.Scale);
+                spriteBatch.DrawString(this.Font, this.MenuButtonsString[1], position, Color.White);
+
+                position = new Vector2((GraphicsDevice.Viewport.Width / 2f) - (this.SpritesSelectPlayerTextHud.Width * 0.7f / 2f), 15 * this.Scale);
+                spriteBatch.Draw(this.SpritesSelectPlayerTextHud, position, null, Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0f);
             }
         }
 
@@ -259,7 +282,6 @@ namespace CareerOpportunities
 
                 position = new Vector2((GraphicsDevice.Viewport.Width / 2f) - ((this.CreditsWidth[6]) / 2f), 150 * this.Scale);
                 spriteBatch.DrawString(this.Font, this.CreditsItensString[6], position, Color.White);
-
             }
         }
     }
