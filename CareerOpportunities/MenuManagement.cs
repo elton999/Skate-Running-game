@@ -55,9 +55,7 @@ namespace CareerOpportunities
             this.soundInstance = this.MusicMenu.CreateInstance();
             this.soundInstance.IsLooped = true;
         }
-
-
-
+        
         private float[] MenuItensWidth;
         private void SetSizeString()
         {

@@ -285,26 +285,18 @@ namespace CareerOpportunities
         {
             if (input.KeyDown(Controller.Input.Button.RIGHT) && !map.Collision(this.Body, new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y), this.CurrentVerticalLine, false))
             {
-                if (input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP))
-                {
-                    if (Position.X + PlayerHorizontalAndVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalAndVelocity, Position.Y);
-                }
-                else
-                {
-                    if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32)) Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
-                }
+                if ((input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP)) && (Position.X + PlayerHorizontalAndVelocity < this.BufferWidth - (this.Scale * 32)))
+                  Position = new Vector2(Position.X + PlayerHorizontalAndVelocity, Position.Y);
+                else if (Position.X + PlayerHorizontalVelocity < this.BufferWidth - (this.Scale * 32))
+                    Position = new Vector2(Position.X + PlayerHorizontalVelocity, Position.Y);
             }
+
             if (input.KeyDown(Controller.Input.Button.LEFT))
             {
-                if (input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP))
-                {
-                    if (Position.X - PlayerHorizontalAndVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalAndVelocity, Position.Y);
-                }
-                else
-                {
-                    if (Position.X - PlayerHorizontalVelocity > 0) Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
-                }
-               
+                if ((input.KeyDown(Controller.Input.Button.DOWN) || input.KeyDown(Controller.Input.Button.UP)) && (Position.X - PlayerHorizontalAndVelocity > 0))
+                    Position = new Vector2(Position.X - PlayerHorizontalAndVelocity, Position.Y);
+                else if (Position.X - PlayerHorizontalVelocity > 0)
+                    Position = new Vector2(Position.X - PlayerHorizontalVelocity, Position.Y);
             }
 
             game.Map.CollisionPosition = Vector2.Zero;

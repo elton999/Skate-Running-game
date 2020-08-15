@@ -50,7 +50,7 @@ namespace CareerOpportunities
         public string path;
 
         public int scale;
-        private bool mute = false;
+        private bool mute = true;
         int screemGameHeight = 162;
         int screemGameWidth = 288;
         public Game1()
